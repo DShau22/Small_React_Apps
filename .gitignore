@@ -1,7 +1,6 @@
-# do not track any of these folders
-./tic-tac-toe/node_modules/
-./tic-tac-toe/package-lock.json
-./tic-tac-toe/package-lock.json
-./Todo_List/node_modules/
-./Todo_List/package-lock.json
-./Todo_List/package.json
+tic-tac-toe/node_modules/
+tic-tac-toe/package-lock.json
+tic-tac-toe/package-lock.json
+Todo_List/node_modules/
+Todo_List/package-lock.json
+Todo_List/package.json
