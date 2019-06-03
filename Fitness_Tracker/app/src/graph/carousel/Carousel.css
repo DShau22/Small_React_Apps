@@ -1,0 +1,41 @@
+@import '../../App.css';
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.carousel #details.routeButton {
+  margin-top: 20px;
+}
+.carousel .slideShow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.carousel .slideShow .imageSlide {
+  height: 200px;
+  margin: 0;
+  width: 200px;
+  border: solid;
+  border-color: red;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.carousel .slideShow .slide-arrow-right {
+  color: #14B6D4;
+  cursor: pointer;
+  font-size: 3rem;
+}
+.carousel .slideShow .slide-arrow-left {
+  color: #14B6D4;
+  cursor: pointer;
+  font-size: 3rem;
+}
+
+/*# sourceMappingURL=Carousel.css.map */

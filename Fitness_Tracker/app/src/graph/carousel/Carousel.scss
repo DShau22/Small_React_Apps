@@ -1,0 +1,48 @@
+@import '../../App.css';
+
+$theme-blue: #14B6D4;
+
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  #details.routeButton {
+    margin-top: 20px
+  }
+
+  .slideShow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .imageSlide {
+      height: 200px;
+      margin: 0;
+      width: 200px;
+      border: solid;
+      border-color: red;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .slide-arrow-right {
+      color: $theme-blue;
+      cursor: pointer;
+      font-size: 3rem;
+    }
+
+    .slide-arrow-left {
+      color: $theme-blue;
+      cursor: pointer;
+      font-size: 3rem;
+    }
+  }
+
+}
