@@ -12,6 +12,6 @@
     "cors": "^2.8.5",
     "csv": "^0.3.7",
     "express": "^4.17.0",
-    "formidable": "^1.2.1"
+    "formidable": "^1.2.1",
   }
 }
