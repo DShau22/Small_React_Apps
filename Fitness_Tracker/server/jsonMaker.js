@@ -8,12 +8,36 @@ function jumpJson(converted) {
     }
   })
   var json = {
+    heights: heights,
     num: numJumps,
-    heights: heights
   }
   console.log(JSON.stringify(json))
   return json
 }
+//[sport, stroke (U, B, R, F), ndata, lap time, calories]
+function swimJson(converted) {
+  var numLaps = 0,
+      calories = 0,
+      lapTimes = [],
+      strokes = []
+  converted.forEach(function(set) {
+    if (set[0] === 1) {
+      calories = set[4]
+      lapTimes.push(set[3])
+      strokes.push(set[1])
+    }
+  })
+  numLaps = strokes.length
+  var json = {
+    num: numLaps,
+    calories: calories,
+    lapTimes: lapTimes,
+    strokes: strokes
+  }
+  console.log(JSON.stringify(json))
+  return json
+}
+
 
 function runJson(converted) {
   var numSteps = 0,

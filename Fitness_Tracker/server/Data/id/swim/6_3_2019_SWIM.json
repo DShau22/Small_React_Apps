@@ -1,0 +1,6 @@
+{
+  "numLaps": 5,
+  "lapTimes": [12, 13, 14, 15, 16],
+  "strokes": ["U", "B", "R", "F", "U"],
+  "calories": 21
+}

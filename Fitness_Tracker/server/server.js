@@ -5,25 +5,16 @@ const retrieve = require('./retrieve')
 const server = express()
 const mongo = require('mongodb')
 const mongoose = require('mongoose')
+const userSchema = require('./database/MongoConfig')
+const userJson = require("./database/sampleUser")
 
-mongoose.connect('mongodb://localhost:27017/testdb')
-mongoose.connection.once("open", function() {
-  console.log("successfully conncted to mongodb")
-}).on("error", function(err) {
-  console.log("couldn't connect to mongodb", err)
-  throw err
-})
 var corsOptions = {
   // origin: '*',
-  origin: 'localhost:3000',
+  origin: 'http://localhost:3000',
   optionsSuccessStatus: 200,
 }
 
 server.use(cors(corsOptions))
-
-// server.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, 'index.html'))
-// })
 
 server.post('/upload', upload)
 server.get('/data', retrieve.getUserProgress)
