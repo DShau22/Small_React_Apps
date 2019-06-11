@@ -4,34 +4,42 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const jumpSchema = new Schema({
+  userID: String,
   uploadDate: Date,
-  numJumps: Number,
+  num: Number,
   heights: [Number],
   calories: Number,
 })
 
 const runSchema = new Schema({
+  userID: String,
   uploadDate: Date,
-  numSteps: Number,
+  num: Number,
   time: Number,
   calories: Number,
 })
 
 const swimSchema = new Schema({
+  userID: String,
   uploadDate: Date,
-  numLaps: Number,
+  num: Number,
   lapTimes: [Number],
   strokes: [String],
   calories: Number,
 })
 
 const userSchema = new Schema({
+  userID: String,
   name: String,
+  userName: String,
+  password: String,
   productCode: String,
   registerDate: Date,
-  jump: [jumpSchema],
-  run: [runSchema],
-  swim: [swimSchema],
 })
 
-module.exports = userSchema
+module.exports = {
+  userSchema: userSchema,
+  jumpSchema: jumpSchema,
+  runSchema: runSchema,
+  swimSchema: swimSchema
+}

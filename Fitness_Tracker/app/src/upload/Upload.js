@@ -89,6 +89,7 @@ class Upload extends Component {
     const postFormData = new FormData();
     postFormData.append("uploadedFile", file, file.name);
     postFormData.append("id", "id") //change this to be user specific during account login steps
+    postFormData.append("prodCode", "29shf92ka0d91201asd")
 
     req.open("POST", "http://localhost:8080/upload");
     req.send(postFormData);

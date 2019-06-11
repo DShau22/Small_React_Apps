@@ -1,3 +1,7 @@
+const date = new Date()
+var todayMil = date.getTime()
+var today = new Date(todayMil)
+
 function jumpJson(converted) {
   var numJumps = 0
   var heights = []
@@ -7,10 +11,11 @@ function jumpJson(converted) {
       heights.push(set[4] / 100) //set[4] contains height in .01 inches
     }
   })
-  var json = {
+  var json = (numJumps === 0 ? null : {
     heights: heights,
     num: numJumps,
-  }
+    uploadDate: today
+  })
   console.log(JSON.stringify(json))
   return json
 }
@@ -28,13 +33,23 @@ function swimJson(converted) {
     }
   })
   numLaps = strokes.length
-  var json = {
+  var json = (numLaps === 0 ? null : {
     num: numLaps,
     calories: calories,
     lapTimes: lapTimes,
-    strokes: strokes
-  }
-  console.log(JSON.stringify(json))
+    strokes: strokes,
+    uploadDate: today,
+  })
+  // console.log(JSON.stringify(json))
+
+  //hard coded for now...
+  // json = {
+  //   num: 5,
+  //   lapTimes: [12, 13, 14, 15, 16],
+  //   strokes: ["U", "U", "U", "U", "U"],
+  //   calories: 21,
+  //   uploadDate: today,
+  // }
   return json
 }
 
@@ -51,11 +66,12 @@ function runJson(converted) {
       time     = set[1]
     }
   })
-  var json = {
+  var json = (numSteps === 0 ? null : {
     num: numSteps,
     calories: calories,
-    time: time
-  }
+    time: time,
+    uploadDate: today,
+  })
   console.log(JSON.stringify(json))
   return json
 }
@@ -65,6 +81,7 @@ module.exports = {
     var json = {
       jumpJson: jumpJson(converted),
       runJson: runJson(converted),
+      swimJson: swimJson(converted),
     }
     return json
   }

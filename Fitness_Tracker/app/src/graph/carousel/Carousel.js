@@ -11,9 +11,9 @@ const numActivites = 3
 const jumpLink = "/jumpDetails"
 const runLink = "/runDetails"
 const swimLink = "/swimDetails"
-const jumpActivity = "jumps"
-const runActivity = "steps"
-const swimActivity = "laps"
+const jumpActivity = "jump"
+const runActivity = "run"
+const swimActivity = "swim"
 
 class Carousel extends React.Component {
   constructor (props) {

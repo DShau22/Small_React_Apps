@@ -29,7 +29,7 @@ class JumpDetails extends Component {
   setJumpData() {
 
     var headers = new Headers()
-    headers.append("id", "id") //change to be specific in future
+    headers.append("userID", "12345") //change to be specific in future
     headers.append("activity", "jump")
 
     fetch('http://localhost:8080/data', {

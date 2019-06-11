@@ -9,27 +9,28 @@ class Graph extends Component {
     this.state = {
       display: true,
       jumpJson: {
-        action: "jumps",
+        action: "jump",
         imageUrl: "https://img.icons8.com/ios/50/000000/trampoline-park-filled.png"
       },
       runJson: {
-        action: "steps",
+        action: "run",
         imageUrl: "https://img.icons8.com/nolan/64/000000/running.png",
       },
       swimJson: {
-        action: "laps",
+        action: "swim",
         imageUrl: "https://img.icons8.com/nolan/64/000000/swimming.png"
       },
     }
 
     this.setRunData = this.setRunData.bind(this)
     this.setJumpData = this.setJumpData.bind(this)
+    this.setSwimData = this.setSwimData.bind(this)
     this.getActivityJson = this.getActivityJson.bind(this)
   }
 
   getActivityJson(activity) {
     var headers = new Headers()
-    headers.append("id", "id") //change to be specific in future
+    headers.append("userID", "12345") //change to be specific in future
     headers.append("activity", activity)
 
     return fetch('http://localhost:8080/data', {
@@ -68,11 +69,20 @@ class Graph extends Component {
     })
   }
 
+  setSwimData() {
+    var currentThis = this
+    this.getActivityJson("swim").then(function(json) {
+      currentThis.setState({
+        swimJson: {...currentThis.state.swimJson, ...json}
+      })
+    })
+  }
+
   componentDidMount() {
     console.log("component did mount")
     this.setRunData()
     this.setJumpData()
-    // this.setSwimData()
+    this.setSwimData()
   }
 
   render() {
