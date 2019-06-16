@@ -10,14 +10,15 @@ const jumpPath = "jump/"
 const runPath = "run/"
 const date = new Date()
 const mongoose = require("mongoose")
-const mongoConfig = require("./database/MongoConfig")
+
+const {User, Swim, Run, Jump} = require("./database/MongoConfig")
+
 const samples = require("./database/samples")
 
 function addSampleUser() {
-  var Users = mongoose.model("users", mongoConfig.userSchema)
 
   //create new doc instance with model and Schema
-  var newUser = new Users(samples.userJson)
+  var newUser = new User(samples.userJson)
 
   //save to database
   newUser.save(function (err, user) {
@@ -26,10 +27,9 @@ function addSampleUser() {
 }
 
 function addSampleRun() {
-  var RunData = mongoose.model("run", mongoConfig.runSchema)
 
   //create new doc instance with model and Schema
-  var newRunData = new RunData(samples.runJson)
+  var newRunData = new Run(samples.runJson)
 
   //save to database
   newRunData.save(function (err, user) {
@@ -38,10 +38,8 @@ function addSampleRun() {
 }
 
 function addSampleJump() {
-  var JumpData = mongoose.model("jump", mongoConfig.jumpSchema)
-
   //create new doc instance with model and Schema
-  var newJumpData = new JumpData(samples.jumpJson)
+  var newJumpData = new Jump(samples.jumpJson)
 
   //save to database
   newJumpData.save(function (err, user) {
@@ -50,10 +48,8 @@ function addSampleJump() {
 }
 
 function addSampleSwim() {
-  var SwimData = mongoose.model("swim", mongoConfig.swimSchema)
-
   //create new doc instance with model and Schema
-  var newSwimData = new SwimData(samples.swimJson)
+  var newSwimData = new Swim(samples.swimJson)
 
   //save to database
   newSwimData.save(function (err, user) {
@@ -63,9 +59,6 @@ function addSampleSwim() {
 
 function update(userID, jumpJson, runJson, swimJson) {
   // establish models for runs, jumps, swims collections
-  var Runs = mongoose.model("run", mongoConfig.runSchema)
-  var Jumps = mongoose.model("jump", mongoConfig.jumpSchema)
-  var Swims = mongoose.model("swim", mongoConfig.swimSchema)
 
   console.log("swimJson: ", swimJson)
   console.log("runJson: ", runJson)
@@ -76,9 +69,9 @@ function update(userID, jumpJson, runJson, swimJson) {
   // addSampleSwim()
 
   // create documents using the jsons from the request body
-  var newRunData = (runJson === null) ? null : new Runs(runJson)
-  var newJumpData = (jumpJson === null) ? null : new Jumps(jumpJson)
-  var newSwimData = (swimJson === null) ? null : new Swims(swimJson)
+  var newRunData = (runJson === null) ? null : new Run(runJson)
+  var newJumpData = (jumpJson === null) ? null : new Jump(jumpJson)
+  var newSwimData = (swimJson === null) ? null : new Swim(swimJson)
 
   //save to database collections runs, jumps, swims
 

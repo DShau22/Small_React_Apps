@@ -1,6 +1,6 @@
 
 var swimJson = {
-  userID: "12345",
+  email: "david@email.com",
   uploadDate: new Date('December 11, 1995 03:24:00'),
   num: 5,
   lapTimes: [12, 13, 14, 15, 16],
@@ -8,21 +8,21 @@ var swimJson = {
   calories: 21,
 }
 var runJson = {
-  userID: "12345",
+  email: "david@email.com",
   uploadDate: new Date('December 12, 1995 03:24:00'),
   num: 1500,
   time: 120,
   calories: 12,
 }
 var jumpJson = {
-  userID: "12345",
+  email: "david@email.com",
   uploadDate: new Date('December 25, 1995 03:24:00'),
   num: 5,
   heights: [13.4, 12.3, 16.7, 12, 6.7],
   calories: 26,
 }
 var userJson = {
-  userID: "12345",
+  email: "david@email.com",
   name: "David",
   userName: "dshau22",
   password: "password",

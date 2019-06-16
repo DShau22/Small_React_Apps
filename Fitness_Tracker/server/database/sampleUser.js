@@ -1,6 +1,6 @@
 
 var userJson = {
-  userID: "12345",
+  email: "david@email.com",
   name: "David",
   userName: "dshau22",
   password: "password",
