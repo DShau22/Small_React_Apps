@@ -5,9 +5,36 @@ const router = express.Router()
 const date = new Date()
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-
+const secret = 'secretkey'
+const expiresIn = "12h"
+// returns the hashed output given a password input with bcrypt
 function hashPass(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+}
+
+// FORMAT OF TOKEN
+// Authorization: Bearer <access_token>
+// called as middleware before jwt verifies the token
+function verifyToken(req, res, next) {
+  // Get auth header value
+  const bearerHeader = req.headers['authorization'];
+  // Check if bearer is undefined
+  if (typeof bearerHeader !== 'undefined') {
+    // Split at the space
+    const bearer = bearerHeader.split(' ');
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Set the token
+    req.token = bearerToken;
+    // Next middleware
+    next()
+  } else {
+    // token is invalid or expired
+    return res.send({
+      success: false,
+      message: 'Error: Token is either expired or invalid. Please sign in again.'
+    })
+  }
 }
 
 router.post('/api/account/signup', function(req, res, next) {
@@ -112,29 +139,14 @@ router.post('/api/account/signin', function(req, res, next) {
           })
         }
 
-        // gets the current time for the registration date
-        var todayMil = date.getTime()
-        var today = new Date(todayMil)
+        //get the _id from the queried user
+        const _id = user._id
 
-        // create a new session document
-        const userSession = new UserSession({
-          email,
-          timestamp: today,
-        })
-
-        userSession.save((err, doc) => {
-          if (err) {
-            console.log(err);
-            return res.send({
-              success: false,
-              message: 'Error: server error'
-            });
-          }
-          // send the token (email for now) back
+        // return a signed jwt token using the _id unique to the user
+        jwt.sign({_id}, secret, { expiresIn }, (err, token) => {
           return res.send({
             success: true,
-            message: 'Valid sign in',
-            token: doc._id
+            token,
           })
         })
       } else {
@@ -150,60 +162,34 @@ router.post('/api/account/signin', function(req, res, next) {
     })
 })
 
-router.get('/api/account/logout', function(req, res, next) {
-  // Get the token
-  const { query } = req;
-  const { token } = query;
-  // ?token=test
-  // Verify the token is one of a kind and it's not deleted.
-  UserSession.findOneAndUpdate({
-    _id: token,
-    isDeleted: false
-  }, {
-    $set: {
-      isDeleted:true
+router.get('/api/account/logout', verifyToken, function(req, res, next) {
+  console.log("verifying...")
+  jwt.verify(req.token, secret, (err, authData) => {
+    if(err) {
+      throw err
+    } else {
+      res.json({
+        success: true,
+        message: 'successfully logged out!',
+        token: authData,
+      })
     }
-  }, null, function(err, sessions) {
-    if (err) throw err
-    return res.send({
-      success: true,
-      message: 'successfully logged out!'
-    });
-  });
+  })
 })
 
-router.get('/api/account/verify', function(req, res, next) {
+router.get('/api/account/verify', verifyToken, function(req, res, next) {
   console.log("verifying...")
-  console.log("token is: ", req.query.token)
-  // Get the token
-  const { query } = req;
-  const { token } = query;
-  // ?token=test
-  // Verify the token is one of a kind and it's not deleted.
-  UserSession.find({
-    _id: token,
-    isDeleted: false
-  }, (err, sessions) => {
-    if (err) {
-      console.log(err);
-      return res.send({
-        success: false,
-        message: 'Error: Server error'
-      });
-    }
-    if (sessions.length != 1) {
-      return res.send({
-        success: false,
-        message: 'Error: Invalid'
-      });
+  jwt.verify(req.token, secret, (err, authData) => {
+    if(err) {
+      throw err
     } else {
-      // DO ACTION
-      return res.send({
+      res.json({
         success: true,
-        message: 'Good'
-      });
+        message: 'token was successfully verified!',
+        token: authData,
+      })
     }
-  });
+  })
 })
 
 module.exports = router;

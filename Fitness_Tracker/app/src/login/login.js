@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
 import Spa from "../Spa"
-
 import {
   getFromStorage,
   setInStorage,
+  removeFromStorage,
 } from '../utils/storage';
 
 const date = new Date()
+const localStorageKey = "the_main_app"
 
 class Login extends Component {
   constructor(props) {
@@ -44,12 +45,22 @@ class Login extends Component {
 
   componentDidMount() {
     console.log("mounting...")
-    const obj = getFromStorage('the_main_app');
+
+    // get the localstorage object which may contain the _id token
+    const obj = getFromStorage('the_main_app')
     if (obj && obj.token) {
-      const { token } = obj;
+      const { token } = obj
       console.log("token is: ", token)
+
+      // add the token in the headers
+      var headers = new Headers()
+      headers.append("authorization", `Bearer ${token}`)
+
       // Verify token
-      fetch('http://localhost:8080/api/account/verify?token=' + token)
+      fetch('http://localhost:8080/api/account/verify?token=' + token, {
+        method: "GET",
+        headers,
+      })
         .catch(function(err) {throw err})
         .then(res => res.json())
         .then(json => {
@@ -57,17 +68,17 @@ class Login extends Component {
             this.setState({
               token,
               isLoading: false
-            });
+            })
           } else {
             this.setState({
               isLoading: false,
-            });
+            })
           }
-        });
+        })
     } else {
       this.setState({
         isLoading: false,
-      });
+      })
     }
   }
 
@@ -194,7 +205,9 @@ class Login extends Component {
       .then(json => {
         console.log('json', json);
         if (json.success) {
-          setInStorage('the_main_app', { token: json.token });
+          // stores the token in localstorage
+          setInStorage(localStorageKey, { token: json.token });
+
           this.setState({
             signInError: json.message,
             isLoading: false,
@@ -215,14 +228,23 @@ class Login extends Component {
     this.setState({
       isLoading: true,
     });
-    const obj = getFromStorage('the_main_app');
+    const obj = getFromStorage(localStorageKey);
     if (obj && obj.token) {
       const { token } = obj;
+
+      // add the token in the headers
+      var headers = new Headers()
+      headers.append("authorization", `Bearer ${token}`)
+
       // Verify token
-      fetch('http://localhost:8080/api/account/logout?token=' + token)
+      fetch('http://localhost:8080/api/account/logout', {
+        method: 'GET',
+        headers,
+      })
         .then(res => res.json())
         .then(json => {
           if (json.success) {
+            removeFromStorage(localStorageKey)
             this.setState({
               token: '',
               isLoading: false
