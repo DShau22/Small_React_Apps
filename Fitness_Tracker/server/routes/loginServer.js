@@ -41,20 +41,18 @@ router.post('/api/account/signup', function(req, res, next) {
   const { body } = req
   const { password, firstName, lastName, productCode } = body
   let { email } = body
-
+  let failResBody = { success: false, messages: {} }
   // user entered a blank email
   if (!email) {
-    return res.send({
-      success: false,
-      message: 'Error: Email cannot be blank.'
-    })
+    failResBody.messages.email = 'Error: Email cannot be blank.'
   }
   if (!password) {
-    return res.send({
-      success: false,
-      message: 'Error: Password cannot be blank.'
-    })
+    failResBody.messages.password = 'Error: Password cannot be blank.'
   }
+  if (!email || !password) {
+    return res.send(failResBody)
+  }
+
   email = email.toLowerCase()
   email = email.trim()
 
@@ -64,10 +62,8 @@ router.post('/api/account/signup', function(req, res, next) {
   User.findOne({email: email})
     .then(function(user) {
       if (user) {
-        return res.send({
-          success: false,
-          message: 'Error: Email already registered. Please use a different email.'
-        })
+        failResBody.messages.email = 'Error: Email already registered. Please use a different email.'
+        return res.send(failResBody)
       } else {
 
         // gets the current time for the registration date
@@ -108,21 +104,20 @@ router.post('/api/account/signup', function(req, res, next) {
 router.post('/api/account/signin', function(req, res, next) {
   const { body } = req;
   //get body content
-  const { password } = body;
+  const { password, remember } = body;
   let { email } = body;
 
   // make sure email, password aren't empty
+  let failResBody = { success: false, messages: {} }
+  // user entered a blank email
   if (!email) {
-    return res.send({
-      success: false,
-      message: 'Error: Email cannot be blank.'
-    });
+    failResBody.messages.email = 'Error: Email cannot be blank.'
   }
   if (!password) {
-    return res.send({
-      success: false,
-      message: 'Error: Password cannot be blank.'
-    });
+    failResBody.messages.password = 'Error: Password cannot be blank.'
+  }
+  if (!email || !password) {
+    return res.send(failResBody)
   }
 
   email = email.toLowerCase();
@@ -133,28 +128,27 @@ router.post('/api/account/signin', function(req, res, next) {
       if (user) {
         // wrong password entered
         if (!user.validPassword(password)) {
-          return res.send({
-            success: false,
-            message: 'Error: Invalid Password'
-          })
+          failResBody.messages.password = 'Error: Incorrect Password'
+          return res.send(failResBody)
         }
 
-        //get the _id from the queried user
-        const _id = user._id
+        // checks if user asked to be remembered on signins
+        if (remember) {
+          //get the _id from the queried user
+          const _id = user._id
 
-        // return a signed jwt token using the _id unique to the user
-        jwt.sign({_id}, secret, { expiresIn }, (err, token) => {
-          return res.send({
-            success: true,
-            token,
+          // return a signed jwt token using the _id unique to the user
+          jwt.sign({_id}, secret, (err, token) => {
+            return res.send({
+              success: true,
+              token,
+            })
           })
-        })
+        }
       } else {
         // couldn't find email in the database
-        return res.send({
-          success: false,
-          message: 'This email has not been registered yet.'
-        })
+        failResBody.messages.email = "Error: This email has not been registered yet."
+        return res.send(failResBody)
       }
     })
     .catch(function(err){
@@ -179,9 +173,14 @@ router.get('/api/account/logout', verifyToken, function(req, res, next) {
 
 router.get('/api/account/verify', verifyToken, function(req, res, next) {
   console.log("verifying...")
+
   jwt.verify(req.token, secret, (err, authData) => {
-    if(err) {
-      throw err
+    if (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: err,
+      })
     } else {
       res.json({
         success: true,

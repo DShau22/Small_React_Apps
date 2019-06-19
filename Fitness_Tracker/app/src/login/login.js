@@ -57,7 +57,7 @@ class Login extends Component {
       headers.append("authorization", `Bearer ${token}`)
 
       // Verify token
-      fetch('http://localhost:8080/api/account/verify?token=' + token, {
+      fetch('http://localhost:8080/api/account/verify', {
         method: "GET",
         headers,
       })
@@ -200,6 +200,7 @@ class Login extends Component {
       body: JSON.stringify({
         email: signInEmail,
         password: signInPassword,
+        remember: true,
       }),
     }).then(res => res.json())
       .then(json => {

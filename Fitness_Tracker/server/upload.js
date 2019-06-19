@@ -10,6 +10,8 @@ const jumpPath = "jump/"
 const runPath = "run/"
 const date = new Date()
 const mongoose = require("mongoose")
+const jwt = require("jsonwebtoken")
+const secret = 'secretkey'
 
 const {User, Swim, Run, Jump} = require("./database/MongoConfig")
 
@@ -57,8 +59,7 @@ function addSampleSwim() {
   })
 }
 
-function update(userID, jumpJson, runJson, swimJson) {
-  // establish models for runs, jumps, swims collections
+function update(jumpJson, runJson, swimJson) {
 
   console.log("swimJson: ", swimJson)
   console.log("runJson: ", runJson)
@@ -73,53 +74,87 @@ function update(userID, jumpJson, runJson, swimJson) {
   var newJumpData = (jumpJson === null) ? null : new Jump(jumpJson)
   var newSwimData = (swimJson === null) ? null : new Swim(swimJson)
 
+  console.log("run", newRunData, "jump", newJumpData, "swim", newSwimData)
+  var errors = { success: true, msgs: [] }
   //save to database collections runs, jumps, swims
-
   if (newRunData !== null) {
     newRunData.save(function (err, run) {
-      if (err) return console.error(err)
+      if (err) {
+        console.error(err)
+        errors.success = false
+        errors.msgs.push(err.toString())
+      }
+      console.log("saved run data")
     })
+  } else {
+    console.log("run data is null. Either there was a bug with the upload or it didn't fit the schema")
   }
+
   if (newJumpData !== null) {
     newJumpData.save(function (err, jump) {
-      if (err) return console.error(err)
+      if (err) {
+        console.error(err)
+        errors.success = false
+        errors.msgs.push(err.toString())
+      }
+      console.log("saved jump data")
     })
+  } else {
+    console.log("jump data is null. Either there was a bug with the upload or it didn't fit the schema")
   }
+
   if (newSwimData !== null) {
     newSwimData.save(function (err, swim) {
-      if (err) return console.error(err)
+      if (err){
+        console.error(err)
+        errors.success = false
+        errors.msgs.push(err.toString())
+      }
+      console.log("saved swim data")
     })
+  } else {
+    console.log("swim data is null. Either there was a bug with the upload or it didn't fit the schema")
   }
+  return errors
+}
+
+function parseAuthHeader(auth) {
+  const bearer = auth.split(' ');
+  // Get token from array
+  const bearerToken = bearer[1];
+  return bearerToken
 }
 
 module.exports = function upload(req, res) {
+
   var form = new IncomingForm()
   form.parse(req, function(err, fields, files) {
     if (err) throw err
     console.log("parsing form...")
-    console.log("fields are: ", fields)
-    // console.log("files are: ", files)
-
-    var userID = fields.id
     var filePath = files.uploadedFile.path
-    const idPath = userID + "/"
     // returns promise to convert encoded file to correct byte file
     var convertProm = reader.readEncoded(filePath)
 
     convertProm.then(function(converted) {
-      console.log(".then is being run")
-      var activityJson = jsonMaker.toJson(converted)
-      var jumpJson = activityJson.jumpJson
-      var runJson = activityJson.runJson
-      var swimJson = activityJson.swimJson
+      jwt.verify(parseAuthHeader(req.headers['authorization']), secret, function(err, decoded) {
+        console.log("decoded is: ", decoded)
+        // pass the converted byte file and the decoded _id to make activity jsons
+        var activityJson = jsonMaker.toJson(converted, decoded._id)
+        var jumpJson = activityJson.jumpJson
+        var runJson = activityJson.runJson
+        var swimJson = activityJson.swimJson
 
-      // REPLACE WITH UPDATING DATABASE
-      // fs.writeFileSync(dataPath + idPath + jumpPath + currentDate + "_JUMPS" + ".json", JSON.stringify(jumpJson))
-      // fs.writeFileSync(dataPath + idPath + runPath + currentDate + "_RUN" + ".json", JSON.stringify(runJson))
-      // addSampleUser()
-      update(userID, jumpJson, runJson, swimJson)
-
-      res.end()
+        var result = update(jumpJson, runJson, swimJson)
+        if (result.success) {
+          res.send({
+            success: true
+          })
+        } else {
+          // something went wrong with uploading the database. Probably schema didn't match
+          res.status(500).send(result)
+        }
+        res.end()
+      })
     })
     convertProm.catch(function(err) {
       console.log("the promise was rejected :(")

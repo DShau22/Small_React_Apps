@@ -4,28 +4,90 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema
 
 const JumpSchema = new Schema({
-  email: String,
-  uploadDate: Date,
-  num: Number,
-  heights: [Number],
-  calories: Number,
+  userID: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  uploadDate: {
+    type: Date,
+    required: true,
+    default: '',
+  },
+  num: {
+    type: Number,
+    required: true,
+    default: -1,
+  },
+  heights: {
+    type: [Number],
+    required: true,
+    default: [],
+  },
+  calories: {
+    type: Number,
+    required: true,
+    default: -1,
+  },
 })
 
 const RunSchema = new Schema({
-  email: String,
-  uploadDate: Date,
-  num: Number,
-  time: Number,
-  calories: Number,
+  userID: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  uploadDate: {
+    type: Date,
+    required: true,
+  },
+  num: {
+    type: String,
+    required: true,
+    default: 0,
+  },
+  time: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  calories: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 })
 
 const SwimSchema = new Schema({
-  email: String,
-  uploadDate: Date,
-  num: Number,
-  lapTimes: [Number],
-  strokes: [String],
-  calories: Number,
+  userID: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  uploadDate: {
+    type: Date,
+    required: true,
+  },
+  num: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  lapTimes: {
+    type: [Number],
+    required: true,
+    default: [],
+  },
+  strokes: {
+    type: [String],
+    required: true,
+    default: [],
+  },
+  calories: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 })
 
 const UserSchema = new Schema({
@@ -36,14 +98,17 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
+    required: true,
     default: ''
   },
   firstName: {
     type: String,
+    required: true,
     default: ''
   },
   lastName: {
     type: String,
+    required: true,
     default: ''
   },
   productCode: {
@@ -53,6 +118,7 @@ const UserSchema = new Schema({
   },
   registerDate: {
     type: Date,
+    required: true,
     default: new Date('January 1, 1970 00:00:00'),
   },
 })
@@ -64,32 +130,14 @@ UserSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.password)
 }
 
-const UserSessionSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    default: ''
-  },
-  timestamp: {
-    type: Date,
-    default: new Date('January 1, 1970 00:00:00')
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false
-  }
-})
-
 const User = mongoose.model('user', UserSchema)
 const Swim = mongoose.model('swim', SwimSchema)
 const Run = mongoose.model('run', RunSchema)
 const Jump = mongoose.model('jump', JumpSchema)
-
-const UserSession = mongoose.model('session', UserSessionSchema)
 
 module.exports = {
   User,
   Jump,
   Run,
   Swim,
-  UserSession
 }

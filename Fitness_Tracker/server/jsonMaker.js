@@ -1,8 +1,7 @@
 const date = new Date()
-var todayMil = date.getTime()
-var today = new Date(todayMil)
+const fs = require('fs')
 
-function jumpJson(converted) {
+function jumpJson(converted, today, userID) {
   var numJumps = 0
   var heights = []
   converted.forEach(function(set) {
@@ -11,16 +10,18 @@ function jumpJson(converted) {
       heights.push(set[4] / 100) //set[4] contains height in .01 inches
     }
   })
-  var json = (numJumps === 0 ? null : {
+  var json = {
+    userID: userID,
+    uploadDate: today,
     heights: heights,
     num: numJumps,
-    uploadDate: today
-  })
+    calories: -1, //default for now since the algo doesn't write calories
+  }
   console.log(JSON.stringify(json))
   return json
 }
 //[sport, stroke (U, B, R, F), ndata, lap time, calories]
-function swimJson(converted) {
+function swimJson(converted, today, userID) {
   var numLaps = 0,
       calories = 0,
       lapTimes = [],
@@ -33,28 +34,19 @@ function swimJson(converted) {
     }
   })
   numLaps = strokes.length
-  var json = (numLaps === 0 ? null : {
+  var json = {
+    userID: userID,
+    uploadDate: today,
     num: numLaps,
     calories: calories,
     lapTimes: lapTimes,
-    strokes: strokes,
-    uploadDate: today,
-  })
-  // console.log(JSON.stringify(json))
-
-  //hard coded for now...
-  // json = {
-  //   num: 5,
-  //   lapTimes: [12, 13, 14, 15, 16],
-  //   strokes: ["U", "U", "U", "U", "U"],
-  //   calories: 21,
-  //   uploadDate: today,
-  // }
+    strokes: strokes
+  }
   return json
 }
 
 
-function runJson(converted) {
+function runJson(converted, today, userID) {
   var numSteps = 0,
       calories = 0,
       time     = 0
@@ -66,22 +58,27 @@ function runJson(converted) {
       time     = set[1]
     }
   })
-  var json = (numSteps === 0 ? null : {
+  var json = {
+    userID: userID,
+    uploadDate: today,
     num: numSteps,
     calories: calories,
-    time: time,
-    uploadDate: today,
-  })
+    time: time
+  }
   console.log(JSON.stringify(json))
   return json
 }
 
 module.exports = {
-  toJson: function toJson(converted) {
+  toJson: function toJson(converted, userID) {
+    // gets the current time for the registration date
+    var todayMil = date.getTime()
+    var today = new Date(todayMil)
+
     var json = {
-      jumpJson: jumpJson(converted),
-      runJson: runJson(converted),
-      swimJson: swimJson(converted),
+      jumpJson: jumpJson(converted, today, userID),
+      runJson: runJson(converted, today, userID),
+      swimJson: swimJson(converted, today, userID)
     }
     return json
   }
