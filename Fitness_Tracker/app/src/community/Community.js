@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import ComFooter from "./ComFooter"
-import {
-  NavLink,
-} from "react-router-dom";
+// import {
+//   NavLink,
+// } from "react-router-dom";
 class Community extends Component {
   constructor(props) {
     super(props)

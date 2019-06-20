@@ -139,13 +139,19 @@ router.post('/api/account/signin', function(req, res, next) {
 
           // return a signed jwt token using the _id unique to the user
           jwt.sign({_id}, secret, (err, token) => {
+            if (err) throw err
             return res.send({
               success: true,
               token,
             })
           })
+        } else { // else for if (remember)
+          return res.send({
+            success: true,
+            token: "",
+          })
         }
-      } else {
+      } else { // else for if (user)
         // couldn't find email in the database
         failResBody.messages.email = "Error: This email has not been registered yet."
         return res.send(failResBody)

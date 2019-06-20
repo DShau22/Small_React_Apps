@@ -1,7 +1,7 @@
 import ImageSlide from "./ImageSlide"
 import "./Carousel.css"
 import Arrow from "./Arrow"
-import React, { Component } from 'react'
+import React from 'react'
 import {
   Redirect,
   NavLink,

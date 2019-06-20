@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 
 const ImageSlide = ({ activity }) => {
   return (
     <div className="imageSlide">
-      <img src={activity.imageUrl}/>
+      <img src={activity.imageUrl} alt="loading..."/>
       <h3 style={{
         marginTop: "30px",
         border: "solid",

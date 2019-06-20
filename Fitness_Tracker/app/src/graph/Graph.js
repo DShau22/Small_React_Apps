@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Chart from './Chart'
 import Carousel from "./carousel/Carousel"
 import "./Graph.css"
 class Graph extends Component {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Doughnut, Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 class SwimDetails extends Component {
   render() {

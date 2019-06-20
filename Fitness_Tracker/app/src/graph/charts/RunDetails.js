@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Doughnut, Bar, Pie } from 'react-chartjs-2';
+// import { Doughnut, Bar, Pie } from 'react-chartjs-2';
 import DateBar from "./jumpComps/DateBar"
 import Past from "./jumpComps/Past"
 

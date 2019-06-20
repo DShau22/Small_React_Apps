@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './App.css'
 import Spa from "./Spa"
-import Login from "./login/login"
+import Login from "./login/Login"
 
 class App extends Component {
   constructor(props) {

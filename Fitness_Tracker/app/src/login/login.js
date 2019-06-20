@@ -6,8 +6,12 @@ import {
   setInStorage,
   removeFromStorage,
 } from '../utils/storage';
+import Errors from "./messages/Errors"
+import Successes from "./messages/Successes"
+import LoadingScreen from "./LoadingScreen"
+import FormCard from "./FormCard"
+import "./style.css"
 
-const date = new Date()
 const localStorageKey = "the_main_app"
 
 class Login extends Component {
@@ -284,74 +288,96 @@ class Login extends Component {
 
     if (!token) {
       return (
-        <div>
-          <div>
-            {
-              (signInError) ? (
-                <p>{signInError}</p>
-              ) : (null)
-            }
-            <p>Sign In</p>
-            <input
-              type="email"
-              placeholder="Email"
-              value={signInEmail}
-              onChange={this.onTextboxChangeSignInEmail}
-            />
-            <br />
-            <input
-              type="password"
-              placeholder="Password"
-              value={signInPassword}
-              onChange={this.onTextboxChangeSignInPassword}
-            />
-            <br />
-            <button onClick={this.onSignIn}>Sign In</button>
-          </div>
-          <br />
-          <br />
-          <div>
-            {
-              (signUpError) ? (
-                <p>{signUpError}</p>
-              ) : (null)
-            }
-            <p>Sign Up</p>
-            <input
-              type="email"
-              placeholder="Email"
-              value={signUpEmail}
-              onChange={this.onTextboxChangeSignUpEmail}
-            /><br />
-            <input
-              type="password"
-              placeholder="Password"
-              value={signUpPassword}
-              onChange={this.onTextboxChangeSignUpPassword}
-            /><br />
-            <input
-              type="text"
-              placeholder="First Name"
-              value={signUpFirstName}
-              onChange={this.onTextboxChangeSignUpFirstName}
-            /><br />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={signUpLastName}
-              onChange={this.onTextboxChangeSignUpLastName}
-            /><br />
-            <input
-              type="text"
-              placeholder="Product Code"
-              value={productCode}
-              onChange={this.onTextboxChangeProductCode}
-            /><br />
-            <button onClick={this.onSignUp}>Sign Up</button>
-            <button onClick={this.clearSignUp}>Clear</button>
-          </div>
+        <div className="body">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:600"></link>
 
+          <div className="login-wrap">
+            <div className="login-html">
+              <Errors props={{
+                containerVisible: false,
+                closeEmailExistsVisible: false,
+                closeInvalidPasswordVisible: false,
+                closePasswordsMustMatchVisible: false,
+              }}
+              />
+              <Successes props={{
+                containerVisible: false,
+                successVisible: false,
+              }}
+              />
+              <LoadingScreen />
+              <FormCard />
+            </div>
+          </div>
         </div>
+      //   <div>
+      //     <div>
+      //       {
+      //         (signInError) ? (
+      //           <p>{signInError}</p>
+      //         ) : (null)
+      //       }
+      //       <p>Sign In</p>
+      //       <input
+      //         type="email"
+      //         placeholder="Email"
+      //         value={signInEmail}
+      //         onChange={this.onTextboxChangeSignInEmail}
+      //       />
+      //       <br />
+      //       <input
+      //         type="password"
+      //         placeholder="Password"
+      //         value={signInPassword}
+      //         onChange={this.onTextboxChangeSignInPassword}
+      //       />
+      //       <br />
+      //       <button onClick={this.onSignIn}>Sign In</button>
+      //     </div>
+      //     <br />
+      //     <br />
+      //     <div>
+      //       {
+      //         (signUpError) ? (
+      //           <p>{signUpError}</p>
+      //         ) : (null)
+      //       }
+      //       <p>Sign Up</p>
+      //       <input
+      //         type="email"
+      //         placeholder="Email"
+      //         value={signUpEmail}
+      //         onChange={this.onTextboxChangeSignUpEmail}
+      //       /><br />
+      //       <input
+      //         type="password"
+      //         placeholder="Password"
+      //         value={signUpPassword}
+      //         onChange={this.onTextboxChangeSignUpPassword}
+      //       /><br />
+      //       <input
+      //         type="text"
+      //         placeholder="First Name"
+      //         value={signUpFirstName}
+      //         onChange={this.onTextboxChangeSignUpFirstName}
+      //       /><br />
+      //       <input
+      //         type="text"
+      //         placeholder="Last Name"
+      //         value={signUpLastName}
+      //         onChange={this.onTextboxChangeSignUpLastName}
+      //       /><br />
+      //       <input
+      //         type="text"
+      //         placeholder="Product Code"
+      //         value={productCode}
+      //         onChange={this.onTextboxChangeProductCode}
+      //       /><br />
+      //       <button onClick={this.onSignUp}>Sign Up</button>
+      //       <button onClick={this.clearSignUp}>Clear</button>
+      //     </div>
+      //
+      //   </div>
       );
     } else {
       // token is in the state and user has logged in!

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Doughnut, Bar, Pie, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import "chartjs-plugin-zoom"
 import "hammerjs";
 import "./DateBar.css"
@@ -39,16 +39,14 @@ class DateBar extends Component {
                 xAxes: [{
                   type: "linear",
                   ticks: {
-                    stepSize: 1
+                    stepSize: 1,
+                    maxRotation: 0,
                   },
                   position: "bottom",
                   scaleLabel: {
                     display: true,
                     labelString: "Jump"
                   },
-                  ticks: {
-                    maxRotation: 0
-                  }
                 }],
                 yAxes: [{
                   type: "linear"
