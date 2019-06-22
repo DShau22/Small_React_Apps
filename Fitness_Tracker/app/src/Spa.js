@@ -17,8 +17,6 @@ class Spa extends Component {
   render() {
     return (
       <div className="outerContainer">
-        <div className="">
-        </div>
         <HashRouter>
           <div className="App">
             <ul className="header">

@@ -39,22 +39,24 @@ function verifyToken(req, res, next) {
 
 router.post('/api/account/signup', function(req, res, next) {
   const { body } = req
-  const { password, firstName, lastName, productCode } = body
-  let { email } = body
+  const { password, productCode } = body
+  let { email, firstName, lastName } = body
   let failResBody = { success: false, messages: {} }
-  // user entered a blank email
-  if (!email) {
-    failResBody.messages.email = 'Error: Email cannot be blank.'
-  }
-  if (!password) {
-    failResBody.messages.password = 'Error: Password cannot be blank.'
-  }
-  if (!email || !password) {
+  // user entered a blank field
+  if (!email || !password || !firstName || !lastName || !productCode) {
+    console.log("fail")
+    failResBody.messages.error = 'Error: Please fill out all fields'
     return res.send(failResBody)
   }
 
+  // clean all inputs
   email = email.toLowerCase()
   email = email.trim()
+  firstName = firstName.toLowerCase()
+  firstName = firstName.trim()
+  lastName = lastName.toLowerCase()
+  lastName = lastName.trim()
+
 
   // Steps:
   // 1. Verify email doesn't exist
@@ -62,7 +64,7 @@ router.post('/api/account/signup', function(req, res, next) {
   User.findOne({email: email})
     .then(function(user) {
       if (user) {
-        failResBody.messages.email = 'Error: Email already registered. Please use a different email.'
+        failResBody.messages.error = 'Error: Email already registered. Please use a different email.'
         return res.send(failResBody)
       } else {
 
@@ -88,7 +90,9 @@ router.post('/api/account/signup', function(req, res, next) {
           .then(function(user) {
             return res.send({
               success: true,
-              message: 'Successfully signed up!'
+              messages: {
+                success: 'Successfully signed up!'
+              }
             })
           })
           .catch(function(err) {
@@ -131,26 +135,45 @@ router.post('/api/account/signin', function(req, res, next) {
           failResBody.messages.password = 'Error: Incorrect Password'
           return res.send(failResBody)
         }
+        //get the _id from the queried user
+        const _id = user._id
 
-        // checks if user asked to be remembered on signins
+        // if user wants to be remembered, token will expire in 60 days instead
+        // var expiration = "1h"
+        var expiration = "30s"
         if (remember) {
-          //get the _id from the queried user
-          const _id = user._id
-
-          // return a signed jwt token using the _id unique to the user
-          jwt.sign({_id}, secret, (err, token) => {
-            if (err) throw err
-            return res.send({
-              success: true,
-              token,
-            })
-          })
-        } else { // else for if (remember)
+          expiration = "60d"
+        }
+        // return a signed jwt token using the _id unique to the user
+        jwt.sign({_id}, secret, {expiresIn: expiration}, (err, token) => {
+          if (err) throw err
           return res.send({
             success: true,
-            token: "",
+            token,
+            messages: {}
           })
-        }
+        })
+        // // checks if user asked to be remembered on signins
+        // if (remember) {
+        //   //get the _id from the queried user
+        //   const _id = user._id
+        //
+        //   // return a signed jwt token using the _id unique to the user
+        //   jwt.sign({_id}, secret, (err, token) => {
+        //     if (err) throw err
+        //     return res.send({
+        //       success: true,
+        //       token,
+        //       messages: {}
+        //     })
+        //   })
+        // } else { // else for if (remember)
+        //   return res.send({
+        //     success: true,
+        //     token: "",
+        //     messages: {}
+        //   })
+        // }
       } else { // else for if (user)
         // couldn't find email in the database
         failResBody.messages.email = "Error: This email has not been registered yet."
