@@ -40,6 +40,7 @@ class SignUp extends Component {
               data-type="password"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+              onChange={this.props.onPwConfChange}
             ></input>
           </div>
           <div className="group">
@@ -82,8 +83,7 @@ class SignUp extends Component {
           </div>
           <div className="hr"></div>
           <div className="foot-lnk">
-            <label htmlFor="tab-1" />
-            <span>Already a Member?</span>
+            <label htmlFor="tab-1"> Already a Member? </label>
           </div>
         </form>
       </div>

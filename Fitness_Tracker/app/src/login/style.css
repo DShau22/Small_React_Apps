@@ -228,5 +228,8 @@ a {
 .foot-lnk {
   text-align: center;
 }
+.foot-lnk #forgot-link {
+  cursor: pointer;
+}
 
 /*# sourceMappingURL=style.css.map */

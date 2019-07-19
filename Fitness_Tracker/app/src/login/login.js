@@ -2,17 +2,34 @@ import React, { Component } from 'react';
 import 'whatwg-fetch';
 import Spa from "../Spa"
 import {
-  getFromStorage,
-  setInStorage,
-  removeFromStorage,
+  getFromLocalStorage,
+  setInLocalStorage,
+  removeFromLocalStorage,
+  setInSessionStorage,
+  storageKey
 } from '../utils/storage';
+
+import { makeID } from "../utils/keyGenerator"
+
+import { Redirect } from 'react-router';
+
 import LoadingScreen from "./LoadingScreen"
 import FormCard from "./FormCard"
 import "./style.css"
 import Error from "./messages/Error"
 import Success from "./messages/Success"
 
-const localStorageKey = "the_main_app"
+const verifyURL = "http://localhost:8080/api/account/verify"
+
+// stores token in localstorage if user clicked remember me
+// else stores it in session storage
+function storeToken(remember, token) {
+  if (remember) {
+    setInLocalStorage(storageKey, { token })
+  } else {
+    setInSessionStorage(storageKey, { token })
+  }
+}
 
 class Login extends Component {
   constructor(props) {
@@ -23,13 +40,12 @@ class Login extends Component {
       signedIn: false,
       token: '',
       renderSignIn: true, // specifies whether the card should show signin or signup
-      signUpErrors: {},
-      signInErrors: {},
       signInEmail: '',
       signInPassword: '',
       remember: false,
       signUpEmail: '',
       signUpPassword: '',
+      signUpPasswordConf: '',
       signUpFirstName: '',
       signUpLastName: '',
       productCode: '',
@@ -40,75 +56,73 @@ class Login extends Component {
     this.onTextboxChangeSignInPassword = this.onTextboxChangeSignInPassword.bind(this);
     this.onTextboxChangeSignUpEmail = this.onTextboxChangeSignUpEmail.bind(this);
     this.onTextboxChangeSignUpPassword = this.onTextboxChangeSignUpPassword.bind(this);
+    this.onTextboxChangeSignUpPasswordConf = this.onTextboxChangeSignUpPasswordConf.bind(this);
     this.onTextboxChangeSignUpFirstName = this.onTextboxChangeSignUpFirstName.bind(this);
     this.onTextboxChangeSignUpLastName = this.onTextboxChangeSignUpLastName.bind(this);
     this.onTextboxChangeProductCode = this.onTextboxChangeProductCode.bind(this);
     this.onCheck = this.onCheck.bind(this)
     this.displayErrors = this.displayErrors.bind(this)
-    this.showSuccess = this.showSuccess.bind(this)
+    this.showSuccesses = this.showSuccesses.bind(this)
     this.switchToSignIn = this.switchToSignIn.bind(this)
     this.switchToSignUp = this.switchToSignUp.bind(this)
 
     this.clearSignUp = this.clearSignUp.bind(this)
 
     this.onSignIn = this.onSignIn.bind(this);
-    this.onSignUp = this.onSignUp.bind(this);
-    this.logout = this.logout.bind(this);
-
-    this.handleWindowClose = this.handleWindowClose.bind(this)
+    this.tokenLogin = this.tokenLogin.bind(this)
   }
 
-  // deletes token from local storage on window closing
-  handleWindowClose(e) {
-    e.preventDefault()
-    // removes token if it is stored and user doesn't wanna be remembered
-    if (!this.state.remember) {
-      removeFromStorage(localStorageKey)
-    }
-  }
+  // checks if there is a token in localstorage for login
+  async tokenLogin(token) {
+    console.log("token is: ", token)
 
-  componentDidMount() {
-    console.log("mounting...")
-    // get the localstorage object which may contain the _id token
-    const obj = getFromStorage('the_main_app')
-    // there was a token in local storage
-    if (obj && obj.token) {
-      const { token } = obj
-      console.log("token is: ", token)
+    // add the token in the headers
+    var headers = new Headers()
+    headers.append("authorization", `Bearer ${token}`)
 
-      // add the token in the headers
-      var headers = new Headers()
-      headers.append("authorization", `Bearer ${token}`)
-
-      // Verify token
-      fetch('http://localhost:8080/api/account/verify', {
-        method: "GET",
-        headers,
+    // Verify token
+    var res = await fetch('http://localhost:8080/api/account/verify', {
+      method: "GET",
+      headers,
+    })
+    var json = await res.json()
+    if (json.success) {
+      this.setState({
+        token,
+        signedIn: true,
+        isLoading: false
       })
-        .catch(function(err) {throw err})
-        .then(res => res.json())
-        .then(json => {
-          // successfully verified the token in local storage
-          if (json.success) {
-            this.setState({
-              token,
-              signedIn: true,
-              isLoading: false
-            })
-          } else {
-            console.log("verification of token went wrong")
-            this.setState({
-              isLoading: false,
-            })
-          }
-        })
-    } else { // there was no token in local storage
+    } else {
+      console.log("verification of token went wrong")
+      console.log(json.message)
       this.setState({
         isLoading: false,
       })
     }
   }
 
+  componentDidMount() {
+    console.log("mounting...")
+    // get the localstorage object which may contain the _id token
+    const obj = getFromLocalStorage(storageKey)
+    // there was a token in local storage
+    if (obj && obj.token) {
+      try {
+        this.tokenLogin(obj.token)
+      } catch(err) {
+        throw err
+      }
+    } else { // there was no token in local storage
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+  onTextboxChangeSignUpPasswordConf(event) {
+    this.setState({
+      signUpPasswordConf: event.target.value
+    })
+  }
   onTextboxChangeSignInEmail(event) {
     this.setState({
       signInEmail: event.target.value,
@@ -158,6 +172,7 @@ class Login extends Component {
   }
 
   clearSignUp() {
+    console.log("clearing...")
     this.setState({
       isLoading: false,
       signUpEmail: '',
@@ -168,53 +183,17 @@ class Login extends Component {
     })
   }
 
-  onSignUp() {
-    // Grab state
-    const {
-      signUpEmail,
-      signUpPassword,
-      signUpFirstName,
-      signUpLastName,
-      productCode,
-    } = this.state;
-    this.setState({
-      isLoading: true,
-    });
-
-    // Post request to backend
-    fetch('http://localhost:8080/api/account/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: signUpEmail,
-        password: signUpPassword,
-        firstName: signUpFirstName,
-        lastName: signUpLastName,
-        productCode,
-      }),
-    }).then(res => res.json())
-      .then(json => {
-        console.log('json', json);
-        if (json.success) {
-          this.setState({
-            signUpSuccess: json.messages,
-            signInErrors: {},
-            signUpErrors: {}
-          })
-          this.clearSignUp()
-        } else {
-          this.setState({
-            signUpErrors: json.messages,
-            isLoading: false,
-          });
-        }
-      });
-  }
-
-  onSignIn() {
+  async onSignIn() {
     console.log("signing in...")
+    const stored = getFromLocalStorage(storageKey)
+
+    // if there's already a token in local storage log then just login with that
+    if (stored && stored.token) {
+      alert("token already present")
+      var { token } = stored
+      return await this.tokenLogin(token)
+    }
+    alert("token not present")
     // Grab state
     const {
       signInEmail,
@@ -227,7 +206,7 @@ class Login extends Component {
     });
 
     // Post request to backend
-    fetch('http://localhost:8080/api/account/signin', {
+    var res = await fetch('http://localhost:8080/api/account/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -237,77 +216,29 @@ class Login extends Component {
         password: signInPassword,
         remember,
       }),
-    }).then(res => res.json())
-      .then(json => {
-        console.log('json', json);
-        if (json.success) {
+    })
+    var json = await res.json()
+    console.log('json', json);
+    if (json.success) {
+      // store the token in localstorage
+      // should overwrite any existing expired tokens
+      storeToken(remember, json.token);
 
-          // store the token in localstorage
-          // should overwrite any existing expired tokens
-          setInStorage(localStorageKey, { token: json.token });
-
-          this.setState({
-            isLoading: false,
-            signInPassword: '',
-            signInEmail: '',
-            signUpErrors: {},
-            signInErrors: {},
-            token: json.token, // still keep the token in the state to get activity queries
-            signedIn: true,
-          });
-        } else {
-          this.setState({
-            signInErrors: json.messages,
-            isLoading: false,
-          });
-        }
-      });
-      // ADD A CATCH
-  }
-
-  logout() {
-    this.setState({
-      isLoading: true,
-    });
-    const obj = getFromStorage(localStorageKey);
-    // if there is a token in localstorage
-    if (obj && obj.token) {
-      const { token } = obj;
-
-      // add the token in the headers
-      var headers = new Headers()
-      headers.append("authorization", `Bearer ${token}`)
-
-      // Verify token, not sure if this is really needed though for logging out
-      fetch('http://localhost:8080/api/account/logout', {
-        method: 'GET',
-        headers,
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.success) {
-            console.log("successfully logging out...")
-            removeFromStorage(localStorageKey)
-            this.setState({
-              token: '',
-              signedIn: false,
-              isLoading: false
-            });
-          } else {
-            console.log("for some reason the token could not be verified on logout")
-            // WEIRD SHIT HAPPENS HERE IDK BUT CHANGE THIS LATER
-            this.setState({
-              isLoading: false,
-              signedIn: false,
-            });
-          }
-        });
-    } else {
       this.setState({
         isLoading: false,
-        signedIn: false,
-        token: ''
+        signInPassword: '',
+        signInEmail: '',
+        signUpErrors: {},
+        signInErrors: {},
+        token: json.token, // still keep the token in the state to get activity queries
+        signedIn: true,
       });
+    } else {
+      setInLocalStorage(storageKey + "_signInErrors", json.messages)
+      this.setState({
+        // signInErrors: json.messages,
+        isLoading: false,
+      })
     }
   }
 
@@ -320,25 +251,53 @@ class Login extends Component {
 
   // Shows all the errors due to bad signin or signup
   displayErrors() {
+    var { renderSignIn } = this.state
+    // returns null if not in local storage, otherwise gets error messages
+    var signInErrors = getFromLocalStorage(storageKey + "_signInErrors")
+    var signUpErrors = getFromLocalStorage(storageKey + "_signUpErrors")
+    var pwResetErrors = getFromLocalStorage(storageKey + "_pwResetEmailErr")
+    // clear the errors so they don't show up again
+    removeFromLocalStorage(storageKey + "_signInErrors")
+    removeFromLocalStorage(storageKey + "_signUpErrors")
+    removeFromLocalStorage(storageKey + "_pwResetEmailErr")
     // thoroughly check if it is empty object or not
-    if (Object.entries(this.state.signInErrors).length !== 0) {
-      var msgArray = Object.values(this.state.signInErrors)
+    var msgArray;
+    if (signInErrors !== null && renderSignIn) {
+      msgArray = Object.values(signInErrors)
       return msgArray.map(this.showError)
-    } else if (Object.entries(this.state.signUpErrors).length !== 0) {
-      var msgArray = Object.values(this.state.signUpErrors)
+    } else if (signUpErrors !== null && !renderSignIn) {
+      msgArray = Object.values(signUpErrors)
+      return msgArray.map(this.showError)
+    } else if (pwResetErrors !== null && renderSignIn) {
+      msgArray = Object.values(pwResetErrors)
       return msgArray.map(this.showError)
     }
   }
 
-  // shows success message on successful sign up
-  showSuccess() {
-    var { signUpSuccess, renderSignIn } = this.state
-    // there is a success message, and use is looking at the SignUp part of the card
-    if (Object.entries(signUpSuccess).length !== 0 && !renderSignIn) {
+  //shows a signle success message
+  showSuccess(msg, idx) {
+    return (
+      <Success msg={msg} key={idx} />
+    )
+  }
 
-      return (
-        <Success msg={signUpSuccess.success} />
-      )
+  // shows success messages
+  showSuccesses() {
+    var { renderSignIn } = this.state
+    // returns null if not in local storage, otherwise gets error messages
+    var signUpSuccess = getFromLocalStorage(storageKey + "_signUpSuccess")
+    var pwResetSuccess = getFromLocalStorage(storageKey + "_pwResetEmailMsg")
+    // clear from storage so it doesn't show up again
+    removeFromLocalStorage(storageKey + "_signUpSuccess")
+    removeFromLocalStorage(storageKey + "_pwResetEmailMsg")
+    // there is a success message, and use is looking at the SignUp part of the card
+    var successArray;
+    if (signUpSuccess !== null && !renderSignIn) {
+      successArray = Object.values(signUpSuccess)
+      return successArray.map(this.showSuccess)
+    } else if (pwResetSuccess !== null && renderSignIn) {
+      successArray = Object.values(pwResetSuccess)
+      return successArray.map(this.showSuccess)
     }
   }
 
@@ -359,16 +318,6 @@ class Login extends Component {
   render() {
     const {
       isLoading,
-      token,
-      signInErrors,
-      signInEmail,
-      signInPassword,
-      signUpEmail,
-      signUpPassword,
-      signUpErrors,
-      signUpFirstName,
-      signUpLastName,
-      productCode,
     } = this.state;
 
     if (isLoading) {
@@ -382,28 +331,31 @@ class Login extends Component {
 
           <div className="login-wrap">
             <div className="login-html">
-              <div className="errors-container">
-                {this.displayErrors()}
+              <div>
+                <div className="errors-container">
+                  {this.displayErrors()}
+                </div>
+                <div className="success-container">
+                  {this.showSuccesses()}
+                </div>
+                <LoadingScreen />
+                <FormCard
+                  renderSignIn={this.state.renderSignIn}
+                  onSignInClick={this.switchToSignIn}
+                  onSignUpClick={this.switchToSignUp}
+                  onSignInEmailChange={this.onTextboxChangeSignInEmail}
+                  onSignInPwChange={this.onTextboxChangeSignInPassword}
+                  onCheck={this.onCheck}
+                  handleSignIn={this.onSignIn}
+                  onSignUpEmailChange={this.onTextboxChangeSignUpEmail}
+                  onSignUpPwChange={this.onTextboxChangeSignUpPassword}
+                  onSignUpPwChangeConf={this.onTextboxChangeSignUpPasswordConf}
+                  onSignUpFirstNameChange={this.onTextboxChangeSignUpFirstName}
+                  onSignUpLastNameChange={this.onTextboxChangeSignUpLastName}
+                  onSignUpProdCodeChange={this.onTextboxChangeProductCode}
+                  handleSignUp={this.onSignUp}
+                />
               </div>
-              <div className="success-container">
-                {this.showSuccess()}
-              </div>
-              <LoadingScreen />
-              <FormCard
-                renderSignIn={this.state.renderSignIn}
-                onSignInClick={this.switchToSignIn}
-                onSignUpClick={this.switchToSignUp}
-                onSignInEmailChange={this.onTextboxChangeSignInEmail}
-                onSignInPwChange={this.onTextboxChangeSignInPassword}
-                onCheck={this.onCheck}
-                handleSignIn={this.onSignIn}
-                onSignUpEmailChange={this.onTextboxChangeSignUpEmail}
-                onSignUpPwChange={this.onTextboxChangeSignUpPassword}
-                onSignUpFirstNameChange={this.onTextboxChangeSignUpFirstName}
-                onSignUpLastNameChange={this.onTextboxChangeSignUpLastName}
-                onSignUpProdCodeChange={this.onTextboxChangeProductCode}
-                handleSignUp={this.onSignUp}
-              />
             </div>
           </div>
         </div>
@@ -412,13 +364,12 @@ class Login extends Component {
       // token is in the state and user has logged in!
       return (
         <div>
-          <div>
-            <p>Account</p>
-            <button onClick={this.logout}>Logout</button>
-          </div>
-          <div>
-            <Spa removeTokenOnLogout={!this.state.remember}/>
-          </div>
+          <Redirect
+            to={{
+              pathname: "/app",
+              state: { token: this.state.token }
+            }}
+          />
         </div>
       );
     }

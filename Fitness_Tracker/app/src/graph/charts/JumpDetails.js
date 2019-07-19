@@ -5,6 +5,10 @@ import Past from "./jumpComps/Past"
 import {
   NavLink,
 } from "react-router-dom";
+import {
+  getFromStorage,
+  localStorageKey
+} from '../../utils/storage'
 
 class JumpDetails extends Component {
   constructor(props) {
@@ -25,7 +29,8 @@ class JumpDetails extends Component {
   setJumpData() {
 
     var headers = new Headers()
-    headers.append("userID", "12345") //change to be specific in future
+    var token = getFromStorage(localStorageKey).token
+    headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", "jump")
 
     fetch('http://localhost:8080/data', {
@@ -38,13 +43,20 @@ class JumpDetails extends Component {
       .then( (response) => {
         return response.json()
       })
+      .catch((err) => {throw err})
       .then((json) => {
-        let chartLabels = this.makeLabels(json)
-        let chartData = this.getData(json)
-        this.setState({
-          labels: chartLabels,
-          data: chartData
-        })
+        if (json.success) {
+          var { activityData } = json
+          // assign data, labels to the chart
+          let chartLabels = this.makeLabels(activityData)
+          let chartData = this.getData(activityData)
+          this.setState({
+            labels: chartLabels,
+            data: chartData
+          })
+        } else {
+          alert("couldn't request data")
+        }
       })
   }
 

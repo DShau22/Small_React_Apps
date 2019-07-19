@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import Carousel from "./carousel/Carousel"
 import "./Graph.css"
+
+import {
+  getFromLocalStorage,
+  storageKey
+} from '../utils/storage'
+
 class Graph extends Component {
   constructor(props) {
     super(props)
@@ -29,7 +35,8 @@ class Graph extends Component {
 
   getActivityJson(activity) {
     var headers = new Headers()
-    headers.append("userID", "12345") //change to be specific in future
+    var token = getFromLocalStorage(storageKey).token
+    headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", activity)
 
     return fetch('http://localhost:8080/data', {
@@ -46,7 +53,15 @@ class Graph extends Component {
         throw err
       })
       .then((json) => {
-        return json
+        if (json.success) {
+          alert("successfully got json data!")
+          return json.activityData
+        } else {
+          // token prob expired, go back to login
+          alert(json.message)
+          // GO BACK TO LOGIN PAGE
+          // PASS SOMETHING TO PROPS TO DO THIS
+        }
       })
   }
 

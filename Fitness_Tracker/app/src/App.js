@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
 import './App.css'
-import Spa from "./Spa"
 import Login from "./login/Login"
+import {
+  Route,
+  HashRouter,
+  BrowserRouter,
+} from "react-router-dom";
+import Confirmation from "./login/Confirmation"
+import PwResetPage from "./login/PwResetPage"
+import Spa from "./Spa"
 
 class App extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       user: null,
     }
@@ -14,8 +20,13 @@ class App extends Component {
 
   render() {
     return (
-      <div className="outerContainer">
-        {this.state.user ? (<Spa />) : (<Login />)}
+      <div>
+        <BrowserRouter>
+          <Route path="/login" component={Login} />
+          <Route path="/confirmation" component={Confirmation} />
+          <Route path="/pwResetPage" component={PwResetPage} />
+          <Route path="/app" component={Spa} />
+        </BrowserRouter>
       </div>
     )
   }

@@ -96,6 +96,10 @@ const UserSchema = new Schema({
     required: true,
     index: { unique: true }, // will search by email
   },
+  username: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -121,7 +125,31 @@ const UserSchema = new Schema({
     required: true,
     default: new Date('January 1, 1970 00:00:00'),
   },
+  registered: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  friendsPending: {
+    type: Array,
+    required: true,
+    default: []
+  },
+  friendRequests: {
+    type: Array,
+    required: true,
+    default: []
+  },
+  friends: {
+    type: Array,
+    required: true,
+    default: []
+  },
 })
+
+//add text indices for searching
+UserSchema.index({firstName: 'text', lastName: 'text'})
+
 // security for passwords
 UserSchema.methods.generateHash = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)

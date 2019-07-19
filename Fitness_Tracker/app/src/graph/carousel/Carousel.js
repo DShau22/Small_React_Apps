@@ -8,9 +8,9 @@ import {
 } from "react-router-dom"
 
 const numActivites = 3
-const jumpLink = "/jumpDetails"
-const runLink = "/runDetails"
-const swimLink = "/swimDetails"
+const jumpLink = "/app/jumpDetails"
+const runLink = "/app/runDetails"
+const swimLink = "/app/swimDetails"
 const jumpActivity = "jump"
 const runActivity = "run"
 const swimActivity = "swim"
