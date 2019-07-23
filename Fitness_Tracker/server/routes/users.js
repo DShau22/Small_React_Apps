@@ -3,6 +3,13 @@ const extractToken = require("./extract.js")
 const express = require('express')
 const router = express.Router()
 
+// for profile picture uploads. Cloudinary stuff with multer for body parsing
+const dotenv = require('dotenv')
+const multer = require("multer")
+const cloudinary = require("cloudinary")
+const cloudinaryStorage = require("multer-storage-cloudinary")
+const md5File = require("md5-file")
+var formidable = require('formidable')
 
 // imports for mongo
 const mongoConfig = require("../database/MongoConfig")
@@ -21,7 +28,31 @@ function sendError(res, err) {
   })
 }
 
+// configurations for cloudinary
+dotenv.config()
+cloudinary.config(
+  {
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  }
+)
+
+const storage = cloudinaryStorage(
+  {
+    cloudinary: cloudinary,
+    folder: "demo",
+    allowedFormats: ["jpg", "png"],
+    // transformation: [{ width: 500, height: 500, crop: "limit" }]
+  }
+)
+
+const multerParser = multer({ storage: storage });
+
+// gets all the user info that is stored in the document in mongo
 router.get("/getUserInfo", extractToken, (req, res, next) => {
+  // const projection = "firstName lastName username friends friendRequests friendsPending height weight gender bio profilePicture unitSystem"
+  const projection = { _id: 0, __v: 0, password: 0, productCode: 0, registered: 0, registerDate: 0 }
   //verify token
   var userID;
   jwt.verify(req.token, secret, (err, decoded) => {
@@ -33,24 +64,99 @@ router.get("/getUserInfo", extractToken, (req, res, next) => {
     // query for the user's firstname, lastname, friends, and friend requests
     User.findOne(
       {"_id": userID},
-      "firstName lastName username friends friendRequests",
+      projection,
     )
     .exec((err, results) => {
       if (err) {
         throw err
         sendError(res, err)
       }
-      var { firstName, lastName, username, friends, friendRequests } = results
       return res.send({
         success: true,
         message: "got request",
-        firstName,
-        lastName,
-        username,
-        friends,
-        friendRequests
+        ...results._doc
       })
     })
+  })
+})
+
+router.post("/checkDuplicatePic", (req, res) => {
+  var form = new formidable()
+  form.hash = "md5"
+  // fields will contain the picFile, and the current pic hash
+  form.parse(req, function(err, fields, files) {
+    // get user profile pic info from database
+    var { profilePic } = files
+    var { currImgHash } = fields
+    console.log(profilePic.hash, currImgHash)
+    if (profilePic.hash === currImgHash) {
+      return sendError(res, new Error("please upload a profile picture that is different from your current photo"))
+    } else {
+      return res.send({
+        success: true,
+      })
+    }
+  })
+})
+
+router.post("/uploadProfilePic", multerParser.single("profilePic"), extractToken, (req, res) => {
+  // decode user token
+  var userID;
+  jwt.verify(req.token, secret, (err, decoded) => {
+    if (err) { return sendError(res, err) }
+    userID = decoded._id
+  })
+
+  // update the database with new url and etag
+  console.log(req.file)
+  var { file } = req
+  var { url, secure_url, etag } = file
+  profileURL = secure_url
+  MD5signature = etag
+  User.findOneAndUpdate(
+    {"_id": userID},
+    {profilePicture: { "profileURL": profileURL, "etag": MD5signature }},
+  ).exec((err, results) => {
+    if (err) {
+      return sendError(res, err)
+    } else {
+      return res.send({
+        success: true
+      })
+    }
+  })
+})
+
+router.post("/updateProfile", (req, res) => {
+  var { userToken, firstName, lastName, bio, gender, height, weight, location } = req.body
+
+  // decode user token
+  var userID;
+  jwt.verify(userToken, secret, (err, decoded) => {
+    if (err) {
+      return sendError(res, err)
+    }
+    userID = decoded._id
+  })
+
+  // update database with new profile changes
+  User.findOneAndUpdate(
+    {"_id": userID},
+    {
+      firstName,
+      lastName,
+      bio,
+      gender,
+      height,
+      weight,
+      location,
+    }
+  ).exec((err, results) => {
+    if (err) {
+      return sendError(res, err)
+    } else {
+      res.send({ success: true })
+    }
   })
 })
 

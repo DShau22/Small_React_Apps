@@ -145,6 +145,51 @@ const UserSchema = new Schema({
     required: true,
     default: []
   },
+  bio: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  height: {
+    type: String,
+    required: true,
+    default: -1
+  },
+  weight: {
+    type: String,
+    required: true,
+    default: -1
+  },
+  gender: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  profilePicture: {
+    type: Object,
+    required: true,
+    default: {
+      profileURL: "",
+      etag: ""
+    }
+  },
+  unitSystem: {
+    type: String,
+    required: true,
+    default: "English"
+  },
+  location: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  settings: {
+    type: Object,
+    require: true,
+    default: {
+      unitSystem: "English"
+    }
+  }
 })
 
 //add text indices for searching

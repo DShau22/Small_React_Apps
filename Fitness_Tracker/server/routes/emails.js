@@ -6,6 +6,9 @@ const router = express.Router()
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer");
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const mongoConfig = require("../database/MongoConfig")
 const { User } = mongoConfig
 const mongoose = require('mongoose')
@@ -116,7 +119,7 @@ router.post("/forgotPassword", (req, res) => {
           service: 'Gmail',
           auth: {
             user: "blueshushi.shau@gmail.com",
-            pass: "Blueshushi123"
+            pass: process.env.EMAIL_PASSWORD
           }
         })
         const confRedirect = `http://localhost:3000/pwResetPage?token=${token}`

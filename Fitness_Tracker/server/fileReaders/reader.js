@@ -7,6 +7,7 @@ function MyCSV(col1, col2, col3) {
   this.col2 = col2
   this.col3 = col3
 }
+// test
 
 function validate(byte, marker) {
   if (byte !== marker) {
