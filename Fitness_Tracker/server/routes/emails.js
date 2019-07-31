@@ -37,6 +37,8 @@ router.get("/confirmation", (req, res) => {
   var emailToken = req.query.token
   console.log(req.query)
 
+  // MAKE NOTE TO MAYBE SCRAP ASYNC JS CODE LATER
+  // LOOKS UGLY AF TO MAINTAIN
   async.waterfall([
     // veryify the token
     function(callback) {
@@ -92,60 +94,65 @@ router.post("/forgotPassword", (req, res) => {
   // if it is, send a pw reset email
   var { email } = req.body
   console.log("email: ", email)
-  User.findOne({email: email}, (err, user) => {
-    if (err) throw err
-    if (!user) {
-      console.log("not registered")
-      // couldn't find a user with this email
-      sendResponse(res, false, "This email has not been registered yet.")
-    } else if (user && !user.registered) {
-      sendResponse(res, false, "This user has registered but has not confirmed. Please check the inbox for a confirmation email.")
-    }
-
-    async.waterfall([
-      // sign an email token, which is verified on the pwResetPage
-      function(callback) {
-        jwt.sign({email}, secret, {expiresIn: "12h"}, (err, token) => {
-          if (err) {
-            callback(err)
-          } else {
-            callback(null, token)
-          }
-        })
-      },
-      // send the email
-      function(token, callback) {
-        var transporter = nodemailer.createTransport({
-          service: 'Gmail',
-          auth: {
-            user: "blueshushi.shau@gmail.com",
-            pass: process.env.EMAIL_PASSWORD
-          }
-        })
-        const confRedirect = `http://localhost:3000/pwResetPage?token=${token}`
-        var mailOptions = {
-          from: "Test",
-          to: "davidshau22@berkeley.edu",
-          subject: "nodemailer sending pwReset",
-          html: `Please click this link to reset your password:
-          <a href=${confRedirect}>Reset Password</a>`
+  async.waterfall([
+    // check if email exists
+    function(callback) {
+      User.findOne({email: email}, (err, user) => {
+        if (err) {
+          callback(err)
+        } else if (!user) {
+          var userNotFoundError = new Error("This email has not been registered yet.")
+          callback(userNotFoundError, user)
+        } else if (user && !user.registered) {
+          var userNotRegisteredError = new Error("This user has registered but has not confirmed. Please check the inbox for a confirmation email.")
+          callback(userNotRegisteredError, user)
+        } else {
+          callback(null, user)
         }
-        console.log("sending mail...")
-        transporter.sendMail(mailOptions, function(err, data) {
-          if (err) {
-            callback(err)
-          } else {
-            callback(null)
-          }
-        })
-      },
-    ], function(err, results) {
-      if (err) {
-        sendResponse(res, false, "something went wrong with the reset process: " + err.toString())
-      } else {
-        sendResponse(res, true, "password reset email was sent")
+      })
+    },
+    // sign an email token, which is verified on the pwResetPage
+    function(callback) {
+      jwt.sign({email}, secret, {expiresIn: "12h"}, (err, token) => {
+        if (err) {
+          callback(err)
+        } else {
+          callback(null, token)
+        }
+      })
+    },
+    // send the email
+    function(token, callback) {
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: "blueshushi.shau@gmail.com",
+          pass: process.env.EMAIL_PASSWORD
+        }
+      })
+      const confRedirect = `http://localhost:3000/pwResetPage?token=${token}`
+      var mailOptions = {
+        from: "Test",
+        to: "davidshau22@berkeley.edu",
+        subject: "nodemailer sending pwReset",
+        html: `Please click this link to reset your password:
+        <a href=${confRedirect}>Reset Password</a>`
       }
-    })
+      console.log("sending mail...")
+      transporter.sendMail(mailOptions, function(err, data) {
+        if (err) {
+          callback(err)
+        } else {
+          callback(null)
+        }
+      })
+    },
+  ], function(err, results) {
+    if (err) {
+      sendResponse(res, false, "something went wrong with the reset process: " + err.toString())
+    } else {
+      sendResponse(res, true, "password reset email was sent")
+    }
   })
 })
 
@@ -154,23 +161,22 @@ router.post("/confPasswordReset", (req, res) => {
   console.log("new pass is: ", newPassword)
   var newHashedPass = hashPass(newPassword)
   // check if user exists
-  User.findOne({email: email})
-    .then((user) => {
-      if (!user) {
-        // for some reason the database can't find the user
-        console.log("email: ", email)
-        sendResponse(res, false, "This email is not registered. Contact support for help.")
-      }
-    })
-  .catch((err) => {
-    sendResponse(res, false, "Something went wrong with the server. Please try again later.")
+  User.findOne({email: email}, (err, user) => {
+    if (err) {
+      sendResponse(res, false, "Something went wrong with the server. Please try again later.")
+    } else if (!user) {
+      // for some reason the database can't find the user
+      console.log("email: ", email)
+      sendResponse(res, false, "This email is not registered. Contact support for help.")
+    }
   })
-
+  // if user exists, no response is sent, so update the user info
   User.findOneAndUpdate({email: email}, {password: newHashedPass}, (err, results) => {
     if (err) {
       sendResponse(res, false, "Something went wrong with the server. Please try again later.")
+    } else {
+      sendResponse(res, true, "Successfully updated your password!")
     }
-    sendResponse(res, true, "Successfully updated your password!")
   })
   // update the database with new password
 })

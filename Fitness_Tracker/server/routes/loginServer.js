@@ -1,3 +1,7 @@
+
+  // MAKE NOTE TO MAYBE SCRAP ASYNC JS LIBRARY CODE LATER
+  // LOOKS UGLY AF TO MAINTAIN
+
 const mongoConfig = require('../database/MongoConfig');
 const { User } = mongoConfig
 const express = require('express')
@@ -7,6 +11,9 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 const expiresIn = "12h"
+
+const dotenv = require('dotenv')
+dotenv.config()
 
 const nodemailer = require("nodemailer");
 const async = require("async")
@@ -55,12 +62,9 @@ router.post('/api/account/signup', function(req, res, next) {
   let failResBody = { success: false, messages: {} }
   // user entered a blank field
   if (!email || !password || !firstName || !lastName || !productCode) {
-    console.log("fail")
-    console.log(email, password, firstName, lastName, productCode)
     sendErr(res, new Error("Error: Please fill out all field"))
   }
   if (password !== passwordConf) {
-    console.log("fail")
     sendErr(res, new Error("Error: Passwords must match"))
   }
   // clean all inputs
@@ -77,7 +81,13 @@ router.post('/api/account/signup', function(req, res, next) {
   // 2. Save
   // 3. Generate token for email
   // 4. Send confirmation email
+
+  // initialize new user to add
   var newUser;
+
+  // MAKE NOTE TO MAYBE SCRAP ASYNC JS CODE LATER
+  // LOOKS UGLY AF TO MAINTAIN
+
   var waterfallCb = (err, results) => {
     if (err) {
       // any errors in the above functions will skip the next functions and go here
@@ -102,7 +112,7 @@ router.post('/api/account/signup', function(req, res, next) {
     console.log("parallel finished running: ", newUser)
 
     async.waterfall([
-      // 2. save
+      // 2.
       // first save the user in the database
       function(callback) {
         console.log("saving user")
@@ -134,7 +144,7 @@ router.post('/api/account/signup', function(req, res, next) {
               service: 'Gmail',
               auth: {
                 user: "blueshushi.shau@gmail.com",
-                pass: "Blueshushi123"
+                pass: process.env.EMAIL_PASSWORD,
               }
         })
         const confRedirect = `http://localhost:3000/confirmation?token=${emailToken}`

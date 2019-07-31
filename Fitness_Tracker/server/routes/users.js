@@ -51,7 +51,6 @@ const multerParser = multer({ storage: storage });
 
 // gets all the user info that is stored in the document in mongo
 router.get("/getUserInfo", extractToken, (req, res, next) => {
-  // const projection = "firstName lastName username friends friendRequests friendsPending height weight gender bio profilePicture unitSystem"
   const projection = { _id: 0, __v: 0, password: 0, productCode: 0, registered: 0, registerDate: 0 }
   //verify token
   var userID;
@@ -203,8 +202,8 @@ router.post("/acceptRequest", (req, res) => {
   // steps 2 and 3 should be done in parallel
   var {
     userToken,
-    userFirstName,
-    userLastName,
+    receiverFirstName,
+    receiverLastName,
     senderID,
     senderFirstName,
     senderLastName,
@@ -237,12 +236,12 @@ router.post("/acceptRequest", (req, res) => {
   var senderFriend = {
     id: senderID,
     firstName: senderFirstName,
-    lastName: senderLastName
+    lastName: senderLastName,
   }
   var userFriend = {
     id: userID,
-    firstName: userFirstName,
-    lastName: userLastName,
+    firstName: receiverFirstName,
+    lastName: receiverLastName,
   }
 
   // 2. and 3.
@@ -252,7 +251,7 @@ router.post("/acceptRequest", (req, res) => {
       User.findOneAndUpdate(
         { '_id': userID},
         {
-          "$pull": { "friendRequests": { "senderID": senderID } },
+          "$pull": { "friendRequests": { "id": senderID } },
           "$push": { "friends": senderFriend }
         }
       )
@@ -270,7 +269,7 @@ router.post("/acceptRequest", (req, res) => {
       User.findOneAndUpdate(
         { '_id': senderID},
         {
-          "$pull": { "friendsPending": { "receiverID": userID } },
+          "$pull": { "friendsPending": { "id": userID } },
           "$push": { "friends": userFriend }
         }
       )
@@ -288,7 +287,7 @@ router.post("/acceptRequest", (req, res) => {
 router.post("/sendFriendReq", (req, res) => {
   // extract the friend's id that the user is sending a request to
   // also extract the token that is saved in local storage
-  var { friend_id, token, friendFirstName, friendLastName, userFirstName, userLastName } = req.body
+  var { friend_id, token, senderFirstName, senderLastName, senderUsername, receiverFirstName, receiverLastName, receiverUsername } = req.body
   // define a callback for async parallel
   var cb = (err, results) => {
     if (err) {
@@ -316,9 +315,10 @@ router.post("/sendFriendReq", (req, res) => {
     // update receiver's requests array
     function(callback) {
       var friendRequest = {
-        senderID: user_id,
-        senderFirstName: userFirstName,
-        senderLastName: userLastName
+        id: user_id,
+        firstName: senderFirstName,
+        lastName: senderLastName,
+        username: senderUsername
       }
       User.findOneAndUpdate(
         { '_id': friend_id},
@@ -335,9 +335,10 @@ router.post("/sendFriendReq", (req, res) => {
     // update sender's pending array
     function(callback) {
       var pendingJson = {
-        receiverID: friend_id,
-        receiverFirstName: friendFirstName,
-        receiverLastName: friendLastName,
+        id: friend_id,
+        firstName: receiverFirstName,
+        lastName: receiverLastName,
+        username: receiverUsername,
       }
       User.findOneAndUpdate(
         { '_id': user_id },

@@ -3,7 +3,6 @@ import './App.css'
 import {
   Route,
   NavLink,
-  HashRouter,
   Redirect,
   BrowserRouter,
   Switch
@@ -15,6 +14,7 @@ import {
   removeFromSessionStorage,
   storageKey,
 } from './utils/storage';
+import ContextRoute from "./ContextRoute"
 import Home from "./Home"
 import Community from "./community/Community"
 import Graph from "./graph/Graph"
@@ -22,6 +22,8 @@ import RunDetails from "./graph/charts/RunDetails"
 import SwimDetails from "./graph/charts/SwimDetails"
 import JumpDetails from "./graph/charts/JumpDetails"
 import Profile from "./profile/Profile"
+import EditProfile from "./profile/EditProfile"
+import Stuff from "./Stuff"
 
 // web sockets
 import io from "socket.io-client"
@@ -41,14 +43,22 @@ class Spa extends Component {
     this.state = {
       friends: [],
       friendRequests: [],
-      numRequests: 0,
-      userFirstName: "",
-      userLastName: "",
+      friendsPending: [],
+      firstName: "",
+      lastName: "",
       username: "",
+      gender: "",
+      bio: "",
+      height: "",
+      weight: "",
+      profilePicture: "",
+      settings: {},
       isLoading: false,
       logout: false,
       socket: null,
       notification: null,
+      mounted: false,
+      rootURL: this.props.match.url
     }
     this.logout = this.logout.bind(this);
     this.setUpSocket = this.setUpSocket.bind(this)
@@ -152,20 +162,16 @@ class Spa extends Component {
 
     var res = await fetch(getUserInfoURL, { method: "GET", headers })
     var json = await res.json()
+    console.log(json)
     if (json.success && this._isMounted) {
-      var { firstName, lastName, username, friends, friendRequests } = json
       // one bug that could come up is if another setState occurred outside this function before
       // the fetch response finished running. This delayed setState would then
       // run after the other setState which could cause some mixups in which state is correct
       // Shouldn't be a problem thoughsince the socket field is only updated here and users can't see it.
       this.setState({
-        friends,
-        friendRequests,
-        numRequests: friendRequests.length,
-        userFirstName: firstName,
-        userLastName: lastName,
-        username,
-        socket
+        ...json,
+        socket,
+        mounted: true
       })
     }
   }
@@ -189,6 +195,7 @@ class Spa extends Component {
   }
 
   render() {
+    console.log("rendering spa...")
     const { logout, socket } = this.state
     // console.log("socket is: ", socket)
     // console.log(socket)
@@ -201,14 +208,15 @@ class Spa extends Component {
       return (
         <SpaContext.Provider value={this.state}>
           <div className="outerContainer">
-            <div>
-              <p>Account</p>
-              <button onClick={this.logout}>Logout</button>
-            </div>
               <BrowserRouter>
+                <div>
+                  <p>Account</p>
+                  <button onClick={this.logout}>Logout</button>
+                  <NavLink activeClassName="navLink" to={{pathname: `${match.url}/settings`}}>Settings</NavLink>
+                </div>
                 <div className="App">
                   <ul className="header">
-                    <li><NavLink activeClassName = "navLink" exact to="/app">Home page</NavLink></li>
+                    <li><NavLink activeClassName="navLink" exact to="/app">Home page</NavLink></li>
                     <li>
                       <NavLink activeClassName="navLink" to={{pathname: `${match.url}/community`,}}>
                         Community
@@ -216,23 +224,19 @@ class Spa extends Component {
                       <div className="community-notification">{this.state.notification}</div>
                     </li>
                     <li><NavLink activeClassName = "navLink" to={{pathname: `${match.url}/graph`}}>Progress</NavLink></li>
-                    <li><NavLink activeClassName = "navLink" to={{pathname: `${match.url}/profile`}}>Profile</NavLink></li>
+                    <li><NavLink activeClassName = "navLink" to={{pathname: `${match.url}/profile/${this.state.username}`}}>Profile</NavLink></li>
                   </ul>
                   <div className="Card">
                     <Switch>
                       <Route exact path="/app" component={Home}/>
-                      <Route path={`${match.url}/community`}>
-                        <SpaContext.Consumer>
-                          {(context) => (<Community
-                                          context={context}
-                                        />)}
-                        </SpaContext.Consumer>
-                      </Route>
+                      <ContextRoute path={`${match.url}/community`} contextComp={SpaContext} component={Community}/>
                       <Route path={`${match.url}/graph`} component={Graph}/>
                       <Route path={`${match.url}/jumpDetails`} component={JumpDetails}/>
                       <Route path={`${match.url}/swimDetails`} component={SwimDetails}/>
                       <Route path={`${match.url}/runDetails`} component={RunDetails}/>
-                      <Route path={`${match.url}/profile`} component={Profile}/>
+                      <ContextRoute exact path={`${match.url}/profile/:username?`} contextComp={SpaContext} component={Profile}/>
+                      <ContextRoute path={`${match.url}/profile/:username?/edit`} contextComp={SpaContext} component={EditProfile}/>
+                      <ContextRoute path={`${match.url}/settings`} contextComp={SpaContext} component={Stuff}/>
                     </Switch>
                   </div>
                 </div>

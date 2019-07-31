@@ -30,7 +30,7 @@ router.post("/searchUser", (req, res) => {
       .limit(10)
       .where('_id').ne(decoded._id)
       .where('registered').equals(true)
-      .select({"firstName": 1, "lastName": 1, "_id": 1})
+      .select({"firstName": 1, "lastName": 1, "_id": 1, "username": 1})
       .sort({"score": {"$meta": "textScore"}})
       .exec((err, users) => {
         if (err) {throw err}

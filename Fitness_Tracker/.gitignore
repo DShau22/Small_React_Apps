@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# security and IP
+server/.env
+server/fileReaders/reader.js
+
 # testing
 /coverage
 
@@ -12,6 +16,7 @@
 /build
 
 # misc
+.vscode/
 .DS_Store
 .env.local
 .env.development.local

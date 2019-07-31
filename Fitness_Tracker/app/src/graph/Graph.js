@@ -43,14 +43,8 @@ class Graph extends Component {
       method: "GET",
       headers: headers,
     })
-      .catch( (err) => {
-        throw err
-      })
       .then( (response) => {
         return response.json()
-      })
-      .catch( (err) => {
-        throw err
       })
       .then((json) => {
         if (json.success) {
@@ -63,6 +57,9 @@ class Graph extends Component {
           // PASS SOMETHING TO PROPS TO DO THIS
         }
       })
+    .catch((err) => {
+      throw err
+    })
   }
 
   setJumpData() {

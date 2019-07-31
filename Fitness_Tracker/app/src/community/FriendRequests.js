@@ -23,15 +23,15 @@ class FriendRequests extends Component {
     var { friendRequests, addFriendToState, removeFriendReq, acceptRequest } = this.props
     var liTags = []
     friendRequests.forEach((sender, idx) => {
-      var { senderID, senderFirstName, senderLastName } = sender
+      var { id, firstName, lastName } = sender
       liTags.push(
-        <div key={senderID} className="user-container">
-          <li>{senderFirstName}, {senderLastName}</li>
+        <div key={id} className="user-container">
+          <li>{firstName}, {lastName}</li>
           <button
             onClick={() => {
-              acceptRequest(senderID, senderFirstName, senderLastName)
-              removeFriendReq(senderID)
-              addFriendToState(senderID, senderFirstName, senderLastName)
+              acceptRequest(id, firstName, lastName)
+              removeFriendReq(id)
+              addFriendToState(id, firstName, lastName)
             }}
           >
             accept
@@ -44,7 +44,7 @@ class FriendRequests extends Component {
 
   render() {
     return (
-      <div className="friend-requests">
+      <div className="friend-requests" style={protoStyle}>
         <h4>requests... {this.props.numRequests}</h4>
         <ul className="friend-requests-list">
           {this.renderFriends()}
@@ -52,6 +52,10 @@ class FriendRequests extends Component {
       </div>
     )
   }
+}
+
+const protoStyle = {
+  "marginTop": "100px"
 }
 
 export default FriendRequests

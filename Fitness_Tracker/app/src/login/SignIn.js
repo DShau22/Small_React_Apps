@@ -34,36 +34,28 @@ class SignIn extends Component {
     this.setState({
       isLoading: true
     })
-    fetch(forgotUrl, {
+    var res = await fetch(forgotUrl, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(reqBody),
     })
-      .then(res => res.json())
-      .then(json => {
-        console.log("json: ", json)
-        if (json.success) {
-          alert("pw reset successfull. Check your email for more instructions")
-          // setInStorage("pwResetEmailMsg", {
-          //   msg: "Check out your email for reset instructions"
-          // })
-        } else {
-          alert("error" + json.messages.msg)
-          // setInStorage("pwResetEmailErr", json.messages)
-        }
-        this.setState({
-          showPwReset: false,
-          pwResetText: '',
-          isLoading: false
-        })
-      })
-    .catch((err) => {
-      alert(err)
-      // setInStorage("pwResetEmailErr", {
-      //   msg: err.toString()
+    var json = await res.json()
+    console.log("json: ", json)
+    if (json.success) {
+      alert("pw reset successfull. Check your email for more instructions")
+      // setInStorage("pwResetEmailMsg", {
+      //   msg: "Check out your email for reset instructions"
       // })
+    } else {
+      alert("error" + json.messages.msg)
+      // setInStorage("pwResetEmailErr", json.messages)
+    }
+    this.setState({
+      showPwReset: false,
+      pwResetText: '',
+      isLoading: false
     })
   }
 

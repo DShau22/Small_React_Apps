@@ -3,6 +3,9 @@ import {
   getFromSessionStorage,
   storageKey,
 } from '../utils/storage';
+import {
+  NavLink,
+} from "react-router-dom";
 
 import React, { Component } from 'react'
 import Searchbar from "./Searchbar"
@@ -10,7 +13,7 @@ import FriendRequests from "./FriendRequests"
 import "./style/Community.css"
 const searchURL = "http://localhost:8080/searchUser"
 const friendReqURL = "http://localhost:8080/sendFriendReq"
-const getUserInfoURL = "http://localhost:8080/getUserInfo"
+// const getUserInfoURL = "http://localhost:8080/getUserInfo"
 const tokenToID = "http://localhost:8080/tokenToID"
 const acceptFriendURL = "http://localhost:8080/acceptRequest"
 
@@ -26,6 +29,7 @@ class Community extends Component {
       searches: [],
       searchText: "",
       showQueries: false,
+      emptySearch: false,
     }
     this.renderSearch = this.renderSearch.bind(this)
     this.search = this.search.bind(this)
@@ -36,6 +40,7 @@ class Community extends Component {
     this.removeFriendReq = this.removeFriendReq.bind(this)
     this.acceptRequest = this.acceptRequest.bind(this)
     this.getToken = this.getToken.bind(this)
+    this.clearSearch = this.clearSearch.bind(this)
   }
 
   getToken() {
@@ -87,7 +92,7 @@ class Community extends Component {
     })
   }
 
-  search() {
+  async search() {
     console.log("searching...")
     var { searchText } = this.state
     var userToken = this.getToken()
@@ -99,25 +104,26 @@ class Community extends Component {
 
     if (this.state.searchText) {
       console.log("fetching...")
-      fetch(searchURL, {
+      var res = await fetch(searchURL, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(reqBody),
       })
-        .then(res => res.json())
-        .then((json) => {
-          var { users } = json
-          console.log(users)
-          if (users) {
-            this.setState({
-              searches: users,
-              showQueries: true,
-            })
-          }
+      var json = await res.json()
+      var { users } = json
+      if (users === undefined || users.length === 0) {
+        this.setState({
+          emptySearch: true,
         })
-      .catch((err) => {throw err})
+      } else {
+        this.setState({
+          searches: users,
+          showQueries: true,
+          emptySearch: false
+        })
+      }
     }
   }
 
@@ -139,10 +145,10 @@ class Community extends Component {
     return userID
   }
 
-  async sendReq(_id, firstName, lastName) {
+  async sendReq(_id, receiverFirstName, receiverLastName, receiverUsername) {
     // emit event using web socket to server
     var { socket } = this.props.context
-    var { userFirstName, userLastName } = this.props.context
+    var { firstName, lastName, username } = this.props.context
 
     // get decoded userID
     var userID = await this.decodeToken()
@@ -150,18 +156,21 @@ class Community extends Component {
     console.log("sending request", userID)
     socket.emit("sendFriendRequest", {
       senderID: userID,
-      senderFirstName: userFirstName,
-      senderLastName: userLastName,
+      senderFirstName: firstName,
+      senderLastName: lastName,
+      senderUsername: username,
       receiverID: _id,
     })
 
     var body = JSON.stringify({
       token: userToken,
-      userFirstName,
-      userLastName,
+      senderFirstName: firstName,
+      senderLastName: lastName,
+      senderUsername: username,
       friend_id: _id,
-      friendFirstName: firstName,
-      friendLastName: lastName
+      receiverFirstName,
+      receiverLastName,
+      receiverUsername,
     })
 
     fetch(friendReqURL, {
@@ -181,16 +190,16 @@ class Community extends Component {
   async acceptRequest(senderID, senderFirstName, senderLastName) {
     // SENDER refers to the FRIEND REQUEST SENDER
     var userToken = this.getToken()
-    var { userFirstName, userLastName } = this.props.context
+    var { firstName, lastName } = this.props.context
     // send notification to server
-    var { socket } = this.props
+    var { socket } = this.props.context
     var userID = this.decodeToken()
-    socket.emit("acceptFriendRequest", { userID, userFirstName, userLastName, otherFriendID: senderID })
+    socket.emit("acceptFriendRequest", { userID, receiverFirstName: firstName, receiverLastName: lastName, otherFriendID: senderID })
 
     var reqBody = {
       userToken,
-      userFirstName,
-      userLastName,
+      receiverFirstName: firstName,
+      receiverLastName: lastName,
       senderID,
       senderFirstName,
       senderLastName,
@@ -207,26 +216,92 @@ class Community extends Component {
     console.log("json message: ", json.message)
   }
 
+  clearSearch() {
+    // set search state data to inital state
+    this.setState({
+      searchText: "",
+      searches: [],
+      showQueries: false,
+      emptySearch: false,
+    })
+  }
+
   renderSearch() {
     var liTags = []
-    this.state.searches.forEach((user, i) => {
-      var { firstName, lastName, _id } = user
+    var { searches, emptySearch } = this.state
+    var { friends, friendRequests, friendsPending, rootURL } = this.props.context
+
+    // put the user ids into a set for easy lookup
+    // apparently these constructors don't work on IE 11
+    var friendSet = new Set(friends.map(user => user.id))
+    var requestSet = new Set(friendRequests.map(user => user.id))
+    var pendingSet = new Set(friendsPending.map(user => user.id))
+
+    // if user just searched name not in database
+    if (emptySearch) {
+      liTags.push(
+        <div className="empty-search-container" key="empty-key">
+          <span>no search results :(</span>
+        </div>
+      )
+    }
+
+    var displayButton = (user, friendSet, requestSet, pendingSet) => {
+      // console.log(user, friendSet, requestSet, pendingSet)
+      var { firstName, lastName, _id, username} = user
+      if (friendSet.has(_id)) {
+        return (
+          <span> already friends </span>
+        )
+      } else if (requestSet.has(_id)) {
+        return (
+          <button
+            onClick={() => {
+              this.acceptRequest(_id, firstName, lastName)
+              this.removeFriendReq(_id)
+              this.addFriendToState(_id, firstName, lastName)
+            }}
+          >
+            accept
+          </button> 
+        )
+      } else if (pendingSet.has(_id)) {
+        return ( <span> request sent </span> )
+      } else {
+        return (
+          <button onClick={() => {this.sendReq(_id, firstName, lastName, username)}}>
+            friend {firstName}
+          </button>
+        )
+      }
+    }
+
+    searches.forEach((user, i) => {
+      var { firstName, lastName, _id, score, username } = user
+      
       // capitalize first and last name before displaying
       firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
       lastName  = lastName.charAt(0).toUpperCase() + lastName.slice(1)
       liTags.push(
         <div key={_id + "_search"} className="user-container">
-          <li>{firstName}, {lastName}</li>
-          <button onClick={() => {this.sendReq(_id, firstName, lastName)}}>
-            friend {firstName}
-          </button>
+          <NavLink to={{pathname: `${rootURL}/profile/${username}`}} style={{"cursor": "pointer"}}>
+            {firstName}, {lastName}
+          </NavLink>
+          {displayButton(user, friendSet, requestSet, pendingSet)}
         </div>
       )
     })
+
+    liTags.push(
+      <div className="clear-search-container" key="clear-search-container">
+        <button onClick={this.clearSearch}>clear search</button>
+      </div>
+    )
     return liTags
   }
 
   render() {
+    var { context } = this.props
     return (
       <div className="wrapper">
         <link
@@ -247,12 +322,14 @@ class Community extends Component {
         </div>
         <FriendRequests
           userToken={this.getToken()}
-          userFirstName={this.props.context.userFirstName}
-          userLastName={this.props.context.userLastName}
+          userFirstName={context.userFirstName}
+          userLastName={context.userLastName}
           addFriendToState={this.addFriendToState}
           removeFriendReq={this.removeFriendReq}
-          friendRequests={this.props.context.friendRequests}
-          numRequests={this.props.context.numRequests}
+          friendRequests={context.friendRequests}
+          friendsPending={context.friendsPending}
+          friends={context.friends}
+          numRequests={context.numRequests}
           acceptRequest={this.acceptRequest}
         />
       </div>
