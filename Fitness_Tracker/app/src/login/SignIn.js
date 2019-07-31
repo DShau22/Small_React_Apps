@@ -27,7 +27,7 @@ class SignIn extends Component {
     }
   }
 
-  submitForgotPw() {
+  async submitForgotPw() {
     var reqBody = {
       email: this.state.pwResetText,
     }

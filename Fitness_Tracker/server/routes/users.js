@@ -173,27 +173,6 @@ router.get("/tokenToID", extractToken, (req, res, next) => {
   })
 })
 
-// router.get("/getFriendReqs", extractToken, (req, res) => {
-//   // verify user's id token
-//   jwt.verify(req.token, secret, (err, userID) => {
-//     if (err) {
-//       throw err
-//       sendError(res, err)
-//     }
-//     User.findOne({"_id": userID}, "friendRequests", (err, results) => {
-//       if (err) {
-//         throw err
-//         sendError(res, err)
-//       }
-//       var { friendRequests } = results
-//       return res.send({
-//         success: true,
-//         friendRequests
-//       })
-//     })
-//   })
-// })
-
 router.post("/acceptRequest", (req, res) => {
   // 1. verify user token
   // 2. update user's friends (add sender), friendRequest fields (remove sender)
@@ -354,6 +333,5 @@ router.post("/sendFriendReq", (req, res) => {
     }
   ], cb)
 })
-
 
 module.exports = router

@@ -60,4 +60,32 @@ router.get("/data", extractToken, (request, response, next) => {
   })
 })
 
+router.get("/getUserActivities", extractToken, async (request, response) => {
+  console.log("got request")
+  var tokenizedID = request.token
+  var activity = request.headers["activity"]
+  var userID = await jwt.verify(tokenizedID, secret)
+  // Query the latest upload. Change -1 to 1 to get the oldest
+  var ActivityData = getModel(activity)
+
+  // don't include the __v:, uploadDate, userID, _id fields
+  var projection = {__v: false,}
+  ActivityData
+    // finds the userID where the decoded token(_id) matches userID field
+    .findOne({userID: userID}, projection)
+    .sort({'uploadDate': -1})
+    .exec(function(err, data) {
+      if (err) throw err
+      console.log("queried result is: ", data)
+
+      // Define to JSON type
+      var jsonContent = JSON.parse(JSON.stringify(data))
+      // send request object with queried data written to the body
+      response.send({
+        success: true,
+        activityData: jsonContent
+      })
+    })
+})
+
 module.exports = router
