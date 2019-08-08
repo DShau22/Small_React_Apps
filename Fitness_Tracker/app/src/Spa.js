@@ -15,7 +15,7 @@ import {
   storageKey,
 } from './utils/storage';
 import ContextRoute from "./ContextRoute"
-import Home from "./Home"
+import Home from "./home/Home"
 import Community from "./community/Community"
 import Graph from "./graph/Graph"
 import RunDetails from "./graph/charts/RunDetails"
@@ -23,7 +23,12 @@ import SwimDetails from "./graph/charts/SwimDetails"
 import JumpDetails from "./graph/charts/JumpDetails"
 import Profile from "./profile/Profile"
 import EditProfile from "./profile/EditProfile"
-import Stuff from "./Stuff"
+import Settings from "./settings/Settings"
+import Advanced from "./settings/Advanced"
+import Personal from "./settings/Personal"
+import Security from "./settings/Security"
+import Stats from "./settings/Stats"
+import Navbar from "./generic/Navbar"
 
 // web sockets
 import io from "socket.io-client"
@@ -207,25 +212,22 @@ class Spa extends Component {
       var { match } = this.props
       return (
         <SpaContext.Provider value={this.state}>
-          <div className="outerContainer">
+          <div className="container">
               <BrowserRouter>
-                <div>
+                <div className="row">
                   <p>Account</p>
+                </div>
+                <div className="row">
                   <button onClick={this.logout}>Logout</button>
                   <NavLink activeClassName="navLink" to={{pathname: `${match.url}/settings`}}>Settings</NavLink>
                 </div>
                 <div className="App">
-                  <ul className="header">
-                    <li><NavLink activeClassName="navLink" exact to="/app">Home page</NavLink></li>
-                    <li>
-                      <NavLink activeClassName="navLink" to={{pathname: `${match.url}/community`,}}>
-                        Community
-                      </NavLink>
-                      <div className="community-notification">{this.state.notification}</div>
-                    </li>
-                    <li><NavLink activeClassName = "navLink" to={{pathname: `${match.url}/graph`}}>Progress</NavLink></li>
-                    <li><NavLink activeClassName = "navLink" to={{pathname: `${match.url}/profile/${this.state.username}`}}>Profile</NavLink></li>
-                  </ul>
+                  <Navbar
+                    homeURL="/app"
+                    communityURL={`${match.url}/community`}
+                    fitnessURL={`${match.url}/graph`}
+                    profileURL={`${match.url}/profile/${this.state.username}`}
+                  />
                   <div className="Card">
                     <Switch>
                       <Route exact path="/app" component={Home}/>
@@ -236,7 +238,11 @@ class Spa extends Component {
                       <Route path={`${match.url}/runDetails`} component={RunDetails}/>
                       <ContextRoute exact path={`${match.url}/profile/:username?`} contextComp={SpaContext} component={Profile}/>
                       <ContextRoute path={`${match.url}/profile/:username?/edit`} contextComp={SpaContext} component={EditProfile}/>
-                      <ContextRoute path={`${match.url}/settings`} contextComp={SpaContext} component={Stuff}/>
+                      <ContextRoute exact path={`${match.url}/settings`} contextComp={SpaContext} component={Settings}/>
+                      <ContextRoute path={`${match.url}/settings/personal`} contextComp={SpaContext} component={Personal}/>
+                      <ContextRoute path={`${match.url}/settings/security`} contextComp={SpaContext} component={Security}/>
+                      <ContextRoute path={`${match.url}/settings/stats`} contextComp={SpaContext} component={Stats}/>
+                      <ContextRoute path={`${match.url}/settings/advanced`} contextComp={SpaContext} component={Advanced}/>
                     </Switch>
                   </div>
                 </div>

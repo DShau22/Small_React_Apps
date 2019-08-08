@@ -42,7 +42,7 @@ const RunSchema = new Schema({
     required: true,
   },
   num: {
-    type: String,
+    type: Number,
     required: true,
     default: 0,
   },

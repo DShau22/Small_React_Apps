@@ -1,13 +1,20 @@
-.App {
-  text-align: center;
-  background-color: rgb(206, 213, 223);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: calc(10px + 2vmin);
-}
+// customized boostrap override stuff here
+
+// customized boostrap override stuff here
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+
+// .App {
+//   text-align: center;
+//   background-color: rgb(206, 213, 223);
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: flex-start;
+//   font-size: calc(10px + 2vmin);
+// }
 
 @mixin buttonTheme {
   font-family: 'Roboto medium', sans-serif;
