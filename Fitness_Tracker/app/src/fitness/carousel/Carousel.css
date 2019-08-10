@@ -16,10 +16,10 @@
 }
 .carousel .slideShow .imageSlide {
   height: 200px;
-  margin: 0;
+  margin-top: 15px;
   width: 200px;
   border: solid;
-  border-color: red;
+  border-color: blueviolet;
   border-radius: 50%;
   background-color: white;
   display: flex;
@@ -31,11 +31,13 @@
   color: #14B6D4;
   cursor: pointer;
   font-size: 3rem;
+  margin-left: 8px;
 }
 .carousel .slideShow .slide-arrow-left {
   color: #14B6D4;
   cursor: pointer;
   font-size: 3rem;
+  margin-right: 8px;
 }
 
 /*# sourceMappingURL=Carousel.css.map */

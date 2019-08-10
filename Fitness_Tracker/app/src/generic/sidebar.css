@@ -29,6 +29,7 @@
 
 /* Position and style the close button (top right corner) */
 .sidenav .closebtn {
+  color: white;
   position: absolute;
   top: 0;
   right: 25px;

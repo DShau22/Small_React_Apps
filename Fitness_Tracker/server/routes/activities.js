@@ -8,6 +8,8 @@ const mongoose = require('mongoose')
 const secret = 'secretkey'
 const jwt = require("jsonwebtoken")
 
+// maximum number of activity documents to query for a given activity
+const MAX_DOCUMENTS = 50
 
 function getModel(activity) {
   switch(activity) {
@@ -43,7 +45,8 @@ router.get("/data", extractToken, (request, response, next) => {
     var projection = {__v: false,}
     ActivityData
       // finds the userID where the decoded token(_id) matches userID field
-      .findOne({userID: decoded}, projection)
+      .find({userID: decoded}, projection)
+      .limit(MAX_DOCUMENTS)
       .sort({'uploadDate': -1})
       .exec(function(err, data) {
         if (err) throw err

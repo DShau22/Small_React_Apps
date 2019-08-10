@@ -68,6 +68,7 @@ function emitMultipleAndDisconnect(io, socketSet, socketEvent, data) {
 }
 
 // set up a connection to database
+console.log("connecting to mongo...")
 mongoose.connect(mongoServerURL, { useNewUrlParser: true, useFindAndModify: false })
   .catch(function(err) {throw err})
 

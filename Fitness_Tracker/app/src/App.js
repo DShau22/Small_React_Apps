@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Confirmation from "./login/Confirmation"
 import PwResetPage from "./login/PwResetPage"
-import Spa from "./Spa"
+import { Spa } from "./Spa"
 
 class App extends Component {
   constructor(props) {

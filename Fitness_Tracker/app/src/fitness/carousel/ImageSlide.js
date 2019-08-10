@@ -1,0 +1,67 @@
+import React, {Component} from 'react'
+import SpaContext from "../../Context"
+
+class ImageSlide extends Component {
+  constructor(props) {
+    super(props)
+    this.getLabels = this.getLabels.bind(this)
+    this.renderNum = this.renderNum.bind(this)
+    this.renderSecondary = this.renderSecondary.bind(this)
+  }
+
+  getLabels(action) {
+    var { unitSystem } = this.context.settings
+    if (action === "run") {
+      return {
+        numLabel: "steps",
+        secondaryLabel: (unitSystem === "metric") ? "km" : "miles"
+      }
+    } else if (action === "swim") {
+      // CHANGE THIS BASED ON SWIMMING PART OF SETTINGS
+      return {
+        numLabel: "steps",
+        secondaryLabel: (unitSystem === "metric") ? "m" : "yds"
+      }
+    } else {
+      return {
+        numLabel: "jumps",
+        secondaryLabel: (unitSystem === "metric") ? "cm" : "in"
+      }
+    }
+  }
+
+  renderNum(stats, indexDisplay) {
+    var { activityData } = stats
+    var { num } = activityData[indexDisplay]
+    var labels = this.getLabels(stats.action)
+    return (
+      <span>
+        {num + " : " + labels.numLabel}
+      </span>
+    )
+  }
+
+  renderSecondary(stats, indexDisplay) {
+    var { activityData } = stats
+    var { num } = activityData[indexDisplay]
+    var labels = this.getLabels(stats.action)
+    return (
+      <span>
+        {num + " : " + labels.numLabel}
+      </span>
+    )
+  }
+
+  render() {
+    var { stats, indexDisplay } = this.props
+    return (
+      <div className="imageSlide">
+        <img src={stats.imageUrl} alt="loading..."/>
+        {this.renderNum(stats, indexDisplay)}
+        {this.renderSecondary(stats, indexDisplay)}
+      </div>
+    )
+  }
+}
+ImageSlide.contextType = SpaContext
+export default ImageSlide
