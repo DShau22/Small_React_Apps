@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Doughnut, Bar, Pie } from 'react-chartjs-2';
-import DateBar from "./jumpComps/DateBar"
-import Past from "./jumpComps/Past"
-
+import DateBar from "./DateBar"
+import Past from "./Past"
+import SpaContext from "../../Context"
 class RunDetails extends Component {
   constructor(props) {
     super(props)
@@ -20,7 +20,7 @@ class RunDetails extends Component {
   // fetches data by making request to server
   // updates the state if successfull
   setJumpData() {
-
+    //debugger
     var headers = new Headers()
     headers.append("id", "id") //change to be specific in future
     headers.append("activity", "jump")
@@ -79,4 +79,5 @@ class RunDetails extends Component {
     )
   }
 }
+RunDetails.contextType = SpaContext
 export default RunDetails

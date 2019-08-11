@@ -51,6 +51,11 @@ const RunSchema = new Schema({
     required: true,
     default: 0,
   },
+  pace: {
+    type: Array,
+    required: true,
+    default: []
+  },
   calories: {
     type: Number,
     required: true,

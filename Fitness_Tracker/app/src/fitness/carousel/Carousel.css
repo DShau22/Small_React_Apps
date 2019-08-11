@@ -8,6 +8,9 @@
 .carousel #details.routeButton {
   margin-top: 20px;
 }
+.carousel .date-display {
+  margin-top: 10px;
+}
 .carousel .slideShow {
   display: flex;
   flex-direction: row;

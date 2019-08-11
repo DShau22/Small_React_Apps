@@ -52,4 +52,12 @@ function englishHeight(height) {
   return { feet, inches }
 }
 
-module.exports = { weightConvert, heightConvert, englishHeight }
+function parseDate(date) {
+  // parses the UTC date object
+  var dateString = date.toString()
+  // [Day, Month, month date, year, time, Standard, Standard (written out)]
+  var parsed = dateString.split(" ")
+  return parsed
+}
+
+module.exports = { weightConvert, heightConvert, englishHeight, parseDate }

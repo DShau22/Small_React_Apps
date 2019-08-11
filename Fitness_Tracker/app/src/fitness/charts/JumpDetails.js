@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Doughnut, Bar, Pie } from 'react-chartjs-2';
-import DateBar from "./jumpComps/DateBar"
-import Past from "./jumpComps/Past"
+import DateBar from "./DateBar"
+import Past from "./Past"
 import {
   NavLink,
 } from "react-router-dom";
