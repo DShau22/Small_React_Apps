@@ -6,7 +6,7 @@ class ImageSlide extends Component {
     super(props)
     this.getLabels = this.getLabels.bind(this)
     this.renderNum = this.renderNum.bind(this)
-    this.renderSecondary = this.renderSecondary.bind(this)
+    // this.renderSecondary = this.renderSecondary.bind(this)
   }
 
   getLabels(action) {
@@ -19,7 +19,7 @@ class ImageSlide extends Component {
     } else if (action === "swim") {
       // CHANGE THIS BASED ON SWIMMING PART OF SETTINGS
       return {
-        numLabel: "steps",
+        numLabel: "laps",
         secondaryLabel: (unitSystem === "metric") ? "m" : "yds"
       }
     } else {
@@ -41,24 +41,13 @@ class ImageSlide extends Component {
     )
   }
 
-  renderSecondary(stats, indexDisplay) {
-    var { activityData } = stats
-    var { num } = activityData[indexDisplay]
-    var labels = this.getLabels(stats.action)
-    return (
-      <span>
-        {num + " : " + labels.numLabel}
-      </span>
-    )
-  }
-
   render() {
-    var { stats, indexDisplay } = this.props
+    var { stats, indexDisplay, renderSecondary } = this.props
     return (
       <div className="imageSlide">
         <img src={stats.imageUrl} alt="loading..."/>
         {this.renderNum(stats, indexDisplay)}
-        {this.renderSecondary(stats, indexDisplay)}
+        {renderSecondary()}
       </div>
     )
   }

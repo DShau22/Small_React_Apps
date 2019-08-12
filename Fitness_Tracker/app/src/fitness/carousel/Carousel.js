@@ -12,22 +12,6 @@ class Carousel extends React.Component {
     super(props);
     // this.dropdownItemClick = this.dropdownItemClick.bind(this)
   }
-  // componentDidMount() {
-  //   var { stats, activityIndex } = this.props
-  //   var { uploadDate } = stats.activityData[activityIndex]
-  //   var parsed = parseDate(new Date(uploadDate))
-  //   var displayDate = parsed[0] + ", " + parsed[1] + " " + parsed[2]
-  //   this.setState({ displayDate })
-  // }
-
-  // dropdownItemClick(e) {
-  //   // on dropdown date click, display that date on the dropdown,
-  //   // and switch the image slider to display that date
-  //   var { updateActivityIndex } = this.props
-  //   var newDate = e.target.innerText
-  //   updateActivityIndex(parseInt(e.target.id))
-  //   this.setState({ displayDate: newDate })
-  // }
 
   getDropdownDates(stats) {
     var { dropdownItemClick } = this.props
@@ -50,7 +34,7 @@ class Carousel extends React.Component {
   }
 
   render() {
-    var { stats, previousSlide, nextSlide, activityIndex, displayDate } = this.props
+    var { stats, previousSlide, nextSlide, activityIndex, displayDate, renderSecondary } = this.props
     return (
       <div className="carousel">
         <div className="btn-group dropright">
@@ -75,7 +59,11 @@ class Carousel extends React.Component {
             glyph="&#8249;"
           />
 
-          <ImageSlide stats={stats} indexDisplay={activityIndex}/>
+          <ImageSlide
+            stats={stats}
+            indexDisplay={activityIndex}
+            renderSecondary={renderSecondary}
+          />
 
           <Arrow
             direction="right"

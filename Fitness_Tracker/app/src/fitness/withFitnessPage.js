@@ -39,10 +39,20 @@ export default function withFitnessPage( WrappedComponent ) {
       this.makePastGraphData()
     }
 
+    roundToNDecimals(num, decimals) {
+      return parseFloat(num).toFixed(decimals)
+    }
+
+    isNullOrUndefined(input) {
+      return (input == null)
+    }
+
     // gets the labels for the graph that displays num field over past upload dates
     makePastGraphLabels() {
       var pastGraphLabels = []
-      this.context.runJson.activityData.forEach((session, idx) => {
+      // can be either run, jump or swimming json
+      var { activityJson } = this.props
+      activityJson.activityData.forEach((session, idx) => {
         var { uploadDate } = session
         var stringToDate = new Date(uploadDate)
         // this is an array
@@ -54,7 +64,8 @@ export default function withFitnessPage( WrappedComponent ) {
 
     makePastGraphData() {
       var pastGraphData = []
-      this.context.runJson.activityData.forEach((session, idx) => {
+      var { activityJson } = this.props
+      activityJson.activityData.forEach((session, idx) => {
         var { num } = session
         pastGraphData.push(num)
       })
@@ -65,9 +76,9 @@ export default function withFitnessPage( WrappedComponent ) {
     // returns Day of week, month day (num) in a string format
     // i.e Sat, Jul 20
     displayDate() {
-      var { runJson } = this.context
+      var { activityJson } = this.props
       var { activityIndex } = this.state
-      var { uploadDate } = runJson.activityData[activityIndex]
+      var { uploadDate } = activityJson.activityData[activityIndex]
       var parsed = parseDate(new Date(uploadDate))
       var date = parsed[0] + ", " + parsed[1] + " " + parsed[2]
       return date
@@ -80,7 +91,10 @@ export default function withFitnessPage( WrappedComponent ) {
     }
 
     calcAvgNum() {
-      var { activityData } = this.context.runJson
+      // Activity json contains all the queried activity data
+      // NOTE THIS IS NOT THE TRUE AVG SINCE THE QUERY IS AT MAX
+      // (50) DOCUMENTS OF ACTIVITY DATA
+      var { activityData } = this.props.activityJson
       var avg = 0
       var count = 0
       activityData.forEach((session, idx) => {
@@ -91,7 +105,7 @@ export default function withFitnessPage( WrappedComponent ) {
     }
 
     calcAvgCals() {
-      var { activityData } = this.context.runJson
+      var { activityData } = this.props.activityJson
       var avg = 0
       var count = 0
       activityData.forEach((session, idx) => {
@@ -103,7 +117,7 @@ export default function withFitnessPage( WrappedComponent ) {
 
     previousSlide() {
       //debugger
-      var { activityData } = this.context.runJson
+      var { activityData } = this.props.activityJson
       var nextIndex = Math.min((this.state.activityIndex + 1), activityData.length - 1)
       this.setState({ activityIndex: nextIndex })
     }
@@ -115,9 +129,9 @@ export default function withFitnessPage( WrappedComponent ) {
     }
 
     render() {
-      var { runJson } = this.context
+      var { activityJson } = this.props
       var { activityIndex, pastGraphData, pastGraphLabels } = this.state
-      var currentStatDisplay = runJson.activityData[activityIndex]
+      var currentStatDisplay = activityJson.activityData[activityIndex]
       return (
         <div>
           <WrappedComponent
@@ -130,6 +144,8 @@ export default function withFitnessPage( WrappedComponent ) {
             previousSlide={this.previousSlide}
             calcAvgNum={this.calcAvgNum}
             calcAvgCals={this.calcAvgCals}
+            isNullOrUndefined={this.isNullOrUndefined}
+            roundToNDecimals={this.roundToNDecimals}
             {...this.props}
           />
         </div>

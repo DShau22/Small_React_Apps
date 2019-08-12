@@ -1,6 +1,7 @@
 import React from 'react'
 import Doughnut from "react-chartjs-2"
-export default function RunDoughnut( props ) {
+
+export default function SwimDoughnut( props ) {
   return (
     <div>
       <Doughnut

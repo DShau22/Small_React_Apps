@@ -5,12 +5,9 @@ import Duration from "../Duration"
 import Details from "../Details"
 import SpaContext from '../../Context'
 import Past from "../charts/Past"
-import { parseDate } from "../../utils/unitConverter"
 import RunDoughnut from "./RunDoughnut"
 import withFitnessPage from "../withFitnessPage"
-const jumpLink = "/app/jumpDetails"
 const runLink = "/app/runDetails"
-const swimLink = "/app/swimDetails"
 
 // btw restPaceMin and walkPaceMax is walking
 // greater that walkPaceMax is running
@@ -25,60 +22,12 @@ class Run extends Component {
       paceLabels: [],
       paceDate: [], 
     }
-    // this.nextSlide = this.nextSlide.bind(this);
-    // this.previousSlide = this.previousSlide.bind(this);
-    // this.makePastGraphLabels = this.makePastGraphLabels.bind(this)
-    // this.makePastGraphData = this.makePastGraphData.bind(this)
-    // this.dropdownItemClick = this.dropdownItemClick.bind(this)
-    // this.displayDate = this.displayDate.bind(this)
-    // this.calcAvgSteps = this.calcAvgSteps.bind(this)
-    // this.calcAvgCals = this.calcAvgCals.bind(this)
-    // this.calcAvgPace = this.calcAvgPace.bind(this)
+    this.estimateDistanceRun = this.estimateDistanceRun.bind(this)
   }
 
   componentDidMount() {
     console.log('mounted')
-    // this.props.makePastGraphLabels()
-    // this.props.makePastGraphData()
   }
-
-  // gets the labels for the graph that displays # steps over time 
-  // makePastGraphLabels() {
-  //   var pastGraphLabels = []
-  //   this.context.runJson.activityData.forEach((session, idx) => {
-  //     var { uploadDate } = session
-  //     var stringToDate = new Date(uploadDate)
-  //     // this is an array
-  //     var dateInfo = parseDate(stringToDate)
-  //     pastGraphLabels.push(dateInfo[0] + ", " + dateInfo[1] + " " + dateInfo[2])
-  //   })
-  //   this.setState({ pastGraphLabels })
-  // }
-
-  // makePastGraphData() {
-  //   var pastGraphData = []
-  //   this.context.runJson.activityData.forEach((session, idx) => {
-  //     var { num } = session
-  //     pastGraphData.push(num)
-  //   })
-  //   this.setState({ pastGraphData })
-  //   //debugger
-  // }
-
-  // displayDate() {
-  //   var { runJson } = this.context
-  //   var { activityIndex } = this.state
-  //   var { uploadDate } = runJson.activityData[activityIndex]
-  //   var parsed = parseDate(new Date(uploadDate))
-  //   var date = parsed[0] + ", " + parsed[1] + " " + parsed[2]
-  //   return date
-  // }
-
-  // dropdownItemClick(e) {
-  //   // on dropdown date click, display that date on the dropdown,
-  //   // and switch the image slider to display that date
-  //   this.setState({ activityIndex: parseInt(e.target.id) })
-  //}
 
   makeDoughnutData() {
     var runCount = 0
@@ -86,13 +35,17 @@ class Run extends Component {
     var count = 0
     var { activityData } = this.context.runJson
     activityData.forEach((session, i) => {
-      session.pace.forEach((pace, j) => {
-        if (pace > walkPaceMax) {
-          runCount += 1
-        } else if (pace > restPaceMin && pace < walkPaceMax) {
-          walkCount += 1
+      session.paces.forEach((pace, j) => {
+        // if pace is somehow undefined or NaN or null then skip
+        if (!(!pace || isNaN(pace))) {
+          console.log("this pace entry is corrupted somehow...")
+          if (pace > walkPaceMax) {
+            runCount += 1
+          } else if (pace > restPaceMin && pace < walkPaceMax) {
+            walkCount += 1
+          }
+          count += 1
         }
-        count += 1
       })
     })
     if (count === 0) {
@@ -103,37 +56,12 @@ class Run extends Component {
     return [runPercent, walkPercent, 1 - (runPercent + walkPercent)]
   }
 
-  // previousSlide() {
-  //   //debugger
-  //   var { activityData } = this.context.runJson
-  //   var nextIndex = Math.min((this.state.activityIndex + 1), activityData.length - 1)
-  //   this.setState({ activityIndex: nextIndex })
-  // }
-
-  // nextSlide() {
-  //   // 0 represents the most recent upload date
-  //   var nextIndex = Math.max((this.state.activityIndex - 1), 0)
-  //   this.setState({ activityIndex: nextIndex })
-  // }
-
-  // calculates average number of steps over all the documents queried
-  // calcAvgSteps() {
-  //   var { activityData } = this.context.runJson
-  //   var avg = 0
-  //   var count = 0
-  //   activityData.forEach((session, idx) => {
-  //     avg += session.num
-  //     count += 1
-  //   })
-  //   return (count === 0) ? 0 : Math.round(avg / count)
-  // }
-
   calcAvgPace() {
     var { activityData } = this.context.runJson
     var avg = 0
     var count = 0
     activityData.forEach((session, i) => {
-      session.pace.forEach((pace, j) => {
+      session.paces.forEach((pace, j) => {
         avg += pace
         count += 1
       })
@@ -141,20 +69,20 @@ class Run extends Component {
     return (count === 0) ? 0 : avg / count
   }
 
-  // calcAvgCals() {
-  //   var { activityData } = this.context.runJson
-  //   var avg = 0
-  //   var count = 0
-  //   activityData.forEach((session, idx) => {
-  //     avg += session.calories
-  //     count += 1
-  //   })
-  //   return (count === 0) ? 0 : Math.round(avg / count)
-  // }
+  estimateDistanceRun() {
+    var { height, settings } = this.context
+    var { unitSystem } = settings
+    // this means the person's height is in cm, display km
+    if (unitSystem === "metric") {
+
+    } else {
+      // person's height in inches, display miles
+    }
+    return "estimated dist"
+  }
 
   render() {
     var { runJson } = this.context
-    // var { activityIndex, pastGraphData, pastGraphLabels } = this.state
     var {
       activityIndex,
       pastGraphData,
@@ -165,9 +93,9 @@ class Run extends Component {
       previousSlide,
       calcAvgNum,
       calcAvgCals,
+      isNullOrUndefined
     } = this.props
     var currentStatDisplay = runJson.activityData[activityIndex]
-//    debugger
     return (
       <div>
         <div className="row">
@@ -179,18 +107,23 @@ class Run extends Component {
               activityIndex={activityIndex}
               displayDate={displayDate}
               dropdownItemClick={dropdownItemClick}
+              renderSecondary={this.estimateDistanceRun}
             />
           </div>
         </div>
         <div className="row">
           <div className="col-4" align="center">
-            <Calories cals={currentStatDisplay.calories}/>
+            <Calories 
+              cals={isNullOrUndefined(currentStatDisplay) ? 0 : currentStatDisplay.calories}
+            />
           </div>
           <div className="col-4" align="center">
             <Details detailsLink={runLink}/>
           </div>
           <div className="col-4" align="center">
-            <Duration duration={currentStatDisplay.time}/>
+            <Duration 
+              duration={isNullOrUndefined(currentStatDisplay) ? 0 : currentStatDisplay.time}
+            />
           </div>
         </div>
         <div className="row">
@@ -236,7 +169,15 @@ class Run extends Component {
           <div className="col-6 col-md-4">
             <div className="card text-center">
               <div className="card-body">
-                <RunDoughnut labels={['% run', '% walk', '% rest']} data={this.makeDoughnutData()}/>
+                <RunDoughnut
+                  labels={['% run', '% walk', '% rest']}
+                  data={this.makeDoughnutData()}
+                  colors={[
+                    'rgba(102, 255, 102, 0.4)',
+                    'rgba(255, 255, 0, 0.4)',
+                    'rgba(255, 51, 0, 0.4)',
+                  ]}
+                />
               </div>
             </div>
           </div>

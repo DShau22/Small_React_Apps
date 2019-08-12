@@ -5,11 +5,6 @@ import Jump from "./jump/Jump"
 import Swim from "./swim/Swim"
 import "./Fitness.css"
 import SpaContext from "../Context"
-import {
-  getFromLocalStorage,
-  getFromSessionStorage,
-  storageKey
-} from '../utils/storage'
 
 class Fitness extends Component {
   constructor(props) {
@@ -26,12 +21,13 @@ class Fitness extends Component {
   renderActivity() {
     // debugger
     var { activityDisplay } = this.state
+    var { runJson, jumpJson, swimJson } = this.context
     if (activityDisplay === "run") {
-      return ( <div> <Run/> </div> )
+      return ( <div> <Run activityJson={runJson}/> </div> )
     } else if (activityDisplay === "jump") {
-      return ( <div> <Jump/> </div> )
+      return ( <div> <Jump activityJson={jumpJson}/> </div> )
     } else if (activityDisplay === "swim") {
-      return ( <div> <Swim/> </div> )
+      return ( <div> <Swim activityJson={swimJson}/> </div> )
     } else {
       return ( <div> <span>pick an activity</span> </div>)
       // alert("activityDisplay in the state is not run, jump, or swim...")

@@ -1,12 +1,6 @@
 const csv = require('csv')
-var testCSV = csv()
 const fs = require('fs')
 
-function MyCSV(col1, col2, col3) {
-  this.col1 = col1
-  this.col2 = col2
-  this.col3 = col3
-}
 // test
 
 function validate(byte, marker) {
@@ -17,7 +11,7 @@ function validate(byte, marker) {
 }
 
 // for jump, its [sport, num jumps, ndata, hangtime, height in .01 inches]
-// swim: [sport, stroke (U, B, R, F), ndata, lap time, calories]
+// swim: [sport, stroke (U, B, R, F), ndata, lap time, calories] //REPLACE NDATA WITH STRK COUNT/BREATHS IF POSSIBLE
 // run: [sport, time walking, ndata, step count, calories]
 // unscrambles encoded byte file
 function convert(byteArr) {

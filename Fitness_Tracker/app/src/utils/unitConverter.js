@@ -1,10 +1,12 @@
 // these functions convert to the system that you pass in
+// most of these are for the edit profile form fields
 const kgToLbs = (2.20462 / 1.0)
 const lbsToKg = (1.0 / 2.20462)
 const inToCm = (2.54 / 1.0)
 const cmToIn = (1.0 / 2.54)
 const ftToCm = (30.48 / 1.0)
 
+// FOR FORMATED STRINGS
 function weightConvert(system, weight) {
   if (!system) return ""
   var parsed = weight.split(" ") // [num units]
@@ -52,6 +54,14 @@ function englishHeight(height) {
   return { feet, inches }
 }
 
+// FOR RAW DOUBLES
+// the system that the height passed in is in
+function rawHeightConvert(system, verticalHeight) {
+  // want it in metric system
+  var converted = (system === "metric") ? verticalHeight * inToCm : verticalHeight * cmToIn
+  return parseFloat(converted).toFixed(2)
+}
+
 function parseDate(date) {
   // parses the UTC date object
   var dateString = date.toString()
@@ -60,4 +70,4 @@ function parseDate(date) {
   return parsed
 }
 
-module.exports = { weightConvert, heightConvert, englishHeight, parseDate }
+module.exports = { weightConvert, heightConvert, englishHeight, parseDate, rawHeightConvert }
