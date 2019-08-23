@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 import UserProfile from "./UserProfile"
 import SearchProfile from "./SearchProfile"
+import SpaContext from '../Context';
 
 class Profile extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class Profile extends Component {
   }
 
   render() {
-    var { context } = this.props
+    var { context } = this
     var { username } = this.props.match.params
     // debugger;
     if (username === context.username) {
@@ -21,7 +22,7 @@ class Profile extends Component {
     return ( <SearchProfile context={context} /> )
   }
 }
-
+Profile.contextType = SpaContext
 const protoStyle = {
   "border": "solid",
   "marginTop": "10px"

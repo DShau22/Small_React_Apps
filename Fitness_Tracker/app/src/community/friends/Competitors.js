@@ -6,7 +6,7 @@ class Competitors extends Component {
   }
   render() {
     return (
-
+      <div></div>
     )
   }
 }

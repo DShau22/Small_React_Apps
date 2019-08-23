@@ -188,6 +188,15 @@ const UserSchema = new Schema({
     required: true,
     default: ""
   },
+  bests: {
+    type: Object,
+    require: true,
+    default: {
+      jump: -1,
+      run: -1,
+      swim: {}
+    }
+  },
   settings: {
     type: Object,
     require: true,

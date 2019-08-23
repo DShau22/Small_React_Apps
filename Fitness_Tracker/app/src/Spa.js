@@ -5,7 +5,8 @@ import {
   NavLink,
   Redirect,
   BrowserRouter,
-  Switch
+  Switch,
+  withRouter
 } from "react-router-dom";
 import {
   getFromLocalStorage,
@@ -14,6 +15,11 @@ import {
   removeFromSessionStorage,
   storageKey,
 } from './utils/storage';
+import {
+  getBests,
+  getProfile,
+  getUsername
+} from "./utils/userInfo"
 import ContextRoute from "./ContextRoute"
 import Home from "./home/Home"
 import Community from "./community/Community"
@@ -34,14 +40,17 @@ import Navbar from "./generic/Navbar"
 import io from "socket.io-client"
 
 import SpaContext from "./Context"
+import { promises } from 'fs';
 
 // server url
 const serverURL = "http://localhost:8080"
 const getUserInfoURL = serverURL + "/getUserInfo"
 const getID = "/tokenToID"
+const defaultProfile = "./profile/default_profile.png"
+
 
 // create context for storing socket throughout the Spa
-export class Spa extends Component {
+class Spa extends Component {
   _isMounted = false
   constructor(props) {
     super(props)
@@ -64,6 +73,8 @@ export class Spa extends Component {
       notification: null,
       mounted: false,
       rootURL: this.props.match.url,
+      friendTableRows: [],
+      numFriendsDisplay: 25,
       jumpJson: {
         activityData: [],
         action: "jump",
@@ -174,6 +185,48 @@ export class Spa extends Component {
     return trackedFitness
   }
 
+  visitProfile(username) {
+    // this.props.history.push(`/app/profile/${username}`)
+    debugger
+  }
+
+  /**
+   * for each friend in the friend array, return
+   * a table row to show in the friends table
+   */  
+  async addFriendRows(friends, numFriendsDisplay) {
+    var i = 0
+    var tableRows = []
+    while (i < friends.length && i < numFriendsDisplay) {
+      var { id, firstName, lastName } = friends[i]
+      var bestsProm = getBests(id)
+      var profileUrlProm = getProfile(id)
+      var usernameProm = getUsername(id)
+      Promise.all([bestsProm, profileUrlProm, usernameProm])
+      .then((userInfo) => {
+        // should return [bests (object), profileURL (string), username (string)]
+        var bests = userInfo[0]
+        var profileUrl = userInfo[1]
+        var username = userInfo[2]
+        tableRows.push(
+          <tr key={id} onClick={this.visitProfile(username)}>
+            <th scope="col">{i + 1}</th>
+            <td>
+              <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" />
+            </td>
+            <td>{firstName} {lastName}</td>
+            <td>{(bests.run > 0) ? bests.run : "N/A"}</td>
+            <td>{(bests.jump > 0) ? bests.jump : "N/A"}</td>
+            <td>swim</td>
+          </tr>
+        )
+        i += 1
+      })
+      .catch((err) => {throw err})
+    }
+    return tableRows
+  }
+
   async componentDidMount() {
     this._isMounted = true
     console.log("spa has mounted...")
@@ -200,12 +253,14 @@ export class Spa extends Component {
     var userJson = await res.json()
     console.log(userJson)
 
+    var { numFriendsDisplay } = this.state
+    var friendTableRows = await this.addFriendRows(userJson.friends, numFriendsDisplay)
+
     // get user's fitness data for jumps, runs, swims
     var jumpsTracked = await this.getActivityJson("jump")
     var swimsTracked = await this.getActivityJson("swim")
     var runsTracked = await this.getActivityJson("run")
     var gotAllInfo = userJson.success && jumpsTracked.success && swimsTracked.success && runsTracked.success
-    // debugger
     if (gotAllInfo && this._isMounted) {
       // one bug that could come up is if another setState occurred outside this function before
       // the fetch response finished running. This delayed setState would then
@@ -215,6 +270,7 @@ export class Spa extends Component {
         ...userJson,
         socket,
         mounted: true,
+        friendTableRows,
         jumpJson: {
           ...prevState.jumpJson,
           activityData: jumpsTracked.activityData 
@@ -309,3 +365,5 @@ export class Spa extends Component {
     }
   }
 }
+
+export default withRouter(Spa)

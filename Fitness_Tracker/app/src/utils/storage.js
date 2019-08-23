@@ -1,5 +1,6 @@
 // save tokens to the browser storage to remember if user signed in or not
-
+const storageKey =  "the_main_app"
+const socketStorageKey = "socket"
 function getFromLocalStorage(key) {
   if (!key) {
     return null;
@@ -60,6 +61,18 @@ function setInSessionStorage(key, obj) {
   }
 }
 
+function getToken() {
+  var lsUserToken = getFromLocalStorage(storageKey)
+  var ssUserToken = getFromSessionStorage(storageKey)
+  if (lsUserToken) {
+    return lsUserToken.token
+  } else if (ssUserToken) {
+    return ssUserToken.token
+  } else {
+    return null
+  }
+}
+
 module.exports = {
   getFromLocalStorage,
   setInLocalStorage,
@@ -67,6 +80,7 @@ module.exports = {
   removeFromSessionStorage,
   setInSessionStorage,
   getFromSessionStorage,
-  storageKey: "the_main_app",
-  socketStorageKey: "socket"
+  getToken,
+  storageKey,
+  socketStorageKey,
 }

@@ -96,6 +96,80 @@ router.get("/getUserInfo", extractToken, (req, res, next) => {
   })
 })
 
+/**
+ * Find the user with the associated ID and get their bests object
+ * for displaying a user's friends' bests
+ */
+router.post("/getBests", (req, res) => {
+  const projection = { bests: 1 }
+  var { id } = req.body
+  User.findOne(
+    {"_id": id},
+    projection,
+  )
+  .exec((err, results) => {
+    if (err) {
+      throw err
+      sendError(res, err)
+    } else if (!results) {
+      var userNotFoundError = new Error("couldn't find the user with this id")
+      sendError(res, userNotFoundError)
+    }
+    return res.send({
+      success: true,
+      ...results._doc
+    })
+  })
+})
+
+/**
+ * return profile pic url given a user ID
+ * for display a user's friends' profiles
+ */
+router.post("/getProfilePic", (req, res) => {
+  const projection = { profilePicture: 1 }
+  var { id } = req.body
+  User.findOne(
+    {"_id": id},
+    projection,
+  )
+  .exec((err, results) => {
+    if (err) {
+      throw err
+      sendError(res, err)
+    } else if (!results) {
+      var userNotFoundError = new Error("couldn't find the user with this id")
+      sendError(res, userNotFoundError)
+    }
+    return res.send({
+      success: true,
+      ...results._doc
+    })
+  })
+})
+
+router.post("/getUsername", (req, res) => {
+  const projection = { username: 1 }
+  var { id } = req.body
+  User.findOne(
+    {"_id": id},
+    projection,
+  )
+  .exec((err, results) => {
+    if (err) {
+      throw err
+      sendError(res, err)
+    } else if (!results) {
+      var userNotFoundError = new Error("couldn't find the user with this id")
+      sendError(res, userNotFoundError)
+    }
+    return res.send({
+      success: true,
+      ...results._doc
+    })
+  })
+})
+
 router.post("/checkDuplicatePic", (req, res) => {
   var form = new formidable()
   form.hash = "md5"
@@ -283,7 +357,16 @@ router.post("/acceptRequest", (req, res) => {
 router.post("/sendFriendReq", (req, res) => {
   // extract the friend's id that the user is sending a request to
   // also extract the token that is saved in local storage
-  var { friend_id, token, senderFirstName, senderLastName, senderUsername, receiverFirstName, receiverLastName, receiverUsername } = req.body
+  var { 
+    receiverID, 
+    token, 
+    senderFirstName, 
+    senderLastName, 
+    senderUsername,
+    receiverFirstName, 
+    receiverLastName, 
+    receiverUsername,
+  } = req.body
   // define a callback for async parallel
   var cb = (err, results) => {
     if (err) {
@@ -314,10 +397,10 @@ router.post("/sendFriendReq", (req, res) => {
         id: user_id,
         firstName: senderFirstName,
         lastName: senderLastName,
-        username: senderUsername
+        username: senderUsername,
       }
       User.findOneAndUpdate(
-        { '_id': friend_id},
+        { '_id': receiverID},
         { "$push": { "friendRequests": friendRequest } }
       )
       .exec((err, results) => {
@@ -331,7 +414,7 @@ router.post("/sendFriendReq", (req, res) => {
     // update sender's pending array
     function(callback) {
       var pendingJson = {
-        id: friend_id,
+        id: receiverID,
         firstName: receiverFirstName,
         lastName: receiverLastName,
         username: receiverUsername,

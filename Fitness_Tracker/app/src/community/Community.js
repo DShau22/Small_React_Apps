@@ -2,6 +2,7 @@ import {
   getFromLocalStorage,
   getFromSessionStorage,
   storageKey,
+  getToken,
 } from '../utils/storage';
 import {
   NavLink,
@@ -9,7 +10,11 @@ import {
 
 import React, { Component } from 'react'
 import Searchbar from "./Searchbar"
-import FriendRequests from "./FriendRequests"
+import FriendRequests from "./friends/FriendRequests"
+import Header from "./header/Header.js"
+import Friends from "./friends/Friends"
+
+import SpaContext from '../Context'
 import "./style/Community.css"
 const searchURL = "http://localhost:8080/searchUser"
 const friendReqURL = "http://localhost:8080/sendFriendReq"
@@ -30,6 +35,7 @@ class Community extends Component {
       searchText: "",
       showQueries: false,
       emptySearch: false,
+      numFriendsDisplay: 25,
     }
     this.renderSearch = this.renderSearch.bind(this)
     this.search = this.search.bind(this)
@@ -39,20 +45,7 @@ class Community extends Component {
     this.addFriendToState = this.addFriendToState.bind(this)
     this.removeFriendReq = this.removeFriendReq.bind(this)
     this.acceptRequest = this.acceptRequest.bind(this)
-    this.getToken = this.getToken.bind(this)
     this.clearSearch = this.clearSearch.bind(this)
-  }
-
-  getToken() {
-    var lsUserToken = getFromLocalStorage(storageKey)
-    var ssUserToken = getFromSessionStorage(storageKey)
-    if (lsUserToken) {
-      return lsUserToken.token
-    } else if (ssUserToken) {
-      return ssUserToken.token
-    } else {
-      return null
-    }
   }
 
   componentWillUnmount() {
@@ -67,7 +60,7 @@ class Community extends Component {
 
   removeFriendReq(id) {
     console.log("removing friend with id: ", id)
-    var { friendRequests } = this.props.context
+    var { friendRequests } = this.context
     // remove friend object from requests with id
     var removed = friendRequests.filter((friend) => {
       return friend.senderID !== id
@@ -79,7 +72,7 @@ class Community extends Component {
   }
 
   addFriendToState(id, firstName, lastName) {
-    var { friends } = this.props.context
+    var { friends } = this.context
     var friendObject = { id, firstName, lastName }
     this.setState({
       friends: [...friends, friendObject]
@@ -95,7 +88,7 @@ class Community extends Component {
   async search() {
     console.log("searching...")
     var { searchText } = this.state
-    var userToken = this.getToken()
+    var userToken = getToken()
 
     var reqBody = {
       searchText,
@@ -136,7 +129,7 @@ class Community extends Component {
 
   async decodeToken() {
     // send request to server to decode stored token into the user id
-    var userToken = this.getToken()
+    var userToken = getToken()
     var headers = new Headers()
     headers.append("authorization", `Bearer ${userToken}`)
     var res = await fetch(tokenToID, {method: "GET", headers})
@@ -147,12 +140,12 @@ class Community extends Component {
 
   async sendReq(_id, receiverFirstName, receiverLastName, receiverUsername) {
     // emit event using web socket to server
-    var { socket } = this.props.context
-    var { firstName, lastName, username } = this.props.context
+    var { socket } = this.context
+    var { firstName, lastName, username } = this.context
 
     // get decoded userID
     var userID = await this.decodeToken()
-    var userToken = this.getToken()
+    var userToken = getToken()
     console.log("sending request", userID)
     socket.emit("sendFriendRequest", {
       senderID: userID,
@@ -167,7 +160,7 @@ class Community extends Component {
       senderFirstName: firstName,
       senderLastName: lastName,
       senderUsername: username,
-      friend_id: _id,
+      receiverID: _id,
       receiverFirstName,
       receiverLastName,
       receiverUsername,
@@ -189,10 +182,10 @@ class Community extends Component {
 
   async acceptRequest(senderID, senderFirstName, senderLastName) {
     // SENDER refers to the FRIEND REQUEST SENDER
-    var userToken = this.getToken()
-    var { firstName, lastName } = this.props.context
+    var userToken = getToken()
+    var { firstName, lastName } = this.context
     // send notification to server
-    var { socket } = this.props.context
+    var { socket } = this.context
     var userID = this.decodeToken()
     socket.emit("acceptFriendRequest", { userID, receiverFirstName: firstName, receiverLastName: lastName, otherFriendID: senderID })
 
@@ -229,7 +222,7 @@ class Community extends Component {
   renderSearch() {
     var liTags = []
     var { searches, emptySearch } = this.state
-    var { friends, friendRequests, friendsPending, rootURL } = this.props.context
+    var { friends, friendRequests, friendsPending, rootURL } = this.context
 
     // put the user ids into a set for easy lookup
     // apparently these constructors don't work on IE 11
@@ -301,27 +294,33 @@ class Community extends Component {
   }
 
   render() {
-    var { context } = this.props
+    var { context } = this
     return (
+      //<Header />
       <div className="wrapper">
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-          crossOrigin="anonymous"
-        />
-        <h4>Search for users</h4>
-        <Searchbar
-          search={this.search}
-          onSearchTextChange={this.onSearchTextChange}
-          mouseLeave={this.mouseLeave}
-          searchText={this.state.searchText}
-        />
-        <div className={"queries" + (this.state.showQueries ? " expand" : " collapsed")}>
-          {this.renderSearch()}
+        <Header />
+        <Friends renderFriends={this.renderFriends}/>
+        <div className="searchbar-wrapper">
+          <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+            integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+            crossOrigin="anonymous"
+          />
+          <h4>Search for users</h4>
+          <Searchbar
+            search={this.search}
+            onSearchTextChange={this.onSearchTextChange}
+            mouseLeave={this.mouseLeave}
+            searchText={this.state.searchText}
+          />
+          <div className={"queries" + (this.state.showQueries ? " expand" : " collapsed")}>
+            {this.renderSearch()}
+          </div>
         </div>
+        {/* just set contexttype of friendRequests later */}
         <FriendRequests
-          userToken={this.getToken()}
+          userToken={getToken()}
           userFirstName={context.userFirstName}
           userLastName={context.userLastName}
           addFriendToState={this.addFriendToState}
@@ -336,5 +335,8 @@ class Community extends Component {
     )
   }
 }
+
+Community.contextType = SpaContext
+
 
 export default Community
