@@ -338,5 +338,4 @@ class Community extends Component {
 
 Community.contextType = SpaContext
 
-
 export default Community

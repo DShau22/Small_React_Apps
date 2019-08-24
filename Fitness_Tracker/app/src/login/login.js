@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'whatwg-fetch';
 import Spa from "../Spa"
 import {
+  getToken,
   getFromLocalStorage,
   setInLocalStorage,
   removeFromLocalStorage,
@@ -316,6 +317,7 @@ class Login extends Component {
   }
 
   render() {
+    console.log("rendering login")
     const {
       isLoading,
     } = this.state;
@@ -324,7 +326,7 @@ class Login extends Component {
       return (<div><p>Loading...</p></div>);
     }
 
-    if (!this.state.signedIn) {
+    if (!getToken()) {
       return (
         <div className="body">
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:600"></link>

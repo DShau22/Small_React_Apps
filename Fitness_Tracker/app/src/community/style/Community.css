@@ -1,3 +1,7 @@
+.friend-row {
+  cursor: pointer;
+}
+
 .searchbar-wrapper {
   display: flex;
   flex-direction: column;

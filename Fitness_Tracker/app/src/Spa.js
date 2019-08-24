@@ -9,9 +9,8 @@ import {
   withRouter
 } from "react-router-dom";
 import {
-  getFromLocalStorage,
+  getToken,
   removeFromLocalStorage,
-  getFromSessionStorage,
   removeFromSessionStorage,
   storageKey,
 } from './utils/storage';
@@ -20,6 +19,11 @@ import {
   getProfile,
   getUsername
 } from "./utils/userInfo"
+
+import Login from "./login/Login"
+import Confirmation from "./login/Confirmation"
+import PwResetPage from "./login/PwResetPage"
+
 import ContextRoute from "./ContextRoute"
 import Home from "./home/Home"
 import Community from "./community/Community"
@@ -48,13 +52,13 @@ const getUserInfoURL = serverURL + "/getUserInfo"
 const getID = "/tokenToID"
 const defaultProfile = "./profile/default_profile.png"
 
-
 // create context for storing socket throughout the Spa
 class Spa extends Component {
   _isMounted = false
   constructor(props) {
     super(props)
     this.state = {
+      signedIn: false,
       friends: [],
       friendRequests: [],
       friendsPending: [],
@@ -93,26 +97,15 @@ class Spa extends Component {
     }
     this.logout = this.logout.bind(this);
     this.setUpSocket = this.setUpSocket.bind(this)
-    this.getToken = this.getToken.bind(this)
     this.getActivityJson = this.getActivityJson.bind(this)
-  }
-
-  getToken() {
-    var lsUserToken = getFromLocalStorage(storageKey)
-    var ssUserToken = getFromSessionStorage(storageKey)
-    if (lsUserToken) {
-      return lsUserToken.token
-    } else if (ssUserToken) {
-      return ssUserToken.token
-    } else {
-      return null
-    }
+    this.addFriendRows = this.addFriendRows.bind(this)
+    this.renderHeader = this.renderHeader.bind(this)
   }
 
   setUpSocket() {
     var prom = new Promise(async (resolve, reject) => {
       // send request to get decoded user ID
-      var userToken = this.getToken()
+      var userToken = getToken()
       var headers = new Headers()
       headers.append("authorization", `Bearer ${userToken}`)
       var response = await fetch(serverURL + getID, { method: "GET", headers })
@@ -164,6 +157,7 @@ class Spa extends Component {
           isLoading: true,
           logout: true,
         });
+        this.props.history.push("/")
       })
       resolve(socket)
     })
@@ -173,7 +167,7 @@ class Spa extends Component {
   async getActivityJson(activity) {
     // CHANGE TO GET THE FIRST 10-50 ENTRIES MAYBE
     var headers = new Headers()
-    var token = this.getToken(storageKey)
+    var token = getToken()
     headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", activity)
 
@@ -187,7 +181,8 @@ class Spa extends Component {
 
   visitProfile(username) {
     // this.props.history.push(`/app/profile/${username}`)
-    debugger
+    //debugger
+    console.log("visiting...")
   }
 
   /**
@@ -195,34 +190,32 @@ class Spa extends Component {
    * a table row to show in the friends table
    */  
   async addFriendRows(friends, numFriendsDisplay) {
-    var i = 0
     var tableRows = []
-    while (i < friends.length && i < numFriendsDisplay) {
+    for (var i = 0; i < friends.length; i++) {
+      if (i === numFriendsDisplay - 1) { break }
       var { id, firstName, lastName } = friends[i]
-      var bestsProm = getBests(id)
-      var profileUrlProm = getProfile(id)
-      var usernameProm = getUsername(id)
-      Promise.all([bestsProm, profileUrlProm, usernameProm])
-      .then((userInfo) => {
-        // should return [bests (object), profileURL (string), username (string)]
-        var bests = userInfo[0]
-        var profileUrl = userInfo[1]
-        var username = userInfo[2]
-        tableRows.push(
-          <tr key={id} onClick={this.visitProfile(username)}>
-            <th scope="col">{i + 1}</th>
-            <td>
-              <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" />
-            </td>
-            <td>{firstName} {lastName}</td>
-            <td>{(bests.run > 0) ? bests.run : "N/A"}</td>
-            <td>{(bests.jump > 0) ? bests.jump : "N/A"}</td>
-            <td>swim</td>
-          </tr>
-        )
-        i += 1
-      })
-      .catch((err) => {throw err})
+      // should return [bests (object), profileURL (string), username (string)]
+      var userInfo = await Promise.all([getBests(id), getProfile(id), getUsername(id)])
+      console.log(userInfo)
+      var bests = userInfo[0]
+      var profileUrl = userInfo[1]
+      var username = userInfo[2]
+      tableRows.push(
+        <tr 
+          key={id} 
+          onClick={() => { this.props.history.push(`/app/profile/${username}`) }}
+          className="friend-row"
+        >
+          <th scope="col">{i + 1}</th>
+          <td>
+            <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" />
+          </td>
+          <td>{firstName} {lastName}</td>
+          <td>{(bests.run > 0) ? bests.run : "N/A"}</td>
+          <td>{(bests.jump > 0) ? bests.jump : "N/A"}</td>
+          <td>swim</td>
+        </tr>
+      )
     }
     return tableRows
   }
@@ -231,12 +224,15 @@ class Spa extends Component {
     this._isMounted = true
     console.log("spa has mounted...")
     // if there is no token then user hasn't logged in...
-    // log them out and redirect them back to login page
-    var userToken = this.getToken()
+    // log them out and redirect them back to login page,
+    // and don't run the rest of this method cuz it involves setting
+    // up stuff as if the user had logged in
+    var userToken = getToken()
     if (!userToken) {
       this.setState({
         logout: true
       })
+      this.props.history.push("/")
       return
     }
 
@@ -257,11 +253,14 @@ class Spa extends Component {
     var friendTableRows = await this.addFriendRows(userJson.friends, numFriendsDisplay)
 
     // get user's fitness data for jumps, runs, swims
+    // MAKE AWAIT PROMISES.ALL LATER
     var jumpsTracked = await this.getActivityJson("jump")
     var swimsTracked = await this.getActivityJson("swim")
     var runsTracked = await this.getActivityJson("run")
     var gotAllInfo = userJson.success && jumpsTracked.success && swimsTracked.success && runsTracked.success
+    console.log(gotAllInfo)
     if (gotAllInfo && this._isMounted) {
+      console.log("state setting")
       // one bug that could come up is if another setState occurred outside this function before
       // the fetch response finished running. This delayed setState would then
       // run after the other setState which could cause some mixups in which state is correct
@@ -300,69 +299,78 @@ class Spa extends Component {
     console.log(socket)
 
     // emit logout event to server
-    var userToken = this.getToken()
-    var data = {
-      userToken
-    }
+    var userToken = getToken()
+    var data = { userToken }
     socket.emit("logoutServer", data)
+  }
+
+  renderHeader() {
+    var { match } = this.props
+    // if there is a token in session or local storage...
+    if (getToken()) {
+      return (
+        <div className="header">
+          <div className="row">
+            <p>Account</p>
+          </div>
+          <div className="row">
+            <button onClick={this.logout}>Logout</button>
+            <NavLink activeClassName="navLink" to={{pathname: `${match.url}/settings`}}>Settings</NavLink>
+          </div>
+          <Navbar
+            homeURL="/app"
+            communityURL={`${match.url}/community`}
+            fitnessURL={`${match.url}/fitness`}
+            profileURL={`${match.url}/profile/${this.state.username}`}
+          />
+        </div>
+      )
+    }
   }
 
   render() {
     console.log("rendering spa...")
-    const { logout, socket } = this.state
     // console.log("socket is: ", socket)
     // console.log(socket)
-    if (logout) {
-      return (
-        <Redirect to="/login" />
-      )
-    } else {
-      var { match } = this.props
-      // CONTEXT REALLY ISN'T NECESSARY HERE. JUST CHANGE IT TO PASSING PROPS WHEN
-      // CLEANING UP THE CODEBASE
-      return (
-        <SpaContext.Provider value={this.state}>
-          <div className="container-fluid">
-              <BrowserRouter>
-                <div className="row">
-                  <p>Account</p>
-                </div>
-                <div className="row">
-                  <button onClick={this.logout}>Logout</button>
-                  <NavLink activeClassName="navLink" to={{pathname: `${match.url}/settings`}}>Settings</NavLink>
-                </div>
-                <div className="App">
-                  <Navbar
-                    homeURL="/app"
-                    communityURL={`${match.url}/community`}
-                    fitnessURL={`${match.url}/fitness`}
-                    profileURL={`${match.url}/profile/${this.state.username}`}
-                  />
-                  <div className="card text-center">
-                    <div className="card-body">
-                      <Switch>
-                        <Route exact path="/app" component={Home}/>
-                        <ContextRoute path={`${match.url}/community`} contextComp={SpaContext} component={Community}/>
-                        <Route path={`${match.url}/fitness`} component={Fitness}/>
-                        <Route path={`${match.url}/jumpDetails`} component={JumpDetails}/>
-                        <Route path={`${match.url}/swimDetails`} component={SwimDetails}/>
-                        <Route path={`${match.url}/runDetails`} component={RunDetails}/>
-                        <ContextRoute exact path={`${match.url}/profile/:username?`} contextComp={SpaContext} component={Profile}/>
-                        <ContextRoute path={`${match.url}/profile/:username?/edit`} contextComp={SpaContext} component={EditProfile}/>
-                        <ContextRoute exact path={`${match.url}/settings`} contextComp={SpaContext} component={Settings}/>
-                        <ContextRoute path={`${match.url}/settings/personal`} contextComp={SpaContext} component={Personal}/>
-                        <ContextRoute path={`${match.url}/settings/security`} contextComp={SpaContext} component={Security}/>
-                        <ContextRoute path={`${match.url}/settings/stats`} contextComp={SpaContext} component={Stats}/>
-                        <ContextRoute path={`${match.url}/settings/advanced`} contextComp={SpaContext} component={Advanced}/>
-                      </Switch>
-                    </div>
-                  </div>
-                </div>
-              </BrowserRouter>
+    var { match } = this.props
+    // CONTEXT REALLY ISN'T NECESSARY HERE. JUST CHANGE IT TO PASSING PROPS WHEN
+    // CLEANING UP THE CODEBASE
+    return (
+      <SpaContext.Provider value={this.state}>
+        <div className="container-fluid">
+          <div className="App">
+            <div className="card text-center">
+              {this.renderHeader()}
+              <div className="card-body">
+                <Switch>
+
+                  <Route exact path="/" component={Login} />
+                  <Route path="/confirmation" component={Confirmation} />
+                  <Route path="/pwResetPage" component={PwResetPage} />
+                  {/* <Route path="/app" component={Spa} /> */}
+
+                  <Route exact path="/app" component={Home}/>
+                  <ContextRoute path={`${match.url}/community`} contextComp={SpaContext} component={Community}/>
+                  <Route path={`${match.url}/fitness`} component={Fitness}/>
+                  <Route path={`${match.url}/jumpDetails`} component={JumpDetails}/>
+                  <Route path={`${match.url}/swimDetails`} component={SwimDetails}/>
+                  <Route path={`${match.url}/runDetails`} component={RunDetails}/>
+                  <ContextRoute exact path={`${match.url}/profile/:username?`} contextComp={SpaContext} component={Profile}/>
+                  <ContextRoute path={`${match.url}/profile/:username?/edit`} contextComp={SpaContext} component={EditProfile}/>
+                  <ContextRoute exact path={`${match.url}/settings`} contextComp={SpaContext} component={Settings}/>
+                  <ContextRoute path={`${match.url}/settings/personal`} contextComp={SpaContext} component={Personal}/>
+                  <ContextRoute path={`${match.url}/settings/security`} contextComp={SpaContext} component={Security}/>
+                  <ContextRoute path={`${match.url}/settings/stats`} contextComp={SpaContext} component={Stats}/>
+                  <ContextRoute path={`${match.url}/settings/advanced`} contextComp={SpaContext} component={Advanced}/>
+
+
+                </Switch>
+              </div>
+            </div>
           </div>
-        </SpaContext.Provider>
-      )
-    }
+        </div>
+      </SpaContext.Provider>
+    )
   }
 }
 
