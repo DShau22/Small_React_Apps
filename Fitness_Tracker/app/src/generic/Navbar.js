@@ -8,6 +8,11 @@ import "./sidebar.css"
 class Navbar extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      sideNavStyle: {
+        width: "0px",
+      }
+    }
   }
 
   /* Set the width of the side navigation to 250px */
@@ -19,19 +24,44 @@ class Navbar extends Component {
   closeNav() {
     document.getElementById("mySidenav").style.width = "0";
   }
+
   render() {
     var { homeURL, communityURL, fitnessURL, profileURL } = this.props
     return (
       <div>
-      <div id="mySidenav" className="sidenav">
-        <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a>
-        <NavLink className="nav-link" exact to={homeURL}>Home page</NavLink>
-        <NavLink className="nav-link" to={{pathname: communityURL}}>Community</NavLink>
-        <NavLink className="nav-link" to={{pathname: fitnessURL}}>Fitness</NavLink>
-        <NavLink className="nav-link" to={{pathname: profileURL}}>Profile</NavLink>
+        <span onClick={this.openNav}>&#9776;</span>
+        <div id="mySidenav" className="sidenav">
+          <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a>
+          <NavLink 
+            className="nav-link" 
+            exact to={homeURL} 
+            onClick={this.closeNav}
+          >
+            Home page
+          </NavLink>
+          <NavLink 
+            className="nav-link"
+            to={{pathname: communityURL}}
+            onClick={this.closeNav}
+          >
+            Community
+          </NavLink>
+          <NavLink
+            className="nav-link"
+            to={{pathname: fitnessURL}}
+            onClick={this.closeNav}
+          >
+            Fitness
+          </NavLink>
+          <NavLink
+            className="nav-link"
+            to={{pathname: profileURL}}
+            onClick={this.closeNav}
+          >
+            Profile
+          </NavLink>
+        </div>
       </div>
-      <span onClick={this.openNav}>&#9776;open</span>
-    </div>
     )
 
       // <div>

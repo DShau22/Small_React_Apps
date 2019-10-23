@@ -97,7 +97,7 @@ class Run extends Component {
     } = this.props
     var currentStatDisplay = runJson.activityData[activityIndex]
     return (
-      <div>
+      <div className="run-container">
         <div className="row">
           <div className="col">
             <Carousel

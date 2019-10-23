@@ -2,11 +2,15 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
+// for env vars
+const dotenv = require('dotenv')
+dotenv.config()
+
 //db stuff
 const mongo = require('mongodb')
 const mongoose = require('mongoose')
 const mongoLocalURL = 'mongodb://localhost:27017/tracker_dev'
-const pw = "JianKang1245*"
+const pw = process.env.MONGO_PASSWORD
 const database = "fitness-tracker"
 const mongoServerURL = `mongodb+srv://dshau22:${pw}@fitness-dev-r2ryq.mongodb.net/${database}?retryWrites=true&w=majority`
 

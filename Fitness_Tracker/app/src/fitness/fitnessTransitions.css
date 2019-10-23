@@ -1,0 +1,37 @@
+/* define transition times as variables */
+:root {
+  --fitnessFadeTransition: 300ms;
+}
+.fitnessFade-appear {
+  opacity: 0;
+}
+.fitnessFade-appear.fitnessFade-appear-active {
+  opacity: 1;
+  transition: opacity var(--fitnessFadeTransition) linear;
+}
+
+.fitnessFade-enter {
+  opacity: 0;
+}
+.fitnessFade-enter.fitnessFade-enter-active {
+  opacity: 1;
+  position: absolute;
+  z-index: 1;
+  transition: opacity var(--fitnessFadeTransition) linear var(--fitnessFadeTransition),
+}
+.fitnessFade-enter-done {
+  opacity: 1;
+}
+
+.fitnessFade-exit {
+  opacity: 1;
+}
+.fitnessFade-exit.fitnessFade-exit-active {
+  opacity: 0;
+  position: absolute;
+  z-index: 0;
+  transition: opacity var(--fitnessFadeTransition) linear,
+}
+.fitnessFade-exit-done {
+  opacity: 0;
+}

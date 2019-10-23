@@ -31,6 +31,18 @@ function getFromSessionStorage(key) {
   }
 }
 
+function getToken() {
+  var lsUserToken = getFromLocalStorage(storageKey)
+  var ssUserToken = getFromSessionStorage(storageKey)
+  if (lsUserToken) {
+    return lsUserToken.token
+  } else if (ssUserToken) {
+    return ssUserToken.token
+  } else {
+    return null
+  }
+}
+
 function setInLocalStorage(key, obj) {
   if (!key) {
     console.error('Error: Key is missing');
@@ -58,18 +70,6 @@ function setInSessionStorage(key, obj) {
     sessionStorage.setItem(key, JSON.stringify(obj));
   } catch (err) {
     console.error(err);
-  }
-}
-
-function getToken() {
-  var lsUserToken = getFromLocalStorage(storageKey)
-  var ssUserToken = getFromSessionStorage(storageKey)
-  if (lsUserToken) {
-    return lsUserToken.token
-  } else if (ssUserToken) {
-    return ssUserToken.token
-  } else {
-    return null
   }
 }
 

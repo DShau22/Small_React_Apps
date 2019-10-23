@@ -61,7 +61,7 @@ class Jump extends Component {
     var currentStatDisplay = jumpJson.activityData[activityIndex]
     console.log(pastGraphData)
     return (
-      <div>
+      <div className="jump-container">
         <div className="row">
           <div className="col">
             <Carousel

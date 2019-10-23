@@ -51,7 +51,7 @@ const RunSchema = new Schema({
     required: true,
     default: 0,
   },
-  pace: {
+  paces: {
     type: Array,
     required: true,
     default: []

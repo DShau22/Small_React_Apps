@@ -6,7 +6,7 @@ import {
   NavLink,
 } from "react-router-dom";
 import {
-  getFromStorage,
+  getToken,
   localStorageKey
 } from '../../utils/storage'
 
@@ -29,7 +29,7 @@ class JumpDetails extends Component {
   setJumpData() {
 
     var headers = new Headers()
-    var token = getFromStorage(localStorageKey).token
+    var token = getToken(localStorageKey)
     headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", "jump")
 
@@ -56,12 +56,14 @@ class JumpDetails extends Component {
           })
         } else {
           alert("couldn't request data")
+          console.log(json)
         }
       })
   }
 
   // each label corresponds to 1 jump
   makeLabels(json) {
+    debugger
     var labels = []
     for (var i = 1; i < json.heights.length + 1; i++) {
       labels.push(i)

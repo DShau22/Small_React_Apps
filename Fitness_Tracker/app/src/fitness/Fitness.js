@@ -5,6 +5,8 @@ import Jump from "./jump/Jump"
 import Swim from "./swim/Swim"
 import "./Fitness.css"
 import SpaContext from "../Context"
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import './fitnessTransitions.css'
 
 class Fitness extends Component {
   constructor(props) {
@@ -23,13 +25,13 @@ class Fitness extends Component {
     var { activityDisplay } = this.state
     var { runJson, jumpJson, swimJson } = this.context
     if (activityDisplay === "run") {
-      return ( <div> <Run activityJson={runJson}/> </div> )
+      return ( <Run id='run' activityJson={runJson}/> )
     } else if (activityDisplay === "jump") {
-      return ( <div> <Jump activityJson={jumpJson}/> </div> )
+      return ( <Jump id='jump' activityJson={jumpJson}/> )
     } else if (activityDisplay === "swim") {
-      return ( <div> <Swim activityJson={swimJson}/> </div> )
+      return ( <Swim id='swim' activityJson={swimJson}/> )
     } else {
-      return ( <div> <span>pick an activity</span> </div>)
+      return ( <div className='initial-activity-container'> <span>pick an activity</span> </div>)
       // alert("activityDisplay in the state is not run, jump, or swim...")
     }
   }
@@ -37,15 +39,16 @@ class Fitness extends Component {
   changeActivityDisplay(activity) {
     //debugger;
     this.setState({
-      activityDisplay: activity
+      activityDisplay: activity,
+      showTransition: true,
     })
   }
 
   render() {
     var { activityDisplay } = this.state
     return (
-      <div>
-        <nav className="navbar navbar-expand navbar-text sticky-top navbar-dark bg-dark">
+      <div className="fitness-container">
+        <nav className="navbar navbar-expand navbar-text sticky navbar-dark bg-dark">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item mx-4">
               <span 
@@ -75,7 +78,15 @@ class Fitness extends Component {
             </li>
           </ul>
         </nav>
-        {this.renderActivity()}
+        <TransitionGroup>
+          <CSSTransition
+            key={this.state.activityDisplay}
+            timeout={600}
+            classNames='fitnessFade'
+          >
+            { this.renderActivity() }
+          </CSSTransition>
+        </TransitionGroup>
       </div>
     )
   }

@@ -147,7 +147,7 @@ class Swim extends Component {
     var currentStatDisplay = swimJson.activityData[activityIndex]
     // 50m, 25yd, or 25m
     return (
-      <div className="container">
+      <div className="swim-container">
         <div className="row">
           <div className="col">
             <Carousel

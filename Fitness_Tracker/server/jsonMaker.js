@@ -1,5 +1,4 @@
 const date = new Date()
-const fs = require('fs')
 
 const jumpNumber = 3
 const runNumber = 2
@@ -8,6 +7,7 @@ const swimNumber = 1
 const activityNumber = 0
 
 // for jump, its [sport, num jumps, ndata, hangtime, height in .01 inches]
+// PROBABLY USE REDUCE INSTEAD TO CLEAN IT UP
 function jumpJson(converted, today, userID) {
   var numJumps = 0
   var time = 0
@@ -33,6 +33,7 @@ function jumpJson(converted, today, userID) {
   return json
 }
 //[sport, stroke (U, B, R, F), ndata, lap time, calories]
+// PROBABLY USE REDUCE INSTEAD TO CLEAN IT UP
 function swimJson(converted, today, userID) {
   var numLaps = 0,
       calories = 0,
@@ -63,6 +64,7 @@ function swimJson(converted, today, userID) {
 }
 
 // run: [sport, time walking, ndata, step count, calories]
+  // PROBABLY USE REDUCE INSTEAD TO CLEAN IT UP
 function runJson(converted, today, userID) {
   var numSteps = 0,
       calories = 0,
@@ -70,6 +72,18 @@ function runJson(converted, today, userID) {
   var prevNumSteps = 0,
       prevTime     = 0
   var paces = []
+  // PROBABLY USE REDUCE INSTEAD TO CLEAN IT UP
+  // const reducer = (prevSet, currSet) => {
+  //   prevSteps = prevSet[3]
+  //   currSteps = currSet[3]
+  //   prevTime = prevSet[1]
+  //   currTime = currSet[1]
+  //   pace = (currSteps - prevSteps) / (currTime - prevTime)
+  //   prevSet.push(pace)
+  // }
+  // const initalSet = [runNumber, 0, 0, 0, 0]
+  // var paces = converted.reduce(reducer, initalSet)
+
   converted.forEach(function(set) {
     // 2 corresponds to running
     if (set[activityNumber] === runNumber) {
