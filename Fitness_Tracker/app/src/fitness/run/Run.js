@@ -7,6 +7,7 @@ import SpaContext from '../../Context'
 import Past from "../charts/Past"
 import RunDoughnut from "./RunDoughnut"
 import withFitnessPage from "../withFitnessPage"
+import LineProgression from "../charts/LineProgression"
 const runLink = "/app/runDetails"
 
 // btw restPaceMin and walkPaceMax is walking
@@ -38,13 +39,14 @@ class Run extends Component {
       session.paces.forEach((pace, j) => {
         // if pace is somehow undefined or NaN or null then skip
         if (!(!pace || isNaN(pace))) {
-          console.log("this pace entry is corrupted somehow...")
           if (pace > walkPaceMax) {
             runCount += 1
           } else if (pace > restPaceMin && pace < walkPaceMax) {
             walkCount += 1
           }
           count += 1
+        } else {
+          console.log("this pace entry is corrupted somehow...")
         }
       })
     })
@@ -95,6 +97,9 @@ class Run extends Component {
       calcAvgCals,
       isNullOrUndefined
     } = this.props
+    // from withFitnessPage
+    // debugger;
+    alert(pastGraphData)
     var currentStatDisplay = runJson.activityData[activityIndex]
     return (
       <div className="run-container">
@@ -118,6 +123,7 @@ class Run extends Component {
             />
           </div>
           <div className="col-4" align="center">
+            don't need details for run rn
             <Details detailsLink={runLink}/>
           </div>
           <div className="col-4" align="center">
@@ -137,6 +143,12 @@ class Run extends Component {
               yAxisMin={0}
               yAxisMax={200}
             />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            line progression
+            <LineProgression />
           </div>
         </div>
         <div className="row mt-3">

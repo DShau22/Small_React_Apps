@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 // import { Doughnut, Bar, Pie } from 'react-chartjs-2';
-import DateBar from "./DateBar"
-import Past from "./Past"
+import DateBar from "../charts/DateBar"
+import Past from "../charts/Past"
 import SpaContext from "../../Context"
+import {getToken, localStorageKey} from "../../utils/storage"
 class RunDetails extends Component {
   constructor(props) {
     super(props)
@@ -20,10 +21,10 @@ class RunDetails extends Component {
   // fetches data by making request to server
   // updates the state if successfull
   setJumpData() {
-    //debugger
     var headers = new Headers()
-    headers.append("id", "id") //change to be specific in future
-    headers.append("activity", "jump")
+    var token = getToken(localStorageKey)
+    headers.append("authorization", `Bearer ${token}`)
+    headers.append("activity", "run")
 
     fetch('http://localhost:8080/data', {
       method: "GET",
@@ -36,17 +37,22 @@ class RunDetails extends Component {
         return response.json()
       })
       .then((json) => {
-        let chartLabels = this.makeLabels(json)
-        let chartData = this.getData(json)
-        this.setState({
-          labels: chartLabels,
-          data: chartData
-        })
+        if (json.success) {
+          debugger;
+          let chartLabels = this.makeLabels(json)
+          let chartData = this.getData(json)
+          this.setState({
+            labels: chartLabels,
+            data: chartData
+          })
+        } else {
+          alert(json.message)
+        }
       })
   }
 
-  // each label corresponds to 1 jump
   makeLabels(json) {
+    debugger
     var labels = []
     for (var i = 1; i < json.heights.length + 1; i++) {
       labels.push(i)
@@ -79,5 +85,6 @@ class RunDetails extends Component {
     )
   }
 }
+
 RunDetails.contextType = SpaContext
 export default RunDetails

@@ -82,6 +82,7 @@ class Jump extends Component {
             />
           </div>
           <div className="col-4" align="center">
+            don't need details from jump rn
             <Details detailsLink={jumpLink}/>
           </div>
           <div className="col-4" align="center">

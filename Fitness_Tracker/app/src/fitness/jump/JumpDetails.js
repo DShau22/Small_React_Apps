@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Doughnut, Bar, Pie } from 'react-chartjs-2';
-import DateBar from "./DateBar"
-import Past from "./Past"
+import DateBar from "../charts/DateBar"
+import Past from "../charts/Past"
 import {
   NavLink,
 } from "react-router-dom";
@@ -55,8 +55,7 @@ class JumpDetails extends Component {
             data: chartData
           })
         } else {
-          alert("couldn't request data")
-          console.log(json)
+          alert(json.message)
         }
       })
   }
