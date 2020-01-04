@@ -32,14 +32,12 @@ class Spa extends Component {
     console.log("rendering spa...")
     var { match } = this.props
     return (
-      <div className="container-fluid">
-        <div className="App">
-          <Route exact path="/" component={Login} />
-          <Route path="/confirmation" component={Confirmation} />
-          <Route path="/pwResetPage" component={PwResetPage} /> 
-          {/* intentionally render the header component with all the others (no switch) */}
-          <Route path={`${root}`} component={Header}/>
-        </div>
+      <div className="App">
+        <Route exact path="/" component={Login} />
+        <Route path="/confirmation" component={Confirmation} />
+        <Route path="/pwResetPage" component={PwResetPage} /> 
+        {/* intentionally render the header component with all the others (no switch) */}
+        <Route path={`${root}`} component={Header}/>
       </div>
     )
   }

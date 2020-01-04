@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import RedirectBox from "../generic/RedirectBox"
+import SpaContext from "../Context"
 import {
   withRouter
 } from "react-router-dom";
@@ -21,13 +22,12 @@ class Settings extends Component {
   }
   
   render() {
-    var { context, match } = this.props
-    console.log(context)
+    var { match } = this.props
     return (
       <div>
         <h3>Settings</h3>
-        <img src={`${context.profilePicture.profileURL}`} width="200" height="200"></img>
-        <h4>Welcome, {context.firstName}</h4>
+        <img src={`${this.context.profilePicture.profileURL}`} width="200" height="200"></img>
+        <h4>Welcome, {this.context.firstName}</h4>
         <p>control what you want displayed, your unit system, and password settings</p>
         <div className="grid-menu" id="settings-menu" style={protoStyle}>
           <RedirectBox redirectURL={`${match.url}/personal`} linkText={"Personal Info"}></RedirectBox>
@@ -45,6 +45,7 @@ const protoStyle = {
   "flexDirection": "row",
   "flexWrap": "wrap"
 }
+Settings.contextType = SpaContext
 
 export default withRouter(Settings)
 

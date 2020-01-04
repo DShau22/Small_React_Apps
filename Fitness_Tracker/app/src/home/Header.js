@@ -13,12 +13,13 @@ import Personal from "../settings/Personal"
 import Security from "../settings/Security"
 import Stats from "../settings/Stats"
 import Navbar from "../generic/Navbar"
+import Home from "./Home";
 
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-
+import './header.css'
 // for router transitions
 import {
   TransitionGroup,
@@ -309,25 +310,22 @@ class Header extends Component {
     // if there is a token in session or local storage...
     if (getToken()) {
       return (
-        <div className="header">
-          <div className="row">
-            <p>Account</p>
+        <div className="header w-100">
+          <div className="d-flex align-items-center w-100 h-100">
+            <div className="ml-3 mt-auto mb-auto">
+              <Navbar
+                homeURL="/app"
+                communityURL={`${match.url}/community`}
+                fitnessURL={`${match.url}/fitness`}
+                profileURL={`${match.url}/profile/${this.state.username}`}
+                settingsURL={`${match.url}/settings`}
+                logout={this.logout}
+              />
+            </div>
+            <span className='position-absolute w-100'>
+              title display
+            </span>
           </div>
-          <div className="row">
-            <button onClick={this.logout}>Logout</button>
-            <NavLink
-              activeClassName="navLink"
-              to={{pathname: `${match.url}/settings`}}
-            >
-              Settings
-            </NavLink>
-          </div>
-          <Navbar
-            homeURL="/app"
-            communityURL={`${match.url}/community`}
-            fitnessURL={`${match.url}/fitness`}
-            profileURL={`${match.url}/profile/${this.state.username}`}
-          />
         </div>
       )
     } else {
@@ -340,35 +338,34 @@ class Header extends Component {
     return (
       <div className="home-container">
         <SpaContext.Provider value={this.state}>
-          <div className="card">
-            <div className="card-body">
-              {this.renderHeader()} 
-            </div> 
-          </div>
-          <div className="card text-center">
-            <TransitionGroup>
-              <CSSTransition
-                key={this.props.location.key}
-                timeout={1000}
-                classNames="fade"
-                appear
-              >
-                <Switch location={this.props.location}>
-                  <Route path={`${root}/community`} component={Community}/>
-                  <Route path={`${root}/fitness`} component={Fitness}/>
-                  <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
-                  <Route path={`${root}/swimDetails`} component={SwimDetails}/>
-                  <Route path={`${root}/runDetails`} component={RunDetails}/>
-                  <Route exact path={`${root}/profile/:username?`} component={Profile}/>
-                  <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
-                  <Route exact path={`${root}/settings`} component={Settings}/>
-                  <Route path={`${root}/settings/personal`} component={Personal}/>
-                  <Route path={`${root}/settings/security`} component={Security}/>
-                  <Route path={`${root}/settings/stats`} component={Stats}/>
-                  <Route path={`${root}/settings/advanced`} component={Advanced}/>
-                </Switch>
-              </CSSTransition>
-            </TransitionGroup>
+          {this.renderHeader()} 
+          <div className="card text-center m-3">
+            <div className='card-body'>
+              <TransitionGroup>
+                <CSSTransition
+                  key={this.props.location.key}
+                  timeout={1000}
+                  classNames="fade"
+                  appear
+                >
+                  <Switch location={this.props.location}>
+                    <Route exact path={`${root}`} component={Home}/>
+                    <Route path={`${root}/community`} component={Community}/>
+                    <Route path={`${root}/fitness`} component={Fitness}/>
+                    <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
+                    <Route path={`${root}/swimDetails`} component={SwimDetails}/>
+                    <Route path={`${root}/runDetails`} component={RunDetails}/>
+                    <Route exact path={`${root}/profile/:username?`} component={Profile}/>
+                    <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
+                    <Route exact path={`${root}/settings`} component={Settings}/>
+                    <Route path={`${root}/settings/personal`} component={Personal}/>
+                    <Route path={`${root}/settings/security`} component={Security}/>
+                    <Route path={`${root}/settings/stats`} component={Stats}/>
+                    <Route path={`${root}/settings/advanced`} component={Advanced}/>
+                  </Switch>
+                </CSSTransition>
+              </TransitionGroup>
+            </div>
           </div>
         </SpaContext.Provider>
       </div>

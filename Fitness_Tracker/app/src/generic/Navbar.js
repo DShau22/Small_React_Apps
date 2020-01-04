@@ -11,6 +11,7 @@ class Navbar extends Component {
     this.state = {
       sideNavStyle: {
         width: "0px",
+        clicked: false,
       }
     }
   }
@@ -26,7 +27,7 @@ class Navbar extends Component {
   }
 
   render() {
-    var { homeURL, communityURL, fitnessURL, profileURL } = this.props
+    var { homeURL, communityURL, fitnessURL, profileURL, settingsURL, logout } = this.props
     return (
       <div>
         <span onClick={this.openNav}>&#9776;</span>
@@ -37,7 +38,7 @@ class Navbar extends Component {
             exact to={homeURL} 
             onClick={this.closeNav}
           >
-            Home page
+            Home
           </NavLink>
           <NavLink 
             className="nav-link"
@@ -60,36 +61,22 @@ class Navbar extends Component {
           >
             Profile
           </NavLink>
+          <NavLink
+            className='nav-link'
+            to={{pathname: settingsURL}}
+            onClick={this.closeNav}
+          >
+            Settings
+          </NavLink>
+          <span
+            className='nav-link'
+            onClick={logout}
+          >
+            Logout
+          </span>
         </div>
       </div>
     )
-
-      // <div>
-      //   <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-      //     <a className="navbar-brand" href="#">CompanyName</a>
-      //     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
-      //       <span className="navbar-toggler-icon"></span>
-      //     </button>
-      //     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      //       <ul className="navbar-nav ml-auto">
-      //         <li className="nav-item">
-      //           {/* <a className="nav-link" href="#">Home</a> */}
-      //           <NavLink className="nav-link" exact to={homeURL}>Home page</NavLink>
-      //         </li>
-      //         <li className="nav-item">
-      //           {/* <a className="nav-link" href="#">Home</a> */}
-      //           <NavLink className="nav-link" to={{pathname: communityURL}}>Community</NavLink>
-      //         </li>
-      //         <li className="nav-item">
-      //           <NavLink className="nav-link" to={{pathname: fitnessURL}}>Fitness</NavLink>
-      //         </li>
-      //         <li className="nav-item">
-      //           <NavLink className="nav-link" to={{pathname: profileURL}}>Profile</NavLink>
-      //         </li>
-      //       </ul>
-      //     </div>
-      //   </nav>
-      // </div>
   }
 }
 

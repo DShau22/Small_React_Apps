@@ -27,17 +27,9 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <BrowserRouter>
-          <Spa />
-        </BrowserRouter>
-        {/* <BrowserRouter>
-          <Route path="/login" component={Login} />
-          <Route path="/confirmation" component={Confirmation} />
-          <Route path="/pwResetPage" component={PwResetPage} />
-          <Route path="/app" component={Spa} />
-        </BrowserRouter> */}
-      </div>
+      <BrowserRouter>
+        <Spa />
+      </BrowserRouter>
     )
   }
 }
