@@ -47,7 +47,7 @@ class Carousel extends React.Component {
           >
             {displayDate()}
           </button>
-          <div className="dropdown-menu">
+          <div className="dropdown-menu activities-dropdown">
             {this.getDropdownDates(stats)}
           </div>
         </div>

@@ -5,6 +5,11 @@
   justify-content: center;
   flex-direction: column;
 }
+.carousel .activities-dropdown {
+  height: auto;
+  max-height: 250px;
+  overflow-x: hidden;
+}
 .carousel #details.routeButton {
   margin-top: 20px;
 }

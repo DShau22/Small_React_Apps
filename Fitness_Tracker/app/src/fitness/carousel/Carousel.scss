@@ -12,6 +12,12 @@ $jump-theme: #f39ef3;
   justify-content: center;
   flex-direction: column;
 
+  .activities-dropdown {
+    height: auto;
+    max-height: 250px;
+    overflow-x: hidden;
+  }
+
   #details.routeButton {
     margin-top: 20px;
   }
