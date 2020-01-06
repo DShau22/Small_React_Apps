@@ -1,37 +1,44 @@
-/* define transition times as variables */
-:root {
-  --fitnessFadeTransition: 300ms;
+.fitness-container .no-activity-container {
+  height: 80vw;
 }
-.fitnessFade-appear {
-  opacity: 0;
+.fitness-container .fitness-header {
+  text-align: left;
 }
-.fitnessFade-appear.fitnessFade-appear-active {
-  opacity: 1;
-  transition: opacity var(--fitnessFadeTransition) linear;
+.fitness-container nav {
+  width: 100%;
+  border-bottom: 1px solid gray;
+}
+.fitness-container nav span {
+  border-radius: 20%;
+}
+.fitness-container nav span.active {
+  background-color: #8fcde5;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+.fitness-container .threeDisplay {
+  background-color: #005DFF;
+}
+.fitness-container .duration-circle {
+  height: 75px;
+  width: 75px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.fitness-container .calories-circle {
+  height: 75px;
+  width: 75px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.fitnessFade-enter {
-  opacity: 0;
-}
-.fitnessFade-enter.fitnessFade-enter-active {
-  opacity: 1;
-  position: absolute;
-  z-index: 1;
-  transition: opacity var(--fitnessFadeTransition) linear var(--fitnessFadeTransition),
-}
-.fitnessFade-enter-done {
-  opacity: 1;
-}
-
-.fitnessFade-exit {
-  opacity: 1;
-}
-.fitnessFade-exit.fitnessFade-exit-active {
-  opacity: 0;
-  position: absolute;
-  z-index: 0;
-  transition: opacity var(--fitnessFadeTransition) linear,
-}
-.fitnessFade-exit-done {
-  opacity: 0;
-}
+/*# sourceMappingURL=fitnessTransitions.css.map */

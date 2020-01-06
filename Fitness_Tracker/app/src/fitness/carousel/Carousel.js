@@ -57,6 +57,7 @@ class Carousel extends React.Component {
             direction="left"
             clickFunction={ previousSlide }
             glyph="&#8249;"
+            activity={stats.action}
           />
 
           <ImageSlide
@@ -69,6 +70,7 @@ class Carousel extends React.Component {
             direction="right"
             clickFunction={ nextSlide }
             glyph="&#8250;"
+            activity={stats.action}
           />
         </div>
       </div>

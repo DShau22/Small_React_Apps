@@ -31,8 +31,7 @@ class Fitness extends Component {
     } else if (activityDisplay === "swim") {
       return ( <Swim id='swim' activityJson={swimJson}/> )
     } else {
-      return ( <div className='initial-activity-container'> <span>pick an activity</span> </div>)
-      // alert("activityDisplay in the state is not run, jump, or swim...")
+      return ( <div className='no-activity-container'> <span>pick an activity</span> </div>)
     }
   }
 
@@ -48,11 +47,12 @@ class Fitness extends Component {
     var { activityDisplay } = this.state
     return (
       <div className="fitness-container">
-        <nav className="navbar navbar-expand navbar-text sticky navbar-dark bg-dark">
+        <div className="card-header fitness-header">Activity:</div>
+        <nav className="navbar navbar-expand navbar-text sticky bg-light">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item mx-4">
               <span 
-                className={(activityDisplay === "run") ? "nav-link active" : "nav-link"}
+                className={`run-link nav-link ${(activityDisplay === "run") ? "active" : ""}`}
                 onClick={() => {this.changeActivityDisplay("run")}}
               >
                 Run
@@ -60,18 +60,16 @@ class Fitness extends Component {
             </li>
             <li className="nav-item mx-4">
               <span
-                className="nav-link"
+                className={`swim-link nav-link ${(activityDisplay === "swim") ? "active" : ""}`}
                 onClick={() => {this.changeActivityDisplay("swim")}}
-                className={(activityDisplay === "swim") ? "nav-link active" : "nav-link"}
               >
                 Swim
               </span>
             </li>
             <li className="nav-item mx-4">
               <span
-                className="nav-link"
+                className={`jump-link nav-link ${(activityDisplay === "jump") ? "active" : ""}`}
                 onClick={() => {this.changeActivityDisplay("jump")}}
-                className={(activityDisplay === "jump") ? "nav-link active" : "nav-link"}
               >
                 Jump
               </span>

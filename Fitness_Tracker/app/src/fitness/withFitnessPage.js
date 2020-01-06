@@ -128,6 +128,18 @@ export default function withFitnessPage( WrappedComponent ) {
       this.setState({ activityIndex: nextIndex })
     }
 
+    // given the total time of physical activity of user, make an array of labels
+    // for time series data. NumIntervals is for if splitBySeconds=False, and 
+    // specifies the number of labels to use. secondsInterval will split the whole
+    // time into chunks of size secondsInterval. 
+    makeTimeSeries(time, numIntervals, secondsInterval, splitBySeconds) {
+      if (splitBySeconds) {
+
+      } else {
+        
+      }
+    }
+
     render() {
       var { activityJson } = this.props
       var { activityIndex, pastGraphData, pastGraphLabels } = this.state

@@ -7,7 +7,7 @@ import SpaContext from '../../Context'
 import Past from "../charts/Past"
 import RunDoughnut from "./RunDoughnut"
 import withFitnessPage from "../withFitnessPage"
-import LineProgression from "../charts/LineProgression"
+import PaceLineProgression from "../charts/PaceLineProgression"
 const runLink = "/app/runDetails"
 
 // btw restPaceMin and walkPaceMax is walking
@@ -99,23 +99,19 @@ class Run extends Component {
     } = this.props
     // from withFitnessPage
     // debugger;
-    alert(pastGraphData)
+    //alert(pastGraphData)
     var currentStatDisplay = runJson.activityData[activityIndex]
     return (
       <div className="run-container">
-        <div className="row">
-          <div className="col">
-            <Carousel
-              stats={runJson}
-              previousSlide={previousSlide}
-              nextSlide={nextSlide}
-              activityIndex={activityIndex}
-              displayDate={displayDate}
-              dropdownItemClick={dropdownItemClick}
-              renderSecondary={this.estimateDistanceRun}
-            />
-          </div>
-        </div>
+        <Carousel
+          stats={runJson}
+          previousSlide={previousSlide}
+          nextSlide={nextSlide}
+          activityIndex={activityIndex}
+          displayDate={displayDate}
+          dropdownItemClick={dropdownItemClick}
+          renderSecondary={this.estimateDistanceRun}
+        />
         <div className="row">
           <div className="col-4" align="center">
             <Calories 
@@ -148,7 +144,10 @@ class Run extends Component {
         <div className="row">
           <div className="col">
             line progression
-            <LineProgression />
+            <PaceLineProgression
+              activity="Runs"
+              displayDate={displayDate}
+            />
           </div>
         </div>
         <div className="row mt-3">

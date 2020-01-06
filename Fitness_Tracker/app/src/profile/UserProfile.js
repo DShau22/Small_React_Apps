@@ -6,7 +6,7 @@ import {
   withRouter
 } from "react-router-dom";
 import { englishHeight }from "../utils/unitConverter"
-
+import SpaContext from '../Context';
 class UserProfile extends Component {
   constructor(props) {
     super(props)
@@ -25,7 +25,7 @@ class UserProfile extends Component {
   }
 
   renderBio() {
-    var { bio } = this.props.context
+    var { bio } = this.context
     // var { displayBio } = settings
     if (bio /* && displayBio */) {
       return (
@@ -38,7 +38,7 @@ class UserProfile extends Component {
   }
 
   renderGender() {
-    var { gender } = this.props.context
+    var { gender } = this.context
     // var { displayGender } = settings
     if (gender /* && displayGender */) {
       return (
@@ -51,7 +51,7 @@ class UserProfile extends Component {
   }
 
   renderHeight() {
-    var { height, settings } = this.props.context
+    var { height, settings } = this.context
     var { unitSystem } = settings
     unitSystem = unitSystem.toLowerCase()
     // var { displayHeight } = settings
@@ -69,7 +69,7 @@ class UserProfile extends Component {
   }
 
   renderWeight() {
-    var { weight, settings } = this.props.context
+    var { weight, settings } = this.context
     var { unitSystem } = settings
     unitSystem = unitSystem.toLowerCase()
     var units = (unitSystem === "english") ? "lbs" : "kg"
@@ -89,7 +89,7 @@ class UserProfile extends Component {
   }
 
   renderNumFriends() {
-    var { friends } = this.props.context
+    var { friends } = this.context
     return (
       <p>{"friends: " + friends.length}</p>
     )
@@ -101,7 +101,7 @@ class UserProfile extends Component {
       // debugger;
       return ( <Redirect to={{pathname: `${this.props.match.url}/edit`,}}/> )
     }
-    if (this.props.context.mounted) {
+    if (this.context.mounted) {
       return (
         <div className="profile-container" style={protoStyle}>
           <div className="edit-container" style={protoStyle}>
@@ -116,7 +116,7 @@ class UserProfile extends Component {
           </div>
           <div className="profile-picture-container" style={protoStyle}>
             <p>image goes here...</p>
-            <img src={this.props.context.profilePicture.profileURL} height="50" width="50" />
+            <img src={this.context.profilePicture.profileURL} height="50" width="50" />
           </div>
           <div className="weight-container" style={protoStyle}>
             {this.renderWeight()}
@@ -145,7 +145,7 @@ class UserProfile extends Component {
     }
   }
 }
-
+UserProfile.contextType = SpaContext
 const protoStyle = {
   "border": "solid",
   "marginTop": "10px"

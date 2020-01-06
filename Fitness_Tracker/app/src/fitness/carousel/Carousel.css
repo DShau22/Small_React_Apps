@@ -22,7 +22,6 @@
   margin-top: 15px;
   width: 200px;
   border: solid;
-  border-color: blueviolet;
   border-radius: 50%;
   background-color: white;
   display: flex;
@@ -30,17 +29,34 @@
   justify-content: center;
   flex-direction: column;
 }
-.carousel .slideShow .slide-arrow-right {
-  color: #14B6D4;
+.carousel .slideShow .imageSlide.run {
+  border-color: #9cf0b1;
+}
+.carousel .slideShow .imageSlide.swim {
+  border-color: #9cbcf0;
+}
+.carousel .slideShow .imageSlide.jump {
+  border-color: #f39ef3;
+}
+.carousel .slideShow .slide-arrow {
   cursor: pointer;
   font-size: 3rem;
   margin-left: 8px;
 }
-.carousel .slideShow .slide-arrow-left {
-  color: #14B6D4;
-  cursor: pointer;
-  font-size: 3rem;
+.carousel .slideShow .slide-arrow.right {
+  margin-left: 8px;
+}
+.carousel .slideShow .slide-arrow.left {
   margin-right: 8px;
+}
+.carousel .slideShow .slide-arrow.run {
+  color: #9cf0b1;
+}
+.carousel .slideShow .slide-arrow.swim {
+  color: #9cbcf0;
+}
+.carousel .slideShow .slide-arrow.jump {
+  color: #f39ef3;
 }
 
 /*# sourceMappingURL=Carousel.css.map */

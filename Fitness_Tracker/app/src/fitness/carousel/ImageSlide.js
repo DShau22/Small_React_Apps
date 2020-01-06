@@ -44,7 +44,7 @@ class ImageSlide extends Component {
   render() {
     var { stats, indexDisplay, renderSecondary } = this.props
     return (
-      <div className="imageSlide">
+      <div className={`imageSlide ${stats.action}`}> 
         <img src={stats.imageUrl} alt="loading..."/>
         {this.renderNum(stats, indexDisplay)}
         {renderSecondary()}

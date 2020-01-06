@@ -17,9 +17,9 @@ class Profile extends Component {
     // debugger;
     if (username === context.username) {
       // this is the same user who is looking at their own profile
-      return ( <UserProfile context={context}/> )
+      return ( <UserProfile/> )
     }
-    return ( <SearchProfile context={context} /> )
+    return ( <SearchProfile/> )
   }
 }
 Profile.contextType = SpaContext

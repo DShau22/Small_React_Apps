@@ -6,6 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { englishHeight }from "../utils/unitConverter"
+import SpaContext from '../Context';
 
 export default class SearchProfile extends Component {
   // constructor(props) {
@@ -146,7 +147,7 @@ export default class SearchProfile extends Component {
     // }
   }
 }
-
+SearchProfile.contextType = SpaContext
 const protoStyle = {
   "border": "solid",
   "marginTop": "10px"

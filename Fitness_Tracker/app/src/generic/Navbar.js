@@ -4,6 +4,9 @@ import {
   withRouter
 } from "react-router-dom";
 import "./sidebar.css"
+import SpaContext from '../Context';
+
+
 
 class Navbar extends Component {
   constructor(props) {
@@ -12,29 +15,33 @@ class Navbar extends Component {
       sideNavStyle: {
         width: "0px",
         clicked: false,
+        selected: ""
       }
     }
   }
 
-  /* Set the width of the side navigation to 250px */
+  /* Set the width of the side navigation to 65%. MAKE SURE PARENT HAS WIDTH */
   openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("mySidenav").style.width = "65%";
   }
 
   /* Set the width of the side navigation to 0 */
-  closeNav() {
+  closeNav(e) {
     document.getElementById("mySidenav").style.width = "0";
   }
 
   render() {
     var { homeURL, communityURL, fitnessURL, profileURL, settingsURL, logout } = this.props
     return (
-      <div>
-        <span onClick={this.openNav}>&#9776;</span>
+      <div className="navbar-container">
+        <span className="expander" onClick={this.openNav}>&#9776;</span>
         <div id="mySidenav" className="sidenav">
           <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a>
+          <div className="prof-pic-container">
+            <img src={this.context.profilePicture.profileURL} height="75%" width="75%" />
+          </div>
           <NavLink 
-            className="nav-link" 
+            className='nav-link'
             exact to={homeURL} 
             onClick={this.closeNav}
           >
@@ -79,5 +86,5 @@ class Navbar extends Component {
     )
   }
 }
-
+Navbar.contextType = SpaContext
 export default withRouter(Navbar)

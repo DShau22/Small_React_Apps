@@ -312,7 +312,10 @@ class Header extends Component {
       return (
         <div className="header w-100">
           <div className="d-flex align-items-center w-100 h-100">
-            <div className="ml-3 mt-auto mb-auto">
+            <span className='header-title position-absolute w-100'>
+              title display
+            </span>
+            <div className="navbar-container ml-3 mt-auto mb-auto">
               <Navbar
                 homeURL="/app"
                 communityURL={`${match.url}/community`}
@@ -322,9 +325,6 @@ class Header extends Component {
                 logout={this.logout}
               />
             </div>
-            <span className='position-absolute w-100'>
-              title display
-            </span>
           </div>
         </div>
       )
@@ -340,32 +340,30 @@ class Header extends Component {
         <SpaContext.Provider value={this.state}>
           {this.renderHeader()} 
           <div className="card text-center m-3">
-            <div className='card-body'>
-              <TransitionGroup>
-                <CSSTransition
-                  key={this.props.location.key}
-                  timeout={1000}
-                  classNames="fade"
-                  appear
-                >
-                  <Switch location={this.props.location}>
-                    <Route exact path={`${root}`} component={Home}/>
-                    <Route path={`${root}/community`} component={Community}/>
-                    <Route path={`${root}/fitness`} component={Fitness}/>
-                    <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
-                    <Route path={`${root}/swimDetails`} component={SwimDetails}/>
-                    <Route path={`${root}/runDetails`} component={RunDetails}/>
-                    <Route exact path={`${root}/profile/:username?`} component={Profile}/>
-                    <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
-                    <Route exact path={`${root}/settings`} component={Settings}/>
-                    <Route path={`${root}/settings/personal`} component={Personal}/>
-                    <Route path={`${root}/settings/security`} component={Security}/>
-                    <Route path={`${root}/settings/stats`} component={Stats}/>
-                    <Route path={`${root}/settings/advanced`} component={Advanced}/>
-                  </Switch>
-                </CSSTransition>
-              </TransitionGroup>
-            </div>
+            <TransitionGroup>
+              <CSSTransition
+                key={this.props.location.key}
+                timeout={1000}
+                classNames="fade"
+                appear
+              >
+                <Switch location={this.props.location}>
+                  <Route exact path={`${root}`} component={Home}/>
+                  <Route path={`${root}/community`} component={Community}/>
+                  <Route path={`${root}/fitness`} component={Fitness}/>
+                  <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
+                  <Route path={`${root}/swimDetails`} component={SwimDetails}/>
+                  <Route path={`${root}/runDetails`} component={RunDetails}/>
+                  <Route exact path={`${root}/profile/:username?`} component={Profile}/>
+                  <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
+                  <Route exact path={`${root}/settings`} component={Settings}/>
+                  <Route path={`${root}/settings/personal`} component={Personal}/>
+                  <Route path={`${root}/settings/security`} component={Security}/>
+                  <Route path={`${root}/settings/stats`} component={Stats}/>
+                  <Route path={`${root}/settings/advanced`} component={Advanced}/>
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
           </div>
         </SpaContext.Provider>
       </div>

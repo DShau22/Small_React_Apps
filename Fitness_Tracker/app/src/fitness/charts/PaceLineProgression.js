@@ -6,7 +6,7 @@ export default class LineProgression extends Component {
     super(props)
   }
   render() {
-    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax } = this.props
+    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax, displayDate } = this.props
     /**
      * labels: for the x axis have time
      * data: paces data array
@@ -31,7 +31,7 @@ export default class LineProgression extends Component {
           options={{
             maintainAspectRatio: true,
             title: {
-              text: "Previous " + activity,
+              text: `pace on ${displayDate()}`,
               display: true,
               fontSize: 16
             },

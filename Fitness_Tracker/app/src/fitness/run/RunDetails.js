@@ -38,7 +38,7 @@ class RunDetails extends Component {
       })
       .then((json) => {
         if (json.success) {
-          debugger;
+          // debugger;
           let chartLabels = this.makeLabels(json)
           let chartData = this.getData(json)
           this.setState({
@@ -52,7 +52,7 @@ class RunDetails extends Component {
   }
 
   makeLabels(json) {
-    debugger
+    // debugger
     var labels = []
     for (var i = 1; i < json.heights.length + 1; i++) {
       labels.push(i)
