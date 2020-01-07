@@ -6,7 +6,7 @@ class SignUp extends Component {
     return (
       <div className="sign-up-htm">
         <form id="signup-form" onSubmit={this.props.onSubmit}>
-          <div className="group">
+          <div className="group mt-3">
             <label htmlFor="signup-email" className="label">Email Address</label>
             <input
               id="signup-email"

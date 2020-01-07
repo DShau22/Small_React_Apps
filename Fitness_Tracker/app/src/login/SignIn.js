@@ -12,19 +12,18 @@ class SignIn extends Component {
     }
     this.renderPwReset = this.renderPwReset.bind(this)
     this.onForgetPwChange = this.onForgetPwChange.bind(this)
-    this.showReset = this.showReset.bind(this)
+    this.toggleReset = this.toggleReset.bind(this)
     this.submitForgotPw = this.submitForgotPw.bind(this)
   }
 
   renderPwReset() {
-    if (this.state.showPwReset) {
-      return (
-        <PwReset
-          onChange={this.onForgetPwChange}
-          onSubmit={this.submitForgotPw}
-        />
-      )
-    }
+    return (
+      <PwReset
+        onChange={this.onForgetPwChange}
+        onSubmit={this.submitForgotPw}
+        showPwReset={this.state.showPwReset}
+      />
+    )
   }
 
   async submitForgotPw() {
@@ -65,18 +64,19 @@ class SignIn extends Component {
     })
   }
 
-  showReset() {
+  toggleReset() {
+    let { showPwReset } = this.state
     this.setState({
-      showPwReset: true
+      showPwReset: !showPwReset
+      // showPwReset: true
     })
   }
 
   render() {
     return (
-
       <div className="sign-in-htm">
         <form id="signin-form" onSubmit={this.props.onSignIn}>
-          <div className="group">
+          <div className="group mt-3">
             <label htmlFor="login-email" className="label">Email</label>
             <input
               id="login-email"
@@ -107,7 +107,7 @@ class SignIn extends Component {
           <div className="hr"></div>
         </form>
         <div className="foot-lnk">
-          <p id="forgot-link" onClick={this.showReset}>Forgot Password?</p>
+          <p id="forgot-link" onClick={this.toggleReset}>Forgot Password?</p>
           {this.renderPwReset()}
         </div>
       </div>
