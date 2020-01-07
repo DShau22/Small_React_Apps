@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
-import { Bar } from 'react-chartjs-2';
-
+import { Chart, Bar } from 'react-chartjs-2';
+import Hammer from "hammerjs";
+import zoom from 'chartjs-plugin-zoom'
 class Past extends Component {
   constructor(props) {
     super(props)
   }
+
+  componentWillMount(){
+    Chart.pluginService.register(zoom)
+  }
+
   render() {
-    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax } = this.props
+    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax, chartTitle } = this.props
     return (
       <div>
         <Bar
@@ -22,8 +28,34 @@ class Past extends Component {
           }}
           options={{
             maintainAspectRatio: true,
+            plugins: {
+              zoom: false,
+              // zoom: {
+              //   zoom: {
+              //     enable: false,
+              //   },
+              //   pan: {
+              //     // Boolean to enable panning
+              //     enabled: true,
+
+              //     // Panning directions. Remove the appropriate direction to disable
+              //     // Eg. 'y' would only allow panning in the y direction
+              //     // A function that is called as the user is panning and returns the
+              //     // available directions can also be used:
+              //     //   mode: function({ chart }) {
+              //     //     return 'xy';
+              //     //   },
+              //     mode: 'x',
+
+              //     // Function called while the user is panning
+              //     onPan: function({chart}) { console.log(`I'm panning!!!`); },
+              //     // Function called once panning is completed
+              //     onPanComplete: function({chart}) { console.log(`I was panned!!!`); }
+              //   }
+              // }
+            },
             title: {
-              text: "Previous " + activity,
+              text: chartTitle,
               display: true,
               fontSize: 16
             },

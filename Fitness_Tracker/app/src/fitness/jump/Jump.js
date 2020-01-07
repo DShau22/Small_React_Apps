@@ -82,8 +82,8 @@ class Jump extends Component {
             />
           </div>
           <div className="col-4" align="center">
-            don't need details from jump rn
-            <Details detailsLink={jumpLink}/>
+            {/* don't need details from jump rn
+            <Details detailsLink={jumpLink}/> */}
           </div>
           <div className="col-4" align="center">
             <Duration 
@@ -95,6 +95,7 @@ class Jump extends Component {
           {/* eventually configure the min and max of y axis */}
           <div className="col">
             <Past
+              chartTitle="Previous Sessions"
               labels={pastGraphLabels}
               data={pastGraphData}
               hoverLabel="Jumps"

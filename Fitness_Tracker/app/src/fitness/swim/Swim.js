@@ -180,6 +180,7 @@ class Swim extends Component {
           {/* eventually configure the min and max of y axis */}
           <div className="col">
             <Past
+              chartTitle="Previous Swims"
               labels={pastGraphLabels}
               data={pastGraphData}
               hoverLabel="Laps"

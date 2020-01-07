@@ -12,8 +12,11 @@ export default function RunDoughnut( props ) {
           labels: props.labels
         }}
         options={{
+          plugins: {
+            zoom: false,
+          },
           legend: {
-            display: false
+            display: true,
           },
           responsive: true,
           maintainAspectRatio: false,

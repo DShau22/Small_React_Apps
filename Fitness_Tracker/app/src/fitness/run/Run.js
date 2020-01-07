@@ -83,6 +83,20 @@ class Run extends Component {
     return "estimated dist"
   }
 
+  // returns an array of time labels for a given paces array
+  // and the total time the user spent on running mode
+  makePaceLabels(paces, totalTime) {
+    let timeInterval = Math.floor(totalTime / paces.length)
+    let timeSeries = Array(paces.length)
+
+    // add 1 to length of paces array cuz you wanna start with 0
+    // on the display chart
+    for (let i = 0; i < paces.length + 1; i++) {
+      timeSeries[i] = `${Math.floor(timeInterval * i / 10)} sec`
+    }
+    return timeSeries
+  }
+
   render() {
     var { runJson } = this.context
     var {
@@ -101,6 +115,7 @@ class Run extends Component {
     // debugger;
     //alert(pastGraphData)
     var currentStatDisplay = runJson.activityData[activityIndex]
+    console.log(currentStatDisplay)
     return (
       <div className="run-container">
         <Carousel
@@ -119,8 +134,7 @@ class Run extends Component {
             />
           </div>
           <div className="col-4" align="center">
-            don't need details for run rn
-            <Details detailsLink={runLink}/>
+            
           </div>
           <div className="col-4" align="center">
             <Duration 
@@ -132,6 +146,7 @@ class Run extends Component {
           {/* eventually configure the min and max of y axis */}
           <div className="col">
             <Past
+              chartTitle="Previous Runs"
               labels={pastGraphLabels}
               data={pastGraphData}
               hoverLabel="Steps"
@@ -143,10 +158,14 @@ class Run extends Component {
         </div>
         <div className="row">
           <div className="col">
-            line progression
             <PaceLineProgression
-              activity="Runs"
+              activity="Pace Progression"
               displayDate={displayDate}
+              data={[0, ...currentStatDisplay.paces]} // add 0 to beginning of paces array to indicate 0 pace at time 0
+              labels={this.makePaceLabels(currentStatDisplay.paces, currentStatDisplay.time)}
+              hoverLabel="Pace"
+              yAxisMin={0}
+              yAxisMax={Math.max(...currentStatDisplay.paces) + 2}
             />
           </div>
         </div>

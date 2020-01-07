@@ -62,7 +62,7 @@ class JumpDetails extends Component {
 
   // each label corresponds to 1 jump
   makeLabels(json) {
-    debugger
+    // debugger
     var labels = []
     for (var i = 1; i < json.heights.length + 1; i++) {
       labels.push(i)

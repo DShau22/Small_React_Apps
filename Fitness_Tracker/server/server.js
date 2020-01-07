@@ -35,9 +35,10 @@ const usersRouter = require("./routes/users")
 var idMap = {}
 
 // configure and use cors options
+// CHANGE THIS LATER AT SOME POINT
 var corsOptions = {
-  // origin: '*',
-  origin: 'http://localhost:3000',
+  origin: '*',
+//   origin: 'http://localhost:3000',
   optionsSuccessStatus: 200,
 }
 app.use(cors(corsOptions))

@@ -14,7 +14,7 @@ export default function SwimDoughnut( props ) {
         }}
         options={{
           legend: {
-            display: false
+            display: false,
           },
           responsive: true,
           maintainAspectRatio: false,
