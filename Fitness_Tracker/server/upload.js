@@ -78,47 +78,57 @@ function parseAuthHeader(auth) {
   return bearerToken
 }
 
-module.exports = function upload(req, res) {
+module.exports = function upload(req, res, next) {
 
   var form = new IncomingForm()
-  form.parse(req, function(err, fields, files) {
+  form.parse(req, async function(err, fields, files) {
     if (err) throw err
     console.log("parsing form...")
-    var filePath = files.uploadedFile.path
-    // returns promise to convert encoded file to correct byte file
-    var convertProm = reader.readEncoded(filePath)
+    console.log(files)
+    var converted;
+    // convert encoded file to correct byte file
+    try {
+      var filePath = files.uploadedFile.path
+      converted = await reader.readEncoded(filePath)
+    } catch(e) {
+      console.log("error converted the uploaded file")
+      throw e
+    }
 
-    convertProm.then(function(converted) {
-      jwt.verify(parseAuthHeader(req.headers['authorization']), secret, function(err, decoded) {
-        // invalid token!
-        if (err) {
-          return res.send({
-            success: false,
-            message: err.toString()
-          })
-        }
+    jwt.verify(parseAuthHeader(req.headers['authorization']), secret, function(err, decoded) {
+      console.log("verifying...")
+      // invalid token!
+      if (err) {
+        return res.send({
+          success: false,
+          message: err.toString()
+        })
+      }
 
-        console.log("decoded is: ", decoded)
-        // pass the converted byte file and the decoded _id to make activity jsons
+      console.log("decoded is: ", decoded)
+      // pass the converted byte file and the decoded _id to make activity jsons
+      try {
         var activityJson = jsonMaker.toJson(converted, decoded._id)
         var jumpJson = activityJson.jumpJson
         var runJson = activityJson.runJson
         var swimJson = activityJson.swimJson
+      } catch (e) {
+        console.error(e)
+        return res.send({
+          success: false,
+          err: e
+        })
+      }
 
-        var result = update(jumpJson, runJson, swimJson)
-        if (result.success) {
-          return res.send({
-            success: true
-          })
-        } else {
-          // something went wrong with uploading the database. Probably schema didn't match
-          return res.status(500).send(result)
-        }
-      })
-    })
-    convertProm.catch(function(err) {
-      console.log("something went wrong with reading the encoded file")
-      throw err
+      var result = update(jumpJson, runJson, swimJson)
+      if (result.success) {
+        return res.send({
+          success: true
+        })
+      } else {
+        // something went wrong with uploading the database. Probably schema didn't match
+        return res.status(500).send(result)
+      }
     })
   })
 }

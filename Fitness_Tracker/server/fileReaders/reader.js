@@ -1,129 +1,105 @@
 const fs = require('fs')
+const util = require('util');
+const fsRead = util.promisify(fs.read);
+const fsOpen = util.promisify(fs.open);
 
-// test
+// all the characters that the first marker byte could be
+const markerSet = new Set(['0','1','3','4','5','A','B','C','D','F','J','K','L','O','S','T','U','R','W','Y','Z'])
+const semicolon_ascii = ";".charCodeAt(0)
 
-function validate(byte, marker) {
-  if (byte !== marker) {
-    console.log("***********NOT A VALID FILE************")
-    console.log("expected: ", marker, "actual: ", byte)
+// IF THIS IS FALSE, SEND A FAILED REQUEST SOMEHOW
+function validate(byte, idx) {
+  let string_representation = String.fromCharCode(byte)
+  console.log(string_representation)
+  if (!markerSet.has(string_representation)) {
+    console.log("*********** NOT A VALID FILE ************")
   }
+  return markerSet.has(string_representation)
+} 
+
+function merge_two_bytes(first8, second8) {
+  two_byte = parseInt("0x0000");
+  two_byte = two_byte | (first8 << 8);
+  two_byte = two_byte | second8;
+  return two_byte
 }
 
-// for jump, its [sport, num jumps, ndata, hangtime, height in .01 inches]
-// swim: [sport, stroke (U, B, R, F), ndata, lap time, calories] //REPLACE NDATA WITH STRK COUNT/BREATHS IF POSSIBLE
-// run: [sport, time walking, ndata, step count, calories]
+function merge_three_bytes(first8, second8, third8) {
+  three_byte = parseInt("0x00000000");
+  three_byte = three_byte | (first8 << 16)
+  three_byte = three_byte | (second8 << 8)
+  three_byte = three_byte | (third8)
+  return three_byte
+}
+
+// jump[0]: '3' (report height), '4' (report hangtime), '5' (bball)
+// jump[1]: hangtime in .02s
+// jump[2]: ndata .02s, jump[3]: bs, jump[4]: # jumps, jump[5]: 10*(# baskets made)
+// swim[0]: stroke, swim[1]: lap count, swim[2]: ndata in .1s, swim[3]: 55 or junk, 55 mean ended swim
+// swim[4]: laptime, swim[5]: cals
+// run[0]: "R" for run, 'W' for walk, and more for other modes
+// run[1]: time since start if you wanna report using pace
+// run[2]: ndata .1s
+// run[3]: step count
+// run[4]: time in minutes, run[5]: cals
 // unscrambles encoded byte file
 function convert(byteArr) {
   var converted = []
-  var set = []
-  var i8 = parseInt("0x00"),
-      i16 = parseInt("0x0000"),
-      i321 = parseInt("0x00000000"),
-      i322 = parseInt("0x00000000"),
-      i323 = parseInt("0x00000000"),
-      count = 0
-  for (var i = 0; i < byteArr.length; i++) {
-    var byte = byteArr[i]
-    switch(count) {
-      case 0:
-        i8 = byte
-        break
-      case 1:
-        // first 8 bits of i16
-        i16 = i16 | (byte << 8)
-        break
-      case 2:
-        // last 8 bits of i16
-        i16 = i16 | byte
-        break
-      case 3:
-        // 0xFA
-        validate(byte, parseInt("0xFA"))
-        break
-      case 4:
-        // 2nd last of i321
-        i321 = i321 | (byte << 8)
-        break
-      case 5:
-        // 3rd last of i321
-        i321 = i321 | (byte << 16)
-        break
-      case 6:
-        // last 8 of i321
-        i321 = i321 | byte
-        break
-      case 7:
-        // 0xFB
-        validate(byte, parseInt("0xFB"))
-        break
-      case 8:
-        // 2nd last of i322
-        i322 = i322 | (byte << 8)
-        break
-      case 9:
-        // last 8 of i322
-        i322 = i322 | byte
-        break
-      case 10:
-        // 3rd last of i322
-        i322 = i322 | (byte << 16)
-        break
-      case 11:
-        // marker 0xFC
-        validate(byte, parseInt("0xFC"))
-        break
-      case 12:
-        // 3rd last of i323
-        i323 = i323 | (byte << 16)
-        break
-      case 13:
-        // 2nd last of i323
-        i323 = i323 | (byte << 8)
-        break
-      case 14:
-        // last 8 of i323
-        i323 = i323 | byte
-        break
-      case 15:
-        //reached a semicolon, reset the set and count
-        set.push(...[i8, i16, i321, i322, i323])
-        converted.push(set)
-        set = []
-        var i8 = parseInt("0x00")
-        var i16 = parseInt("0x0000")
-        var i321 = parseInt("0x00000000")
-        var i322 = parseInt("0x00000000")
-        var i323 = parseInt("0x00000000")
-        count = -1
+  var idx = 0;
+  var mode;
+  var lapCount; 
+  var ndata;
+  var stepCount;
+  var lapTime;
+  var calorie;
+  while (idx < (byteArr.length - 15)) {
+    if ((byteArr[idx+15] === semicolon_ascii) && validate(byteArr[idx], idx)) {
+      mode = byteArr[idx];
+      lapCount = merge_two_bytes(idx + 1,idx + 2);
+      ndata = merge_three_bytes(idx + 5, idx + 4, idx + 6);
+      stepCount = merge_three_bytes(idx + 10, idx + 8, idx + 9)
+      lapTime = merge_three_bytes(idx + 11, idx + 7, idx + 3)
+      calorie = merge_three_bytes(idx + 12, idx + 13, idx + 14)
+      converted.push(...[mode, lapCount, ndata, stepCount, lapTime, calorie])
+      idx += 16;
+    } else {
+      idx++;
     }
-    count += 1
   }
   return converted
 }
 
 module.exports = {
 
-  readEncoded: function readEncoded(filePath) {
-    var byteArr = []
-    var converted = []
-    var prom = new Promise((resolve, reject) =>{
-      fs.open(filePath, 'r', function(err, fd) {
-        // read into the byte array
-        if (err) {
-          reject(err)
-        }
-        var buffer = new Buffer.alloc(1, "hex")
-        while (true) {
-          var num = fs.readSync(fd, buffer, 0, 1, null);
-          if (num === 0) {
-            break
-          }
-          byteArr.push(buffer[0])
-        }
-        converted = convert(byteArr)
-        resolve(converted)
-      })
-    })
-    return prom
+  readEncoded: async function readEncoded(filePath) {
+    var byteArr = [];
+    var converted = [];
+    var fd;
+    // open the file
+    try {
+      fd = await fsOpen(filePath, 'r')
+    } catch(e) {
+      console.log("error opening file")
+      throw e
+    }
+
+    // read the file into byte array and unscramble it
+    try {
+      var buffer = new Buffer.alloc(1, "hex")
+      var numBytesRead = await fsRead(fd, buffer, 0, 1, null);
+      numBytesRead = numBytesRead.bytesRead
+      while (numBytesRead !== 0) {
+        byteArr.push(buffer[0])
+        let res = await fsRead(fd, buffer, 0, 1, null);
+        numBytesRead = res.bytesRead
+        console.log(numBytesRead)
+      }
+      converted = convert(byteArr)
+    } catch(e) {
+      console.log('error reading file')
+      throw e
+    }
+
+    return converted
   }
 }

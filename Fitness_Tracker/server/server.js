@@ -15,6 +15,10 @@ const database = "fitness-tracker"
 const mongoServerURL = `mongodb+srv://dshau22:${pw}@fitness-dev-r2ryq.mongodb.net/${database}?retryWrites=true&w=majority`
 
 const upload = require('./upload')
+
+// wrap async functions you pass into express routers with this so no silent errors
+const { asyncMiddleware } = require('./utils/asyncMiddleware')
+
 // const retrieve = require('./retrieve')
 const userSchema = require('./database/MongoConfig')
 const userJson = require("./database/sampleUser")
@@ -54,7 +58,7 @@ app.use('/', emailRouter)
 app.use('/', searchRouter)
 app.use('/', usersRouter)
 // add route methods for dashboard
-app.post('/upload', upload)
+app.post('/upload', asyncMiddleware(upload))
 
 function emitMultiple(io, socketSet, socketEvent, data) {
   // have all of the sockets emit if they are present
