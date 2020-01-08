@@ -3,6 +3,7 @@
   color: #ffffff;
   background: #cde5ec;
   font: 600 16px/18px "Open Sans", sans-serif;
+  width: 100%;
 }
 
 *, :after, :before {
@@ -36,43 +37,11 @@ a {
 .login-wrap .loading-screen {
   display: none;
 }
-.login-wrap .success-container .success {
-  margin-bottom: 10px;
-  height: 20px;
-  background-color: green;
-  border: solid;
-  border-color: green;
-  border-radius: 10px;
-  color: white;
+.login-wrap .success-container {
+  width: 100%;
 }
-.login-wrap .success-container .success .close-success {
-  float: right;
-  margin-right: 5px;
-  color: white;
-  transition: 0.3s;
-  cursor: pointer;
-}
-.login-wrap .success-container .success .close-success:hover {
-  color: black;
-}
-.login-wrap .errors-container .error {
-  margin-bottom: 10px;
-  height: 20px;
-  background-color: red;
-  border: solid;
-  border-color: red;
-  border-radius: 10px;
-  color: white;
-}
-.login-wrap .errors-container .error .close-error {
-  float: right;
-  margin-right: 5px;
-  color: white;
-  transition: 0.3s;
-  cursor: pointer;
-}
-.login-wrap .errors-container .error .close-error:hover {
-  color: black;
+.login-wrap .errors-container {
+  width: 100%;
 }
 
 .login-html {
@@ -80,6 +49,9 @@ a {
   height: 100%;
   position: absolute;
   padding: 40px 70px 50px 70px;
+}
+.login-html .headers .tab {
+  cursor: pointer;
 }
 
 #signUpButton {
@@ -173,6 +145,7 @@ a {
   position: relative;
   display: inline-block;
   background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
 }
 
 .login-form .group label .icon:before,
@@ -233,7 +206,7 @@ a {
   -webkit-backface-visibility: hidden;
   text-align: center;
 }
-.foot-lnk #forgot-link {
+.foot-lnk #forgot-link, .foot-lnk #already-member {
   cursor: pointer;
 }
 .foot-lnk #forget-form {

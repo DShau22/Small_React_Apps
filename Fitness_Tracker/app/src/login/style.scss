@@ -2,7 +2,8 @@
 	margin:0;
 	color:#ffffff;
 	background:#cde5ec;
-	font:600 16px/18px 'Open Sans',sans-serif;
+  font:600 16px/18px 'Open Sans',sans-serif;
+  width: 100%;
 }
 *,:after,:before{box-sizing:border-box}
 .clearfix:after,.clearfix:before{content:'';display:table}
@@ -21,59 +22,27 @@ a{color:inherit;text-decoration:none}
 		display: none;
 	}
 	.success-container {
-		// display: none;
-		.success {
-			margin-bottom: 10px;
-			height: 20px;
-			// display: none;
-			background-color: green;
-			border: solid;
-			border-color: green;
-			border-radius: 10px;
-			color: white;
-			.close-success {
-				float: right;
-				margin-right: 5px;
-				color: white;
-				transition: 0.3s;
-				cursor: pointer;
-			}
-			.close-success:hover {
-				color: black;
-			}
-		}
+    width: 100%;
 	}
 	.errors-container {
-		// display: none;
-		.error {
-			margin-bottom: 10px;
-			height: 20px;
-			// display: none;
-			background-color: red;
-			border: solid;
-			border-color: red;
-			border-radius: 10px;
-			color: white;
-			.close-error {
-				float: right;
-				margin-right: 5px;
-				color: white;
-				transition: 0.3s;
-				cursor: pointer;
-			}
-			.close-error:hover {
-				color: black;
-			}
-		}
+    // display: none;
+    width: 100%;
 	}
 }
 
-.login-html{
+.login-html {
 	width:100%;
 	height:100%;
 	position:absolute;
 	padding: 40px 70px 50px 70px;
-	// background:rgba(40,57,101,.9);
+  // background:rgba(40,57,101,.9);
+
+  // cursor pointers for the signin and signup tabs
+  .headers {
+    .tab {
+      cursor: pointer;
+    }
+  }
 }
 
 #signUpButton {
@@ -154,7 +123,8 @@ a{color:inherit;text-decoration:none}
 	border-radius:2px;
 	position:relative;
 	display:inline-block;
-	background:rgba(255,255,255,.1);
+  background:rgba(255,255,255,.1);
+  cursor: pointer;
 }
 .login-form .group label .icon:before,
 .login-form .group label .icon:after{
@@ -203,8 +173,8 @@ a{color:inherit;text-decoration:none}
 }
 .foot-lnk{
   -webkit-backface-visibility: hidden;
-	text-align:center;
-	#forgot-link{
+  text-align:center;
+	#forgot-link, #already-member{
 		cursor: pointer;
   }
   #forget-form {

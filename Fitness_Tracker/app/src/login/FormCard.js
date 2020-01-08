@@ -38,7 +38,7 @@ class FormCard extends Component {
             onPwConfChange={this.props.onSignUpPwChangeConf}
             onFirstNameChange={this.props.onSignUpFirstNameChange}
             onLastNameChange={this.props.onSignUpLastNameChange}
-            onProdCodeChange={this.props.onSignUpProdCodeChange}
+            onSignUpUserNameChange={this.props.onSignUpUserNameChange}
             onSubmit={this.props.handleSignUp}
             switchToSignIn={this.props.onSignInClick}
           />

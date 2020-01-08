@@ -83,6 +83,7 @@ class SignIn extends Component {
               type="text"
               className="input"
               onChange={this.props.onEmailChange}
+              required
             />
           </div>
           <div className="group">
@@ -93,6 +94,7 @@ class SignIn extends Component {
               className="input"
               data-type="password"
               onChange={this.props.onPwChange}
+              required
             />
           </div>
           <div className="group">

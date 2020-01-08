@@ -57,15 +57,15 @@ function verifyToken(req, res, next) {
 
 router.post('/api/account/signup', function(req, res, next) {
   const { body } = req
-  const { password, productCode, passwordConf } = body
+  const { password, passwordConf } = body
   let { email, firstName, lastName, username } = body
   let failResBody = { success: false, messages: {} }
   // user entered a blank field
   if (!email || !password || !firstName || !lastName || !productCode) {
-    sendErr(res, new Error("Error: Please fill out all field"))
+    return sendErr(res, new Error("Error: Please fill out all fields"))
   }
   if (password !== passwordConf) {
-    sendErr(res, new Error("Error: Passwords must match"))
+    return sendErr(res, new Error("Error: Passwords must match"))
   }
   // clean all inputs
   email = email.toLowerCase()
