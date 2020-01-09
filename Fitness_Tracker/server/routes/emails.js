@@ -46,16 +46,16 @@ router.get("/confirmation", (req, res) => {
         if (err) {
           callback(err)
         } else {
-          callback(null, decoded.productCode)
+          callback(null, decoded.username)
         }
       })
     },
     //check if user already registered
     function(decoded, callback) {
-      console.log("productCode: ", decoded)
-      User.findOne({productCode: decoded}, (err, results) => {
+      console.log("username: ", decoded)
+      User.findOne({username: decoded}, (err, results) => {
         if (results.registered) {
-          callback(new Error("This user or Amphibian is already registered"))
+          callback(new Error("This user is already registered"))
         } else {
           callback(null, decoded)
         }
@@ -67,7 +67,7 @@ router.get("/confirmation", (req, res) => {
       var todayMil = date.getTime()
       var today = new Date(todayMil)
       // find user based on product code, which should be unique...
-      User.findOneAndUpdate({productCode: decoded}, {registered: true, registerDate: today}, (err, results) => {
+      User.findOneAndUpdate({username: decoded}, {registered: true, registerDate: today}, (err, results) => {
         if (err) {
           callback(err)
         } else {
@@ -78,7 +78,7 @@ router.get("/confirmation", (req, res) => {
   ], function(err, results) {
     if (err) {
       console.log("there was an error :(")
-      console.log(err)
+      console.error(err)
       sendResponse(res, false, "Something went wrong with the confirmation process."
                                         + "Contact us for support if needed: " + err.toString())
     } else {

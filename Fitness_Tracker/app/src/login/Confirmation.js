@@ -89,7 +89,7 @@ class Confirmation extends Component {
         // PROBABLY A NAVLINK OR SOMETHING TO LOGIN PAGE
         <div>
           <p>Registration successful! Click the link below to return to the login page.</p>
-          <NavLink activeClassName="navLink" to="/login">Login</NavLink>
+          <NavLink activeClassName="navLink" to="/">Login</NavLink>
         </div>
       )
     }

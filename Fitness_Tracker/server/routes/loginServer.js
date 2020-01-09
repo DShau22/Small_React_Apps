@@ -61,7 +61,7 @@ router.post('/api/account/signup', function(req, res, next) {
   let { email, firstName, lastName, username } = body
   let failResBody = { success: false, messages: {} }
   // user entered a blank field
-  if (!email || !password || !firstName || !lastName || !productCode) {
+  if (!email || !password || !firstName || !lastName || !username) {
     return sendErr(res, new Error("Error: Please fill out all fields"))
   }
   if (password !== passwordConf) {
@@ -76,6 +76,8 @@ router.post('/api/account/signup', function(req, res, next) {
   lastName = lastName.trim()
   username = username.trim()
 
+  // ADD FUNCTION FOR CHECKING INPUTS TO SEE IF THEY'RE VALID/WONT BREAK SYSTEM
+
   // Steps:
   // 1. Verify email and username don't exist
   // 2. Save
@@ -88,23 +90,8 @@ router.post('/api/account/signup', function(req, res, next) {
   // MAKE NOTE TO MAYBE SCRAP ASYNC JS CODE LATER
   // LOOKS UGLY AF TO MAINTAIN
 
-  var waterfallCb = (err, results) => {
-    if (err) {
-      // any errors in the above functions will skip the next functions and go here
-      console.log("ERROR: ", err)
-      return sendErr(err, res)
-    } else {
-      console.log("no errors", results)
-      return res.send({
-        success: true,
-        messages: {
-          success: `Successfully signed up! Please check your inbox at ${email} for a confirmation email.`
-        }
-      })
-    }
-  }
-
   var parallelCb = (err, results) => {
+    console.log("parrallel finished")
     if (err) {
       return sendErr(res, err)
     }
@@ -117,6 +104,7 @@ router.post('/api/account/signup', function(req, res, next) {
       function(callback) {
         console.log("saving user")
         newUser.save(function(err, data) {
+          console.log('saved user')
           if (err) {
             callback(err)
           } else {
@@ -128,9 +116,10 @@ router.post('/api/account/signup', function(req, res, next) {
       // generate token for verification email
       function(callback) {
         console.log("signing token")
-        // return a signed jwt token using the prod code unique to the user prod
-        jwt.sign({productCode}, secret, {expiresIn: expiresIn}, function(err, token) {
+        // return a signed jwt token using the username
+        jwt.sign({username}, secret, {expiresIn: expiresIn}, function(err, token) {
           if (err) {
+            // DELETE USER FROM DATABASE
             callback(err)
           } else {
             callback(null, token)
@@ -141,11 +130,11 @@ router.post('/api/account/signup', function(req, res, next) {
       // send the confirmation email
       function(emailToken, callback) {
         var transporter = nodemailer.createTransport({
-              service: 'Gmail',
-              auth: {
-                user: "blueshushi.shau@gmail.com",
-                pass: process.env.EMAIL_PASSWORD,
-              }
+          service: 'Gmail',
+          auth: {
+            user: "blueshushi.shau@gmail.com",
+            pass: process.env.EMAIL_PASSWORD,
+          }
         })
         const confRedirect = `http://localhost:3000/confirmation?token=${emailToken}`
         var mailOptions = {
@@ -158,8 +147,9 @@ router.post('/api/account/signup', function(req, res, next) {
         //callback should contain err, result
         console.log("sending email...")
         transporter.sendMail(mailOptions, function(err, data) {
-          console.log("sent email")
+          console.log("sendmail finished running")
           if (err) {
+            // DELETE USER FROM DATABASE
             callback(err)
           } else {
             callback(null, data)
@@ -169,12 +159,37 @@ router.post('/api/account/signup', function(req, res, next) {
     ], waterfallCb)
   }
 
+  var waterfallCb = async (err, results) => {
+    if (err) {
+      // any errors in the above functions will skip the next functions and go here
+      console.log("ERROR: ", err)
+      // DELETE USER FROM DATABASE IF THEY HAVE BEEN SAVED
+      try {
+        console.log("deleing user from database")
+        let results = await User.findOneAndDelete({username: username})
+      } catch(e) {
+        console.err(e)
+      } finally {
+        return sendErr(res, err)
+      }
+    } else {
+      console.log("no errors", results)
+      return res.send({
+        success: true,
+        messages: {
+          success: `Successfully signed up! Please check your inbox at ${email} for a confirmation email.`
+        }
+      })
+    }
+  }
+
   // 1. Verify email and username don't exist
   async.parallel([
     // check if email already exists
     function(callback) {
-      console.log("parallel starting...")
+      console.log("checking if email exits...")
       User.findOne({email: email}, (err, user) => {
+        console.log("finished find one for email")
         if (user) {
           var emailExistsError = new Error("email already exists")
           callback(emailExistsError)
@@ -191,7 +206,6 @@ router.post('/api/account/signup', function(req, res, next) {
             firstName,
             lastName,
             username,
-            productCode,
           })
           callback(null, userToSave)
         }
@@ -199,8 +213,9 @@ router.post('/api/account/signup', function(req, res, next) {
     },
     // check if username already exists
     function(callback) {
-      console.log("second function")
+      console.log("checking if username exists...")
       User.findOne({username: username}, (err, user) => {
+        console.log("finished find one for username")
         if (user) {
           var usernameExistsError = new Error("username already exists")
           callback(usernameExistsError)
@@ -211,20 +226,20 @@ router.post('/api/account/signup', function(req, res, next) {
         }
       })
     },
-    // check if product already registered
-    function(callback) {
-      console.log("third function")
-      User.findOne({productCode: productCode}, (err, user) => {
-        if (user) {
-          var productCodeExistsError = new Error("This Amphibian has already been registered")
-          callback(productCodeExistsError)
-        } else if (err) {
-          callback(err)
-        } else {
-          callback(null)
-        }
-      })
-    }
+    // // check if product already registered
+    // function(callback) {
+    //   console.log("third function")
+    //   User.findOne({productCode: productCode}, (err, user) => {
+    //     if (user) {
+    //       var productCodeExistsError = new Error("This Amphibian has already been registered")
+    //       callback(productCodeExistsError)
+    //     } else if (err) {
+    //       callback(err)
+    //     } else {
+    //       callback(null)
+    //     }
+    //   })
+    // }
   ], parallelCb)
 })
 

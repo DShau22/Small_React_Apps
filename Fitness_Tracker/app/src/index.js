@@ -1,17 +1,15 @@
+// bootstrap imports for webpack
 import 'bootstrap/dist/css/bootstrap.css';
-
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-// bootstrap imports
 import $ from 'jquery';
 import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import './index.css'
-// bootstrap imports
 
 //core ui
 import "@coreui/coreui"
-//core ui
 
 //font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'

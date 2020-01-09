@@ -122,57 +122,57 @@ const UserSchema = new Schema({
   },
   productCode: {
     type: String,
-    required: true,
+    required: false,
     default: ''
   },
   registerDate: {
     type: Date,
-    required: true,
+    required: false,
     default: new Date('January 1, 1970 00:00:00'),
   },
   registered: {
     type: Boolean,
-    required: true,
+    required: false,
     default: false,
   },
   friendsPending: {
     type: Array,
-    required: true,
+    required: false,
     default: []
   },
   friendRequests: {
     type: Array,
-    required: true,
+    required: false,
     default: []
   },
   friends: {
     type: Array,
-    required: true,
+    required: false,
     default: []
   },
   bio: {
     type: String,
-    required: true,
+    required: false,
     default: ""
   },
   height: {
     type: Number,
-    required: true,
+    required: false,
     default: 0
   },
   weight: {
     type: Number,
-    required: true,
+    required: false,
     default: 0
   },
   gender: {
     type: String,
-    required: true,
+    required: false,
     default: ""
   },
   profilePicture: {
     type: Object,
-    required: true,
+    required: false,
     default: {
       profileURL: "",
       etag: ""
@@ -180,12 +180,12 @@ const UserSchema = new Schema({
   },
   unitSystem: {
     type: String,
-    required: true,
+    required: false,
     default: "English"
   },
   location: {
     type: String,
-    required: true,
+    required: false,
     default: ""
   },
   bests: {

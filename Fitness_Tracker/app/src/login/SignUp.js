@@ -86,7 +86,7 @@ class SignUp extends Component {
               className="input"
               onChange={this.props.onLastNameChange}
               maxLength='40'
-              pattern="[a-zA-Z0-9]"
+              pattern="[a-zA-Z0-9]+"
               title="Must only contain alphanumeric characters"
               required
             />

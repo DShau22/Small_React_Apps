@@ -7,7 +7,6 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 //db stuff
-const mongo = require('mongodb')
 const mongoose = require('mongoose')
 const mongoLocalURL = 'mongodb://localhost:27017/tracker_dev'
 const pw = process.env.MONGO_PASSWORD
@@ -18,10 +17,6 @@ const upload = require('./upload')
 
 // wrap async functions you pass into express routers with this so no silent errors
 const { asyncMiddleware } = require('./utils/asyncMiddleware')
-
-// const retrieve = require('./retrieve')
-const userSchema = require('./database/MongoConfig')
-const userJson = require("./database/sampleUser")
 
 // web sockets
 const socket = require("socket.io")

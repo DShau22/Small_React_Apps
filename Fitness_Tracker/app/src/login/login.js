@@ -216,6 +216,7 @@ class Login extends Component {
     var json = await res.json()
     console.log('json', json);
     if (json.success) {
+      setInLocalStorage(storageKey + "_signUpSuccess", json.messages)
       this.clearSignUp()
     } else {
       setInLocalStorage(storageKey + "_signUpErrors", json.messages)

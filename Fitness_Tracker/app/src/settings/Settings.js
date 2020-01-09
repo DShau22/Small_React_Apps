@@ -4,47 +4,134 @@ import SpaContext from "../Context"
 import {
   withRouter
 } from "react-router-dom";
+import './settings.css'
+import $ from 'jquery';
+
+const friendsListHelpMsg = 'set who can see your friends list on you profile'
+const fitnessHelpMsg = 'set who can see your fitness stats such as average number of steps taken per day, calories burned, etc.'
+const basicInfoHelpMsg = 'set who can see descriptions about you such as your bio, height, weight, etc.'
+const unitSystemHelpMsg = 'set what unit system you would prefer to view measurements in'
 
 class Settings extends Component {
-  _isMounted = false
   constructor(props) {
     super(props)
+  
+    this.state = {
+       
+    }
+    this.saveSettings = this.saveSettings.bind(this)
   }
-
+  
+  // below is for initalizing tooltips
   componentDidMount() {
-    console.log("settings mounting...")
-    this._isMounted = true
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+  
+  componentDidUpdate() {
+    $('[data-toggle="tooltip"]').tooltip();
   }
 
-  componentWillUnmount() {
-    console.log("settings unmounting...")
-    this._isMounted = false
+  saveSettings() {
+    console.log('saving settings...')
+  }
+
+  renderDropDown(dropdownText) {
+    return (
+      <div className='settings-dropdown'>
+        <div className="btn-group">
+        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Action
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a className="dropdown-item" href="#">Action</a>
+          <a className="dropdown-item" href="#">Another action</a>
+          <a className="dropdown-item" href="#">Something else here</a>
+        </div>
+        </div>
+      </div>
+    )
   }
   
   render() {
     var { match } = this.props
     return (
-      <div>
-        <h3>Settings</h3>
-        <img src={`${this.context.profilePicture.profileURL}`} width="200" height="200"></img>
-        <h4>Welcome, {this.context.firstName}</h4>
-        <p>control what you want displayed, your unit system, and password settings</p>
-        <div className="grid-menu" id="settings-menu" style={protoStyle}>
-          <RedirectBox redirectURL={`${match.url}/personal`} linkText={"Personal Info"}></RedirectBox>
-          <RedirectBox redirectURL={`${match.url}/security`} linkText={"Security/Passwords"}></RedirectBox>
-          <RedirectBox redirectURL={`${match.url}/stats`} linkText={"Fitness Stats"}></RedirectBox>
-          <RedirectBox redirectURL={`${match.url}/advanced`} linkText={"Advanced Settings"}></RedirectBox>
-        </div>
+    //   <i
+    //   type="button"
+    //   className="fa help-icon"
+    //   data-toggle="tooltip"
+    //   data-placement="top"
+    //   title="Tooltip on left"
+    // >
+    //   &#xf059;
+    // </i>
+      <div className='settings-container'>
+        <ul className='settings-list'>
+          <li className='settings-list-item'>
+            <i
+              className="fa help-icon"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={friendsListHelpMsg}
+            >
+              &#xf059;
+            </i>
+            <span className='setting-text'>Who can see your friends list?</span>
+            {this.renderDropDown('spaContext')}
+          </li>
+          <li className='settings-list-item'>
+            <i
+              className="fa help-icon"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={fitnessHelpMsg}
+            >
+              &#xf059;
+            </i>
+            <span className='setting-text'>Who can see your fitness?</span>
+            {this.renderDropDown()}
+          </li>
+          <li className='settings-list-item'>
+            <i
+              className="fa help-icon"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={basicInfoHelpMsg}
+            >
+              &#xf059;
+            </i>
+            <span className='setting-text'>Who can see your basic info?</span>
+            {this.renderDropDown()}
+          </li>
+          <li className='settings-list-item'>
+            <i
+              className="fa help-icon"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={unitSystemHelpMsg}
+            >
+              &#xf059;
+            </i>
+            <span className='setting-text'>Unit system to display</span>
+            {this.renderDropDown()}
+          </li>
+          <li className='settings-list-item'>
+            <div className='help-icon empty-space'></div>
+            <div className='setting-text empty-space'></div>
+            <div className='save-settings'>
+              <button 
+                className='save-settings-btn btn btn-primary'
+                onClick={this.saveSettings}
+              >
+                Save
+              </button>
+            </div>
+          </li>
+        </ul>
       </div>
     )
   }
 }
 
-const protoStyle = {
-  "display": "flex",
-  "flexDirection": "row",
-  "flexWrap": "wrap"
-}
 Settings.contextType = SpaContext
 
 export default withRouter(Settings)
