@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import Spa from "../Spa"
 import {
   getToken,
   getFromLocalStorage,
@@ -10,19 +9,24 @@ import {
   storageKey
 } from '../utils/storage';
 
-import { makeID } from "../utils/keyGenerator"
-
 import { Redirect } from 'react-router';
 
-import LoadingScreen from "./LoadingScreen"
+import LoadingScreen from "../generic/LoadingScreen"
 import FormCard from "./FormCard"
 import "./style.css"
-import Error from "./messages/Error"
-import Success from "./messages/Success"
+import ErrorAlert from "../messages/Error"
+import Success from "../messages/Success"
 
 const verifyURL = "http://localhost:8080/api/account/verify"
 const signUpURL = "http://localhost:8080/api/account/signup"
 const signInURL = 'http://localhost:8080/api/account/signin'
+
+
+// Add this in your component file
+require('react-dom');
+window.React2 = require('react');
+console.log(window.React1 === window.React2);
+
 
 // stores token in localstorage if user clicked remember me
 // else stores it in session storage
@@ -290,7 +294,7 @@ class Login extends Component {
   // takes in an object of error messages and returns html elements to display them
   showError(msg, idx) {
     return (
-      <Error msg={msg} key={idx}/>
+      <ErrorAlert msg={msg} key={idx}/>
     )
   }
 

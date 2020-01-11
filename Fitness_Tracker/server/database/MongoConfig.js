@@ -178,11 +178,6 @@ const UserSchema = new Schema({
       etag: ""
     }
   },
-  unitSystem: {
-    type: String,
-    required: false,
-    default: "English"
-  },
   location: {
     type: String,
     required: false,
@@ -201,7 +196,11 @@ const UserSchema = new Schema({
     type: Object,
     require: true,
     default: {
-      unitSystem: "English"
+      unitSystem: "English", // English, metric
+      swimLap: "25 yd", // 25 yd, 50 m, 25 m, or some custom text like 33.3 yd
+      seeFriendsList: "everyone", //everyone, friends, just me
+      seeFitness: "everyone", //everyone, friends, just me
+      seeBasicInfo: "everyone", //everyone, friends, just me
     }
   }
 })

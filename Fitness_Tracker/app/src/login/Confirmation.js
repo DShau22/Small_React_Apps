@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LoadingScreen from "./LoadingScreen"
+import LoadingScreen from "../generic/LoadingScreen"
 import queryString from "query-string"
 import {
   NavLink,
@@ -11,7 +11,7 @@ import {
   storageKey
 } from '../utils/storage';
 import { makeID } from "../utils/keyGenerator"
-import Error from "./messages/Error"
+import Error from "../messages/Error"
 
 class Confirmation extends Component {
   constructor(props) {

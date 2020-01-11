@@ -29,6 +29,7 @@ const activityRouter = require("./routes/activities")
 const emailRouter = require("./routes/emails")
 const searchRouter = require("./routes/search")
 const usersRouter = require("./routes/users")
+const userSettings = require("./routes/userSettings")
 
 // initialize object that maps userIDs to a set of sockets
 var idMap = {}
@@ -52,6 +53,7 @@ app.use('/', activityRouter)
 app.use('/', emailRouter)
 app.use('/', searchRouter)
 app.use('/', usersRouter)
+app.use('/', userSettings)
 // add route methods for dashboard
 app.post('/upload', asyncMiddleware(upload))
 

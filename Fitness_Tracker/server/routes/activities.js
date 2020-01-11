@@ -1,10 +1,8 @@
-const fs = require("fs");
 const express = require('express')
 const extractToken = require("./extract")
 const router = express.Router()
 
 const mongoConfig = require("../database/MongoConfig")
-const mongoose = require('mongoose')
 const secret = 'secretkey'
 const jwt = require("jsonwebtoken")
 

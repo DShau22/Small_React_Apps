@@ -335,6 +335,7 @@ class Header extends Component {
     }
   }
   render() {
+    console.log("rendering header...")
     return (
       <div className="home-container">
         <SpaContext.Provider value={this.state}>

@@ -49,22 +49,22 @@ const storage = cloudinaryStorage(
 
 const multerParser = multer({ storage: storage });
 
-router.post("/updateSettings", async (req, res) => {
-  var { unitSystem, userToken } = req.body
-  var userID = await jwt.verify(userToken, secret)
-  User.findOneAndUpdate(
-    {_id: userID},
-    {settings: { unitSystem }},
-  ).exec((err, results) => {
-    if (err) {
-      return sendError(res, err)
-    } else {
-      return res.send({
-        success: true
-      })
-    }
-  })
-})
+// router.post("/updateSettings", async (req, res) => {
+//   var { unitSystem, userToken } = req.body
+//   var userID = await jwt.verify(userToken, secret)
+//   User.findOneAndUpdate(
+//     {_id: userID},
+//     {settings: { unitSystem }},
+//   ).exec((err, results) => {
+//     if (err) {
+//       return sendError(res, err)
+//     } else {
+//       return res.send({
+//         success: true
+//       })
+//     }
+//   })
+// })
 
 // gets all the user info that is stored in the document in mongo
 router.get("/getUserInfo", extractToken, (req, res, next) => {
