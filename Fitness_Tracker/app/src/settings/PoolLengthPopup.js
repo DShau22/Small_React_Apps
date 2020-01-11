@@ -9,9 +9,9 @@ export default function PoolLengthPopup(props) {
       onClose={props.closeCustomSwimSettings}
     >
       <div className="popup-modal">
-        <a className="close" onClick={props.closeCustomSwimSettings}>
+        <div className="close" onClick={props.closeCustomSwimSettings}>
           &times;
-        </a>
+        </div>
         <div className="popup-header">Set Custom Pool Length</div>
         <div className="popup-content">
           <form onSubmit={props.setCustomSwimLength}>
@@ -28,8 +28,8 @@ export default function PoolLengthPopup(props) {
                   {props.customSwimUnits}
                 </button>
                 <div className="dropdown-menu">
-                  <a className="dropdown-item" href="#" onClick={props.setCustomSwimUnits}>Yards</a>
-                  <a className="dropdown-item" href="#" onClick={props.setCustomSwimUnits}>Meters</a>
+                  <span className="dropdown-item" onClick={props.setCustomSwimUnits}>Yards</span>
+                  <span className="dropdown-item" onClick={props.setCustomSwimUnits}>Meters</span>
                 </div>
               </div>
             </div>

@@ -129,9 +129,7 @@ export default function withFitnessPage( WrappedComponent ) {
     }
 
     render() {
-      var { activityJson } = this.props
       var { activityIndex, pastGraphData, pastGraphLabels } = this.state
-      var currentStatDisplay = activityJson.activityData[activityIndex]
       return (
         <div>
           <WrappedComponent

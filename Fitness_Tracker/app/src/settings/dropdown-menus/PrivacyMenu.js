@@ -14,9 +14,9 @@ export default function PrivacyMenu(props) {
         {props.dropdownText}
       </button>
       <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a className="dropdown-item" href="#" onClick={props.onSelect}>everyone</a>
-        <a className="dropdown-item" href="#" onClick={props.onSelect}>friends</a>
-        <a className="dropdown-item" href="#" onClick={props.onSelect}>just me</a>
+        <span className="dropdown-item" onClick={props.onSelect}>everyone</span>
+        <span className="dropdown-item" onClick={props.onSelect}>friends</span>
+        <span className="dropdown-item" onClick={props.onSelect}>just me</span>
       </div>
       </div>
     </div>

@@ -10,7 +10,6 @@ import {
   removeFromLocalStorage,
   storageKey
 } from '../utils/storage';
-import { makeID } from "../utils/keyGenerator"
 import Error from "../messages/Error"
 
 class Confirmation extends Component {

@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
-import { Chart, Line } from 'react-chartjs-2';
-import Hammer from "hammerjs";
-import zoom from 'chartjs-plugin-zoom'
+import { Line } from 'react-chartjs-2';
+// import Hammer from "hammerjs";
+// import zoom from 'chartjs-plugin-zoom'
 
 export default class LineProgression extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   componentWillMount(){
     // Chart.pluginService.register(zoom)
   }
 
   render() {
-    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax, displayDate } = this.props
+    var { labels, data, hoverLabel, yAxisMin, yAxisMax, displayDate } = this.props
     console.log(labels, data)
     /**
      * labels: for the x axis have time

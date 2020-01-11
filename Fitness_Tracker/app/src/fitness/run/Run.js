@@ -2,13 +2,11 @@ import React, { Component } from 'react'
 import Carousel from "../carousel/Carousel"
 import Calories from "../Calories"
 import Duration from "../Duration"
-import Details from "../Details"
 import SpaContext from '../../Context'
 import Past from "../charts/Past"
 import RunDoughnut from "./RunDoughnut"
 import withFitnessPage from "../withFitnessPage"
 import PaceLineProgression from "../charts/PaceLineProgression"
-const runLink = "/app/runDetails"
 
 // btw restPaceMin and walkPaceMax is walking
 // greater that walkPaceMax is running
@@ -72,7 +70,7 @@ class Run extends Component {
   }
 
   estimateDistanceRun() {
-    var { height, settings } = this.context
+    var { settings } = this.context
     var { unitSystem } = settings
     // this means the person's height is in cm, display km
     if (unitSystem === "metric") {

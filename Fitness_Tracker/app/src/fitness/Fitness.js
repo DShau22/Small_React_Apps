@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Carousel from "./carousel/Carousel"
 import Run from "./run/Run"
 import Jump from "./jump/Jump"
 import Swim from "./swim/Swim"

@@ -1,7 +1,4 @@
 import {
-  getFromLocalStorage,
-  getFromSessionStorage,
-  storageKey,
   getToken,
 } from '../utils/storage';
 import {
@@ -270,7 +267,7 @@ class Community extends Component {
     }
 
     searches.forEach((user, i) => {
-      var { firstName, lastName, _id, score, username } = user
+      var { firstName, lastName, _id, username } = user
       
       // capitalize first and last name before displaying
       firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)

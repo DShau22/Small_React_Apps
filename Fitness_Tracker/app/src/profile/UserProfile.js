@@ -1,5 +1,5 @@
 // Displays the profile of the user who is logged in on the browser
-
+// They should be able to see everything
 import React, { Component } from 'react'
 import {
   Redirect,
@@ -7,6 +7,10 @@ import {
 } from "react-router-dom";
 import { englishHeight }from "../utils/unitConverter"
 import SpaContext from '../Context';
+
+// replace with default avatar link
+const imgAlt = "./default_profile.png"
+
 class UserProfile extends Component {
   constructor(props) {
     super(props)
@@ -26,14 +30,13 @@ class UserProfile extends Component {
 
   renderBio() {
     var { bio } = this.context
-    // var { displayBio } = settings
-    if (bio /* && displayBio */) {
+    if (bio) {
       return (
         <p>{bio}</p>
       )
     }
     return (
-      <p>hidden</p>
+      <p>No bio yet</p>
     )
   }
 
@@ -116,7 +119,7 @@ class UserProfile extends Component {
           </div>
           <div className="profile-picture-container" style={protoStyle}>
             <p>image goes here...</p>
-            <img src={this.context.profilePicture.profileURL} height="50" width="50" />
+            <img src={this.context.profilePicture.profileURL} height="50" width="50" alt={imgAlt}/>
           </div>
           <div className="weight-container" style={protoStyle}>
             {this.renderWeight()}

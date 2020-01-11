@@ -7,10 +7,10 @@ export default class Header extends Component {
         <nav className="navbar navbar-expand sticky navbar-dark bg-dark">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <a className="nav-link" href="#">Friends</a>
+              <span className="nav-link">Friends</span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">Requests</a>
+              <span className="nav-link">Requests</span>
             </li>
           </ul>
         </nav>

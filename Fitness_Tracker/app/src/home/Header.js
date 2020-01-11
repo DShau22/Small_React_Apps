@@ -8,14 +8,9 @@ import JumpDetails from "../fitness/jump/JumpDetails"
 import Profile from "../profile/Profile"
 import EditProfile from "../profile/EditProfile"
 import Settings from "../settings/Settings"
-import Advanced from "../settings/Advanced"
-import Personal from "../settings/Personal"
-import Security from "../settings/Security"
 import Stats from "../settings/Stats"
 import Navbar from "../generic/Navbar"
 import Home from "./Home";
-
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
@@ -38,7 +33,6 @@ import {
 
 import {
   Route,
-  NavLink,
   withRouter,
   Switch
 } from "react-router-dom";
@@ -56,6 +50,8 @@ const getUserInfoURL = serverURL + "/getUserInfo"
 const getID = "/tokenToID"
 const defaultProfile = "./profile/default_profile.png"
 const root = "/app"
+
+const imgAlt = "../profile/default_profile.png"
 
 class Header extends Component {
   constructor(props) {
@@ -192,6 +188,9 @@ class Header extends Component {
    */  
   async addFriendRows(friends, numFriendsDisplay) {
     var tableRows = []
+    const onClick = () => {
+      this.props.history.push(`/app/profile/${username}`)
+    }
     for (var i = 0; i < friends.length; i++) {
       if (i === numFriendsDisplay - 1) { break }
       var { id, firstName, lastName } = friends[i]
@@ -204,12 +203,12 @@ class Header extends Component {
       tableRows.push(
         <tr 
           key={id} 
-          onClick={() => { this.props.history.push(`/app/profile/${username}`) }}
+          onClick={onClick}
           className="friend-row"
         >
           <th scope="col">{i + 1}</th>
           <td>
-            <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" />
+            <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" alt={imgAlt}/>
           </td>
           <td>{firstName} {lastName}</td>
           <td>{(bests.run > 0) ? bests.run : "N/A"}</td>
@@ -358,10 +357,7 @@ class Header extends Component {
                   <Route exact path={`${root}/profile/:username?`} component={Profile}/>
                   <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
                   <Route exact path={`${root}/settings`} component={Settings}/>
-                  <Route path={`${root}/settings/personal`} component={Personal}/>
-                  <Route path={`${root}/settings/security`} component={Security}/>
                   <Route path={`${root}/settings/stats`} component={Stats}/>
-                  <Route path={`${root}/settings/advanced`} component={Advanced}/>
                 </Switch>
               </CSSTransition>
             </TransitionGroup>

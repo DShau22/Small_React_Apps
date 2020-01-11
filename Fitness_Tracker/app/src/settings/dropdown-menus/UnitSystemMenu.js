@@ -14,8 +14,8 @@ export default function UnitSystemMenu(props) {
         {props.dropdownText}
       </button>
       <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a className="dropdown-item" href="#" onClick={props.onSelect}>English</a>
-        <a className="dropdown-item" href="#" onClick={props.onSelect}>metric</a>
+        <span className="dropdown-item" onClick={props.onSelect}>English</span>
+        <span className="dropdown-item" onClick={props.onSelect}>metric</span>
       </div>
       </div>
     </div>

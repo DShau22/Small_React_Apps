@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const regexWhitelist = '^[a-zA-Z0-9]'
+// const regexWhitelist = '^[a-zA-Z0-9]'
 class SignUp extends Component {
 
   render() {

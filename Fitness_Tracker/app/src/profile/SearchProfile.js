@@ -2,10 +2,10 @@
 // that the user logged in on the browser searched for
 
 import React, { Component } from 'react'
-import {
-  Redirect,
-} from "react-router-dom";
-import { englishHeight }from "../utils/unitConverter"
+// import {
+//   Redirect,
+// } from "react-router-dom";
+// import { englishHeight }from "../utils/unitConverter"
 import SpaContext from '../Context';
 
 export default class SearchProfile extends Component {
@@ -148,8 +148,4 @@ export default class SearchProfile extends Component {
   }
 }
 SearchProfile.contextType = SpaContext
-const protoStyle = {
-  "border": "solid",
-  "marginTop": "10px"
-}
 

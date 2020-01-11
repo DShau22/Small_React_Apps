@@ -60,9 +60,9 @@ class Swim extends Component {
     // returns [50/25, m/yd] both as strings
     var distMetric = swimLap.split(" ")
     var distance = 0; var time = 0;
-    var incrementDistance = (distance, distMetric) => {
-      return distance + distMetric
-    }
+    // var incrementDistance = (distance, distMetric) => {
+    //   return distance + distMetric
+    // }
     activityData.forEach((session, i) => {
       var { lapTimes, num } = session
       // sum over all times in the lapTimes array
@@ -102,7 +102,7 @@ class Swim extends Component {
 
   makeDoughnutData() {
     var { activityData } = this.props.activityJson
-    const { roundToNDecimals, isNullOrUndefined } = this.props
+    const { isNullOrUndefined } = this.props
     if (isNullOrUndefined(activityData)) {
       return 0
     }
@@ -141,7 +141,6 @@ class Swim extends Component {
       calcAvgNum,
       calcAvgCals,
       isNullOrUndefined,
-      roundToNDecimals
     } = this.props
     // this could be undefined if user has no recorded data
     var currentStatDisplay = swimJson.activityData[activityIndex]

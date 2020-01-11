@@ -21,13 +21,6 @@ const verifyURL = "http://localhost:8080/api/account/verify"
 const signUpURL = "http://localhost:8080/api/account/signup"
 const signInURL = 'http://localhost:8080/api/account/signin'
 
-
-// Add this in your component file
-require('react-dom');
-window.React2 = require('react');
-console.log(window.React1 === window.React2);
-
-
 // stores token in localstorage if user clicked remember me
 // else stores it in session storage
 function storeToken(remember, token) {
@@ -294,7 +287,7 @@ class Login extends Component {
   // takes in an object of error messages and returns html elements to display them
   showError(msg, idx) {
     return (
-      <ErrorAlert msg={msg} key={idx}/>
+      <ErrorAlert msg={msg} key={idx} onClose={() => {}}/>
     )
   }
 
@@ -326,7 +319,7 @@ class Login extends Component {
   //shows a signle success message
   showSuccess(msg, idx) {
     return (
-      <Success msg={msg} key={idx} />
+      <Success msg={msg} key={idx} onClose={() => {}} />
     )
   }
 

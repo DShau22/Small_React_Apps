@@ -7,10 +7,6 @@ import SearchProfile from "./SearchProfile"
 import SpaContext from '../Context';
 
 class Profile extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     var { context } = this
     var { username } = this.props.match.params
@@ -23,9 +19,5 @@ class Profile extends Component {
   }
 }
 Profile.contextType = SpaContext
-const protoStyle = {
-  "border": "solid",
-  "marginTop": "10px"
-}
 
 export default withRouter(Profile)

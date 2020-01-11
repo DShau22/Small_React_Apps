@@ -1,5 +1,4 @@
 import React from 'react'
-import Popup from "reactjs-popup";
 
 export default function PoolLengthMenu(props) {
   return (
@@ -15,10 +14,10 @@ export default function PoolLengthMenu(props) {
           {props.dropdownText}
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a className="dropdown-item" href="#" onClick={props.onSelect}>25 yd</a>
-          <a className="dropdown-item" href="#" onClick={props.onSelect}>25 m</a>
-          <a className="dropdown-item" href="#" onClick={props.onSelect}>50 m</a>
-          <a className="dropdown-item" href="#" onClick={props.onCustomSwimClick}>Custom</a>
+          <span className="dropdown-item" href="#" onClick={props.onSelect}>25 yd</span>
+          <span className="dropdown-item" href="#" onClick={props.onSelect}>25 m</span>
+          <span className="dropdown-item" href="#" onClick={props.onSelect}>50 m</span>
+          <span className="dropdown-item" href="#" onClick={props.onCustomSwimClick}>Custom</span>
         </div>
       </div>
     </div>

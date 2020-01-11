@@ -12,6 +12,7 @@ const updateProfileURL = `${serverURL}/updateProfile`
 const checkDuplicateURL = `${serverURL}/checkDuplicatePic`
 const uploadPicURL = `${serverURL}/uploadProfilePic`
 
+const imgAlt = "./default_profile.png"
 class EditProfile extends Component {
   _isMounted = false
   constructor(props) {
@@ -320,7 +321,7 @@ class EditProfile extends Component {
         <div className="edit-profile-container">
           <form className="ui form" onSubmit={this.updateProfile}>
             <div className="profile-picture-container">
-              <img src={this.state.currProfilePicInfo.profileURL} width="300" height="300"/>
+              <img src={this.state.currProfilePicInfo.profileURL} width="300" height="300" alt={imgAlt}/>
             </div>
             <div className="field">
               <label>Profile Picture</label>

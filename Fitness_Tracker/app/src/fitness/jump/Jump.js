@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import Carousel from "../carousel/Carousel"
 import Calories from "../Calories"
 import Duration from "../Duration"
-import Details from "../Details"
 import SpaContext from '../../Context'
 import Past from "../charts/Past"
 import withFitnessPage from "../withFitnessPage"
 import { rawHeightConvert } from "../../utils/unitConverter" 
-const jumpLink = "/app/jumpDetails"
-
 
 class Jump extends Component {
   constructor(props) {
@@ -35,7 +32,7 @@ class Jump extends Component {
     var { activityIndex } = this.props
     var session = activityData[activityIndex]
     var best = Math.max(...session.heights)
-    var best = unitSystem === "metric" ? rawHeightConvert(unitSystem, best) : best
+    best = unitSystem === "metric" ? rawHeightConvert(unitSystem, best) : best
     return (
       <span>
         {"highest: " + best + (unitSystem === "metric" ? " cm" : " in")}

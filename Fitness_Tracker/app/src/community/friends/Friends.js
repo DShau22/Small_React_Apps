@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import SpaContext from '../../Context';
 
 class Friends extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     var { friendTableRows } = this.context
     return (

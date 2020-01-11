@@ -17,8 +17,8 @@ import PoolLengthMenu from "./dropdown-menus/PoolLengthMenu"
 import PrivacyMenu from "./dropdown-menus/PrivacyMenu"
 import PoolLengthPopup from "./PoolLengthPopup"
 
-import Success from "../messages/Successes"
-import Error from "../messages/Errors"
+import Success from "../messages/Success"
+import ErrorAlert from "../messages/Error"
 
 const friendsListHelpMsg = 'Set who can see your friends list on you profile'
 const fitnessHelpMsg = 'Set who can see your fitness stats such as average number of steps taken per day, calories burned, etc.'
@@ -272,13 +272,12 @@ class Settings extends Component {
     }
     if (this.state.errorMsgs) {
       return (
-        <div className="msg-container alert alert-danger alert-dismissible">
-          <a href="#" className="close" data-dismiss="alert" aria-label="close" onClick={clearErrors}>&times;</a>
-          <span>{this.state.errorMsgs}</span>
+        <div className="msg-container">
+          <ErrorAlert msg={this.state.errorMsgs} onClose={clearErrors}/>
         </div>
       )
     } else {
-      return (<div className='empty-error-placeholder'></div>)
+      return null
     }
   }
   
@@ -290,13 +289,12 @@ class Settings extends Component {
     }
     if (this.state.successMsgs) {
       return (
-        <div className="msg-container alert alert-success alert-dismissible">
-          <a href="#" className="close" data-dismiss="alert" aria-label="close" onClick={clearSuccesses}>&times;</a>
-          <span>{this.state.successMsgs}</span>
+        <div className="msg-container">
+          <Success msg={this.state.successMsgs} onClose={clearSuccesses}/>
         </div>
       )
     } else {
-      return (<div className='empty-success-placeholder'></div>)
+      return null
     }
   }
 

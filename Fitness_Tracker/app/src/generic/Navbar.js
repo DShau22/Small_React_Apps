@@ -6,7 +6,7 @@ import {
 import "./sidebar.css"
 import SpaContext from '../Context';
 
-
+const imgAlt = "../profile/default_profile.png"
 
 class Navbar extends Component {
   constructor(props) {
@@ -36,9 +36,9 @@ class Navbar extends Component {
       <div className="navbar-container">
         <span className="expander" onClick={this.openNav}>&#9776;</span>
         <div id="mySidenav" className="sidenav">
-          <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a>
+          <span href="#" className="closebtn" onClick={this.closeNav}>&times;</span>
           <div className="prof-pic-container">
-            <img src={this.context.profilePicture.profileURL} height="75%" width="75%" />
+            <img src={this.context.profilePicture.profileURL} height="75%" width="75%" alt={imgAlt}/>
           </div>
           <NavLink 
             className='nav-link'

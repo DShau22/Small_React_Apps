@@ -1,0 +1,6 @@
+Some things to keep in mind
+
+Because I'm an idiot and there is a top level node_modules folder and node_modules folders in each react app folder, you can sometimes get
+duplicate react instances. As a result I deleted react in the top node_modules folder to fix this issue so that hooks can be used.
+However, I didn't delete the entire node_modules folder just cuz i'm not sure what the overlap or relationship between that folder
+and the fitness app node_modules folder is...

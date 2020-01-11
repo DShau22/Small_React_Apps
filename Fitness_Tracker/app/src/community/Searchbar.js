@@ -14,13 +14,12 @@ class Searchbar extends Component {
           onChange={this.props.onSearchTextChange}
           value={this.props.searchText}
         />
-        <a
+        <div
           className="search-btn"
-          href="#/app/community"
           onClick={this.props.search}
         >
           <i className="fas fa-search"></i>
-        </a>
+        </div>
       </div>
     )
   }

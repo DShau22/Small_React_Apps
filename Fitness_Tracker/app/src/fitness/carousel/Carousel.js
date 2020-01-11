@@ -3,16 +3,11 @@ import "./Carousel.css"
 import Arrow from "./Arrow"
 import React from 'react'
 import { parseDate } from "../../utils/unitConverter"
-const jumpActivity = "jump"
-const runActivity = "run"
-const swimActivity = "swim"
+// const jumpActivity = "jump"
+// const runActivity = "run"
+// const swimActivity = "swim"
 
 class Carousel extends React.Component {
-  constructor (props) {
-    super(props);
-    // this.dropdownItemClick = this.dropdownItemClick.bind(this)
-  }
-
   getDropdownDates(stats) {
     var { dropdownItemClick } = this.props
     var dropdownItems = []

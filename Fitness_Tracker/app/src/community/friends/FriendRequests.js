@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const friendReqURL = "http://localhost:8080/getFriendReqs"
+// const friendReqURL = "http://localhost:8080/getFriendReqs"
 
 class FriendRequests extends Component {
   _isMounted = false

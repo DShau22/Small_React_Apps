@@ -1,18 +1,14 @@
 import React, { Component } from 'react'
 import { Chart, Bar } from 'react-chartjs-2';
-import Hammer from "hammerjs";
+// import Hammer from "hammerjs";
 import zoom from 'chartjs-plugin-zoom'
 class Past extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   componentWillMount(){
     Chart.pluginService.register(zoom)
   }
 
   render() {
-    var { labels, data, hoverLabel, activity, yAxisMin, yAxisMax, chartTitle } = this.props
+    var { labels, data, hoverLabel, yAxisMin, yAxisMax, chartTitle } = this.props
     return (
       <div>
         <Bar
