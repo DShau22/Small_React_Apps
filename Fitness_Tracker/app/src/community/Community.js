@@ -83,7 +83,6 @@ class Community extends Component {
   }
 
   async search() {
-    console.log("searching...")
     var { searchText } = this.state
     var userToken = getToken()
 
@@ -93,7 +92,6 @@ class Community extends Component {
     }
 
     if (this.state.searchText) {
-      console.log("fetching...")
       var res = await fetch(searchURL, {
         method: "POST",
         headers: {
@@ -102,6 +100,10 @@ class Community extends Component {
         body: JSON.stringify(reqBody),
       })
       var json = await res.json()
+      if (!json.success) {
+        // DISPLAY SOME SORT OF ERROR
+        alert(json.message)
+      }
       var { users } = json
       if (users === undefined || users.length === 0) {
         this.setState({

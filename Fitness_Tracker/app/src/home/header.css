@@ -1,12 +1,16 @@
 .header {
   background-image: linear-gradient(to bottom right, #e6f3ff, #cce6ff);
-  height: 10%;
+  height: 85px;
   text-align: center;
 }
 .header-content {
   height: 100%;
 }
 
-.navbar-container {
+.content {
+  height: 80%;
+}
+
+.navbar-container, .sideMenu-container {
   z-index: 1;
 }

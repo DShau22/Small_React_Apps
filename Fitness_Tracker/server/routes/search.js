@@ -14,7 +14,6 @@ router.post("/searchUser", (req, res) => {
 
   jwt.verify(userToken, secret, (err, decoded) => {
     if (err) {
-      throw err
       return res.send({
         success: false,
         message: err.toString()

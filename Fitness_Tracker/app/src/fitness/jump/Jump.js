@@ -103,7 +103,7 @@ class Jump extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Jumps per Session</h5>
@@ -111,7 +111,7 @@ class Jump extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg height per Session</h5>
@@ -121,7 +121,7 @@ class Jump extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Cals per Session</h5>
@@ -129,7 +129,7 @@ class Jump extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Overall Best</h5>

@@ -97,6 +97,8 @@ class Run extends Component {
 
   render() {
     var { runJson } = this.context
+
+    // from withFitnessPage
     var {
       activityIndex,
       pastGraphData,
@@ -109,11 +111,8 @@ class Run extends Component {
       calcAvgCals,
       isNullOrUndefined
     } = this.props
-    // from withFitnessPage
-    // debugger;
-    //alert(pastGraphData)
+
     var currentStatDisplay = runJson.activityData[activityIndex]
-    console.log(currentStatDisplay)
     return (
       <div className="run-container">
         <Carousel
@@ -150,7 +149,7 @@ class Run extends Component {
               hoverLabel="Steps"
               activity="Runs"
               yAxisMin={0}
-              yAxisMax={200}
+              yAxisMax={Math.max(...pastGraphData)}
             />
           </div>
         </div>
@@ -168,7 +167,7 @@ class Run extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Steps per Session</h5>
@@ -176,7 +175,7 @@ class Run extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Pace per Session</h5>
@@ -186,7 +185,7 @@ class Run extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Cals per Session</h5>
@@ -194,7 +193,7 @@ class Run extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <RunDoughnut

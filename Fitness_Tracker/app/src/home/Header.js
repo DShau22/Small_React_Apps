@@ -11,7 +11,7 @@ import Settings from "../settings/Settings"
 import Stats from "../settings/Stats"
 import Navbar from "../generic/Navbar"
 import Home from "./Home";
-
+import SideMenu from "../generic/SideMenu"
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import './header.css'
@@ -21,6 +21,7 @@ import {
   CSSTransition
 } from "react-transition-group"
 import "../transitions.css"
+import Media from 'react-media';
 
 // web sockets
 import io from "socket.io-client"
@@ -53,6 +54,8 @@ const root = "/app"
 
 const imgAlt = "../profile/default_profile.png"
 
+const sidebarMediaQuery = '600px'
+
 class Header extends Component {
   constructor(props) {
     super(props)
@@ -67,6 +70,7 @@ class Header extends Component {
       bio: "",
       height: "",
       weight: "",
+      age: "",
       profilePicture: "",
       settings: {},
       isLoading: false,
@@ -98,6 +102,7 @@ class Header extends Component {
     this.getActivityJson = this.getActivityJson.bind(this)
     this.addFriendRows = this.addFriendRows.bind(this)
     this.renderHeader = this.renderHeader.bind(this)
+    this.updateUserInfo = this.updateUserInfo.bind(this)
   }
 
   setUpSocket() {
@@ -305,7 +310,7 @@ class Header extends Component {
   }
 
   renderHeader() {
-    var { match } = this.props
+    const { match } = this.props
     // if there is a token in session or local storage...
     if (getToken()) {
       return (
@@ -314,16 +319,21 @@ class Header extends Component {
             <span className='header-title position-absolute w-100'>
               title display
             </span>
-            <div className="navbar-container ml-3 mt-auto mb-auto">
-              <Navbar
-                homeURL="/app"
-                communityURL={`${match.url}/community`}
-                fitnessURL={`${match.url}/fitness`}
-                profileURL={`${match.url}/profile/${this.state.username}`}
-                settingsURL={`${match.url}/settings`}
-                logout={this.logout}
-              />
-            </div>
+            {/* dont display the sidebar opener (the thing with three lines) unless it's a phone */}
+            <Media query={`(max-width: ${sidebarMediaQuery})`} render={() => 
+              (
+                <div className="navbar-container ml-3 mt-auto mb-auto">
+                  <Navbar
+                    homeURL="/app"
+                    communityURL={`${match.url}/community`}
+                    fitnessURL={`${match.url}/fitness`}
+                    profileURL={`${match.url}/profile/${this.state.username}`}
+                    settingsURL={`${match.url}/settings`}
+                    logout={this.logout}
+                  />
+                </div>
+              )}
+            />
           </div>
         </div>
       )
@@ -333,34 +343,96 @@ class Header extends Component {
       this.props.history.push("/")
     }
   }
+
+  renderSideMenu() {
+    const { match } = this.props
+    return (
+      <Media query={`(min-width: ${sidebarMediaQuery})`} render={() => 
+        (
+          <div className='col-3 ml-3 mr-3'>
+            <div className='card text-center'>
+              <div className="sideMenu-container">
+                <SideMenu
+                  homeURL="/app"
+                  communityURL={`${match.url}/community`}
+                  fitnessURL={`${match.url}/fitness`}
+                  profileURL={`${match.url}/profile/${this.state.username}`}
+                  settingsURL={`${match.url}/settings`}
+                  logout={this.logout}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      />
+    )
+  }
+
+  // updates the state and therefore the context if the user info is suspected
+  // to change. For example if the user changes their settings we want the new
+  // settings to be applied automatically. For now only used for settings.
+  async updateUserInfo() {
+    // get the user's information here from database
+    // make request to server to user information and set state
+    var userToken = getToken()
+    var headers = new Headers()
+    headers.append("authorization", `Bearer ${userToken}`)
+
+    var res = await fetch(getUserInfoURL, { method: "GET", headers })
+    var userJson = await res.json()
+    this.setState(prevState => ({
+      ...userJson,
+      socket: prevState.socket,
+      mounted: true,
+      friendTableRows: prevState.friendTableRows,
+      jumpJson: prevState.jumpJson,
+      runJson: prevState.runJson,
+      swimJson: prevState.swimJson,
+    }))
+  }
+
   render() {
     console.log("rendering header...")
+    // renders the general layout of the application
     return (
       <div className="home-container">
         <SpaContext.Provider value={this.state}>
-          {this.renderHeader()} 
-          <div className="card text-center m-3">
-            <TransitionGroup>
-              <CSSTransition
-                key={this.props.location.key}
-                timeout={1000}
-                classNames="fade"
-                appear
-              >
-                <Switch location={this.props.location}>
-                  <Route exact path={`${root}`} component={Home}/>
-                  <Route path={`${root}/community`} component={Community}/>
-                  <Route path={`${root}/fitness`} component={Fitness}/>
-                  <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
-                  <Route path={`${root}/swimDetails`} component={SwimDetails}/>
-                  <Route path={`${root}/runDetails`} component={RunDetails}/>
-                  <Route exact path={`${root}/profile/:username?`} component={Profile}/>
-                  <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
-                  <Route exact path={`${root}/settings`} component={Settings}/>
-                  <Route path={`${root}/settings/stats`} component={Stats}/>
-                </Switch>
-              </CSSTransition>
-            </TransitionGroup>
+          <div className='row'>
+            <div className='col-12'>
+              {this.renderHeader()} 
+            </div>
+          </div>
+          {/* only returns elements if it's not a phone */}
+          <div className='row mt-3 p-1 content'>
+            {this.renderSideMenu()}
+            <div className='col-8'>
+              <div className="card text-center h-100">
+                <TransitionGroup>
+                  <CSSTransition
+                    key={this.props.location.key}
+                    timeout={1000}
+                    classNames="fade"
+                    appear
+                  >
+                    <Switch location={this.props.location}>
+                      <Route exact path={`${root}`} component={Home}/>
+                      <Route path={`${root}/community`} component={Community}/>
+                      <Route path={`${root}/fitness`} component={Fitness}/>
+                      <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
+                      <Route path={`${root}/swimDetails`} component={SwimDetails}/>
+                      <Route path={`${root}/runDetails`} component={RunDetails}/>
+                      <Route exact path={`${root}/profile/:username?`} component={Profile}/>
+                      <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
+                      <Route
+                        exact path={`${root}/settings`}
+                        render={(props) => <Settings {...props} updateUserInfo={this.updateUserInfo} />}
+                      />
+                      <Route path={`${root}/settings/stats`} component={Stats}/>
+                    </Switch>
+                  </CSSTransition>
+                </TransitionGroup>
+              </div>
+            </div>
           </div>
         </SpaContext.Provider>
       </div>

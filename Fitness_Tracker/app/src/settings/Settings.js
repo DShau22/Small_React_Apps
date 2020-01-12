@@ -132,6 +132,7 @@ class Settings extends Component {
       })
       var json = await res.json()
       if (json.success) {
+        this.props.updateUserInfo()
         this.setState({
           successMsgs: "Successfully saved your new settings"
         })

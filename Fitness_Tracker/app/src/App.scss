@@ -61,9 +61,9 @@ html, body {
   outline: 0;
 }
 
-button {
-  @include buttonTheme
-}
+// button {
+//   @include buttonTheme
+// }
 
 .routeButton {
   @include buttonTheme;

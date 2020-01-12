@@ -135,6 +135,11 @@ const UserSchema = new Schema({
     required: false,
     default: false,
   },
+  age: {
+    type: Number,
+    required: false,
+    default: -1
+  },
   friendsPending: {
     type: Array,
     required: false,
@@ -156,14 +161,14 @@ const UserSchema = new Schema({
     default: ""
   },
   height: {
-    type: Number,
+    type: String,
     required: false,
-    default: 0
+    default: ""
   },
   weight: {
-    type: Number,
+    type: String,
     required: false,
-    default: 0
+    default: ""
   },
   gender: {
     type: String,
@@ -185,16 +190,31 @@ const UserSchema = new Schema({
   },
   bests: {
     type: Object,
-    require: true,
+    required: true,
     default: {
-      jump: -1,
-      run: -1,
+      jump: 0,
+      run: 0,
       swim: {}
+    }
+  },
+  totals: {
+    type: Object,
+    required: true,
+    default: {
+      steps: 0,
+      laps: 0,
+      verticalJumps: 0,
+      shotsTaken: 0,
+      buckets: 0,
+      jumpRopes: 0,
+      sessions: 0,
+      minutes: 0,
+      calories: 0,
     }
   },
   settings: {
     type: Object,
-    require: true,
+    required: true,
     default: {
       unitSystem: "English", // English, metric
       swimLap: "25 yd", // 25 yd, 50 m, 25 m, or some custom text like 33.3 yd

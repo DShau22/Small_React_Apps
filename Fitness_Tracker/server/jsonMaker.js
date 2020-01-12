@@ -25,7 +25,8 @@ function jumpJson(converted, today, userID) {
   var heights = []
   converted.forEach(function(set) {
     // '3' '4' or '5' corresponds to jumping
-    if (jumpSet.has(set[activityNumber].charCodeAt(0))) {
+    let string_rep = String.fromCharCode(set[activityNumber])
+    if (jumpSet.has(string_rep)) {
       numJumps++
       time = set[2]
       heights.push(calcHeight(set[1])) //set[1] contains hangtime
@@ -54,7 +55,8 @@ function swimJson(converted, today, userID) {
   var time = 0;
   converted.forEach(function(set) {
     // 1 corresponds to swimming
-    if (swimSet.has(set[activityNumber].charCodeAt(0))) {
+    let string_rep = String.fromCharCode(set[activityNumber])
+    if (swimSet.has(string_rep)) {
       calories = set[5]
       time = set[2]
       lapTimes.push(set[4])
@@ -88,7 +90,16 @@ function runJson(converted, today, userID) {
   var paces = [];
 
   converted.forEach(function(set) {
-    if (stepSet.has(set[activityNumber].charCodeAt(0))) {
+
+    let string_rep = String.fromCharCode(set[activityNumber])
+    console.log('running set: ', set)
+    // console.log("running set: ", String.fromCharCode(set[0]))
+    // console.log("running set: ", String.fromCharCode(set[1]))
+    // console.log("running set: ", String.fromCharCode(set[2]))
+    // console.log("running set: ", String.fromCharCode(set[3]))
+    // console.log("running set: ", String.fromCharCode(set[4]))
+    // console.log("running set: ", String.fromCharCode(set[5]))
+    if (stepSet.has(string_rep)) {
       prevNumSteps = numSteps
       prevTime = time
       numSteps = set[3]

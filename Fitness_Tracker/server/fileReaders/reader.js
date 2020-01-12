@@ -18,6 +18,7 @@ function validate(byte, idx) {
 } 
 
 function merge_two_bytes(first8, second8) {
+  return (first8 << 8) + second8
   two_byte = parseInt("0x0000");
   two_byte = two_byte | (first8 << 8);
   two_byte = two_byte | second8;
@@ -25,6 +26,7 @@ function merge_two_bytes(first8, second8) {
 }
 
 function merge_three_bytes(first8, second8, third8) {
+  return (first8 << 16) + (second8 << 8) + third8
   three_byte = parseInt("0x00000000");
   three_byte = three_byte | (first8 << 16)
   three_byte = three_byte | (second8 << 8)
@@ -55,12 +57,12 @@ function convert(byteArr) {
   while (idx < (byteArr.length - 15)) {
     if ((byteArr[idx+15] === semicolon_ascii) && validate(byteArr[idx], idx)) {
       mode = byteArr[idx];
-      lapCount = merge_two_bytes(idx + 1,idx + 2);
-      ndata = merge_three_bytes(idx + 5, idx + 4, idx + 6);
-      stepCount = merge_three_bytes(idx + 10, idx + 8, idx + 9)
-      lapTime = merge_three_bytes(idx + 11, idx + 7, idx + 3)
-      calorie = merge_three_bytes(idx + 12, idx + 13, idx + 14)
-      converted.push(...[mode, lapCount, ndata, stepCount, lapTime, calorie])
+      lapCount = merge_two_bytes(byteArr[idx + 1],byteArr[idx + 2]);
+      ndata = merge_three_bytes(byteArr[idx + 5], byteArr[idx + 4], byteArr[idx + 6]);
+      stepCount = merge_three_bytes(byteArr[idx + 10], byteArr[idx + 8], byteArr[idx + 9])
+      lapTime = merge_three_bytes(byteArr[idx + 11], byteArr[idx + 7], byteArr[idx + 3])
+      calorie = merge_three_bytes(byteArr[idx + 12], byteArr[idx + 13], byteArr[idx + 14])
+      converted.push([mode, lapCount, ndata, stepCount, lapTime, calorie])
       idx += 16;
     } else {
       idx++;

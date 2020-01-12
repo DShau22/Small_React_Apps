@@ -1,0 +1,54 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.profile-container .edit-btn-container {
+  position: absolute;
+  top: 8%;
+  right: 5%;
+  background-color: #7c99f8;
+  padding: 8px;
+}
+.profile-container .edit-btn-container i {
+  color: white;
+  margin-right: 2px;
+}
+.profile-container .edit-btn-container .edit-btn {
+  color: white;
+  font-size: 20px;
+}
+
+.top-half {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.top-half .img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40vw;
+  height: 40vw;
+}
+.top-half .img-container .profile-pic {
+  border-radius: 50%;
+}
+.top-half .info-container {
+  width: 100%;
+}
+.top-half .name-container .fname, .top-half .name-container .lname {
+  font-size: 24pt;
+}
+.top-half .name-container .fname {
+  margin-right: 7px;
+}
+.top-half .name-container .lname {
+  margin-left: 7px;
+}
+
+/*# sourceMappingURL=userProfile.css.map */

@@ -29,9 +29,9 @@ class FriendRequests extends Component {
           <li>{firstName}, {lastName}</li>
           <button
             onClick={() => {
-              acceptRequest(id, firstName, lastName)
-              removeFriendReq(id)
-              addFriendToState(id, firstName, lastName)
+              acceptRequest(id, firstName, lastName);
+              removeFriendReq(id);
+              addFriendToState(id, firstName, lastName);
             }}
           >
             accept

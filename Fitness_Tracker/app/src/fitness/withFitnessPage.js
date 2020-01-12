@@ -11,6 +11,20 @@ import { parseDate } from "../utils/unitConverter"
 // 5. pace/jump/time (swim) progressions (swim still adds laps of each stroke done)
 // 6. average jumps/steps/laps (num)
 // 7. percentToGoal ? 
+
+function reverse(array) {
+  var i = 0,
+      n = array.length,
+      middle = Math.floor(n / 2),
+      temp = null;
+
+  for (; i < middle; i += 1) {
+     temp = array[i];
+     array[i] = array[n - 1 - i];
+     array[n - 1 - i] = temp;
+  }
+}
+
 export default function withFitnessPage( WrappedComponent ) {  
   class WithFitnessPage extends Component {
     constructor(props) {
@@ -59,6 +73,7 @@ export default function withFitnessPage( WrappedComponent ) {
         var dateInfo = parseDate(stringToDate)
         pastGraphLabels.push(dateInfo[0] + ", " + dateInfo[1] + " " + dateInfo[2])
       })
+      reverse(pastGraphLabels)
       this.setState({ pastGraphLabels })
     }
 
@@ -69,6 +84,7 @@ export default function withFitnessPage( WrappedComponent ) {
         var { num } = session
         pastGraphData.push(num)
       })
+      reverse(pastGraphData)
       this.setState({ pastGraphData })
       //debugger
     }

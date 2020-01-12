@@ -3,11 +3,14 @@
 import React, { Component } from 'react'
 import {
   Redirect,
-  withRouter
+  withRouter,
+  NavLink
 } from "react-router-dom";
-import { englishHeight }from "../utils/unitConverter"
-import SpaContext from '../Context';
+import ShowMoreText from 'react-show-more-text';
 
+import SpaContext from '../Context';
+import { weightConvert, heightConvert, englishHeight, parseDate, rawHeightConvert } from "../utils/unitConverter"
+import "./css/userProfile.css"
 // replace with default avatar link
 const imgAlt = "./default_profile.png"
 
@@ -19,6 +22,7 @@ class UserProfile extends Component {
       bestSwim: "",
       bestRun: "",
       editProfile: false,
+      expandBio: false,
     }
   }
 
@@ -30,61 +34,65 @@ class UserProfile extends Component {
 
   renderBio() {
     var { bio } = this.context
-    if (bio) {
+    const onClick = () => {
+      this.setState({ expandBio: true })
+    }
+    if (!bio) {
       return (
-        <p>{bio}</p>
+        <p>No bio yet</p>
       )
     }
     return (
-      <p>No bio yet</p>
-    )
-  }
-
-  renderGender() {
-    var { gender } = this.context
-    // var { displayGender } = settings
-    if (gender /* && displayGender */) {
-      return (
-        <p>{gender}</p>
-      )
-    }
-    return (
-      <p>hidden</p>
+      <ShowMoreText
+        /* Default options */
+        lines={3}
+        more='Show more'
+        less='Show less'
+        anchorClass=''
+        onClick={onClick}
+        expanded={this.state.expandBio}
+      >
+        {bio}
+      </ShowMoreText>
     )
   }
 
   renderHeight() {
+    // HEIGHT IS IN FORMAT (num) (units in in/cm). Can flat out display it if they 
+    // want metric, else convert to __ ft __ in for english system 
     var { height, settings } = this.context
     var { unitSystem } = settings
     unitSystem = unitSystem.toLowerCase()
-    // var { displayHeight } = settings
-    if (height /* && displayHeight */) {
-      var englishDisplay = englishHeight(height)
-      return (
-        unitSystem === "english" ? 
-          (<p>{englishDisplay.feet} ft {englishDisplay.inches} in</p>) :
-          (<p>{height} cm</p>)
-      )
+    if (!height) {
+      return ( <p>set height</p> )
     }
-    return (
-      <p>hidden</p>
-    )
+    var displayHeight = height
+    if (unitSystem === "english") {
+      // convert to english system if database stores it in cm else just display it in __ ft __ in
+      displayHeight = heightConvert("english", height)
+    } else if (unitSystem === "metric") {
+      displayHeight = heightConvert('metric', height)
+    } else {
+      console.error(new Error("unitsystem is not 'english' or 'metric'..."))
+    }
+    return displayHeight
   }
 
   renderWeight() {
+    // weight has format (num) (units in kg/lbs)
     var { weight, settings } = this.context
     var { unitSystem } = settings
     unitSystem = unitSystem.toLowerCase()
-    var units = (unitSystem === "english") ? "lbs" : "kg"
-    // var { displayWeight } = settings
-    if (weight /* && displayWeight */) {
-      return (
-        <p>{weight} {units}</p>
-      )
+    var displayWeight = weight
+    if (unitSystem === "english") {
+      // convert to english system if database stores it in cm else just display it in __ ft __ in
+      displayWeight = weightConvert("english", weight)
+    } else if (unitSystem === "metric") {
+      displayWeight = weightConvert('metric', weight)
+    } else {
+      console.error(new Error("unitsystem is not 'english' or 'metric'..."))
     }
-    return (
-      <p>hidden</p>
-    )
+    return displayWeight
   }
 
   renderBests() {
@@ -99,42 +107,72 @@ class UserProfile extends Component {
   }
 
   render() {
+    var { context } = this
     // if user clicked the button to go to the edit profile page
     if (this.state.editProfile) {
       // debugger;
       return ( <Redirect to={{pathname: `${this.props.match.url}/edit`,}}/> )
     }
-    if (this.context.mounted) {
+    var { history } = this.props
+    console.log(this.props.history)
+    if (context.mounted) {
       return (
-        <div className="profile-container" style={protoStyle}>
-          <div className="edit-container" style={protoStyle}>
-            <h2>edit profile button</h2>
-            <button
-              onClick={() => {
-                this.setState({ editProfile: true })
-              }}
-            >
-              edit
-            </button>
+        <div className="profile-container">
+          <div className='edit-btn-container'>
+            <i style={{'fontSize':'24px'}} className='far'>&#xf044;</i>
+            <button className="edit-btn" onClick={() =>{this.setState({editProfile: true})}}>Edit Profile</button>
           </div>
-          <div className="profile-picture-container" style={protoStyle}>
-            <p>image goes here...</p>
-            <img src={this.context.profilePicture.profileURL} height="50" width="50" alt={imgAlt}/>
+          <div className='top-half'>
+            <div className='img-container mt-2'>
+              <img 
+                className='profile-pic'
+                src={context.profilePicture.profileURL}
+                height="75%"
+                width="75%"
+                alt={imgAlt}
+              />
+            </div>
+            <div className="name-container">
+              <span className='fname'>{context.firstName}</span>
+              <span className='lname'>{context.lastName}</span>
+            </div>
+            <div className='info-container m-3'>
+              <div className='row'>
+                <div className='col-4'>
+                  <h5>Age</h5>
+                  <span>{context.age}</span>
+                </div>
+                <div className='col-4'>
+                  <h5>Height</h5>
+                  <span>{this.renderHeight()}</span>
+                </div>
+                <div className='col-4'>
+                  <h5>Weight</h5>
+                  <span>{this.renderWeight()}</span>
+                </div>
+              </div>
+            </div>
+            <div className='bio-container m-3'>
+              <span>{this.renderBio()}</span>
+            </div>
           </div>
-          <div className="weight-container" style={protoStyle}>
-            {this.renderWeight()}
-          </div>
-          <div className="gender-container" style={protoStyle}>
-            {this.renderGender()}
-          </div>
-          <div className="height-container" style={protoStyle}>
-            {this.renderHeight()}
-          </div>
-          <div className="bio-container" style={protoStyle}>
-            {this.renderNumFriends()}
-          </div>
-          <div className="num-friends-container" style={protoStyle}>
-            {this.renderBio()}
+          <div className='bot-half'>
+            <div className='row'>
+              <div className='col-6'>
+                total steps
+              </div>
+              <div className='col-6'>
+                total mins
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-6'>
+                total laps
+              </div>
+              <div className='col-6'>
+                hightest jump
+              </div>
+            </div>
           </div>
         </div>
       )
@@ -149,9 +187,4 @@ class UserProfile extends Component {
   }
 }
 UserProfile.contextType = SpaContext
-const protoStyle = {
-  "border": "solid",
-  "marginTop": "10px"
-}
-
 export default withRouter(UserProfile)

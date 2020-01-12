@@ -26,6 +26,7 @@ function weightConvert(system, weight) {
   return convertedWeight.toString() + " " + units
 }
 
+// system is the system you wanna display in
 function heightConvert(system, height) {
   if (!system) return ""
   var parsed = height.split(" ") // either [num, ft, num, in] or [num, cm]
@@ -36,7 +37,7 @@ function heightConvert(system, height) {
     var heightInCm = parsed[0]
     convertedHeight = parseInt(heightInCm) * cmToIn
     let feet = Math.floor(convertedHeight / 12.0)
-    let inches = Math.round(convertedHeight - feet)
+    let inches = Math.round(convertedHeight - feet * 12)
     convertedHeight = feet.toString() + " ft " + inches.toString() + " in"
   } else if (system === "metric" && parsed[1] === "ft") {
     // convert ft, in to cm
@@ -51,7 +52,7 @@ function heightConvert(system, height) {
 function englishHeight(height) {
   var feet = Math.floor(height / 12)
   var inches = Math.round(height - (12 * feet))
-  return { feet, inches }
+  return `${feet} ft ${inches} in`
 }
 
 // FOR RAW DOUBLES

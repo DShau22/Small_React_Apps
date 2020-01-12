@@ -190,7 +190,7 @@ class Swim extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Laps per Session</h5>
@@ -198,7 +198,7 @@ class Swim extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Speed per Lap</h5>
@@ -208,7 +208,7 @@ class Swim extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Time per Lap</h5>
@@ -216,7 +216,7 @@ class Swim extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Strokes per Lap</h5>
@@ -226,7 +226,7 @@ class Swim extends Component {
           </div>
         </div>
         <div className="row mt-3">
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Avg Cals per Session</h5>
@@ -234,7 +234,7 @@ class Swim extends Component {
               </div>
             </div>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6">
             <div className="card text-center">
               <div className="card-body">
                 <h5 className="card-title">Stroke Distribution</h5>
