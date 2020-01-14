@@ -33,7 +33,7 @@ function jumpJson(converted, today, userID) {
     }
   })
   
-  time = Math.round(time / 50) // sampling rate is 1 sample/.02 seconds
+  time = Math.round(time / 3000) // sampling rate is 1 sample/.02 seconds, now in minutes
   var json = {
     userID: userID,
     uploadDate: today,
@@ -42,7 +42,7 @@ function jumpJson(converted, today, userID) {
     time,
     calories: -1, //default for now since the algo doesn't write calories
   }
-  console.log(JSON.stringify(json))
+  // console.log(JSON.stringify(json))
   return json
 }
 
@@ -63,7 +63,7 @@ function swimJson(converted, today, userID) {
       strokes.push(set[0])
     }
   })
-  time = Math.round(time / 10) //1 sample per .1 seconds
+  time = Math.round(time / 600) //1 sample per .1 seconds, returns time in minutes
   var json = {
     userID: userID,
     uploadDate: today,
@@ -77,10 +77,10 @@ function swimJson(converted, today, userID) {
 }
 
 // run[0]: "R" for run, 'W' for walk, and more for other modes
-// run[1]: time since start if you wanna report using pace
+// run[1]: time in minutes
 // run[2]: ndata .1s
 // run[3]: step count
-// run[4]: time in minutes, run[5]: cals
+// run[4]: time since start if you wanna report using pace, run[5]: cals
 function runJson(converted, today, userID) {
   var numSteps = 0;
   var calories = 0;
@@ -92,24 +92,17 @@ function runJson(converted, today, userID) {
   converted.forEach(function(set) {
 
     let string_rep = String.fromCharCode(set[activityNumber])
-    console.log('running set: ', set)
-    // console.log("running set: ", String.fromCharCode(set[0]))
-    // console.log("running set: ", String.fromCharCode(set[1]))
-    // console.log("running set: ", String.fromCharCode(set[2]))
-    // console.log("running set: ", String.fromCharCode(set[3]))
-    // console.log("running set: ", String.fromCharCode(set[4]))
-    // console.log("running set: ", String.fromCharCode(set[5]))
+    //console.log('running set: ', set)
     if (stepSet.has(string_rep)) {
       prevNumSteps = numSteps
       prevTime = time
       numSteps = set[3]
       calories = set[5]
-      time     = set[2] / 10 // now in seconds
-      pace = (numSteps - prevNumSteps) / (time - prevTime) // steps per second
+      time     = set[2] / (600) // time in min
+      pace = (numSteps - prevNumSteps) / (time - prevTime) // steps per min
       paces.push(pace)
     }
   })
-  time = Math.round(time / 10) // 1 sample per .1 seconds
   var json = {
     userID,
     uploadDate: today,
@@ -118,7 +111,7 @@ function runJson(converted, today, userID) {
     calories,
     time,
   }
-  console.log(JSON.stringify(json))
+  // console.log(JSON.stringify(json))
   return json
 }
 

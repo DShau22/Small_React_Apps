@@ -1,6 +1,4 @@
 const IncomingForm = require('formidable').IncomingForm
-const csv = require('csv')
-var testCSV = csv()
 const fs = require('fs')
 const reader = require("./fileReaders/reader")
 const jsonMaker = require("./jsonMaker")
@@ -9,64 +7,103 @@ const dataPath = "./Data/"
 const jumpPath = "jump/"
 const runPath = "run/"
 const date = new Date()
-const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 
 const {User, Swim, Run, Jump} = require("./database/MongoConfig")
 
-function update(jumpJson, runJson, swimJson) {
+// saves a given doc if it is not null
+function saveData(doc) {
+  if (!doc) {
+    return new Promise((resolve, reject) => {reject(new Error("doc is null or undefined"))})
+  }
+  if (doc.num === 0) {
+    // return a dummy promise with the default json schema
+    return new Promise((resolve, reject) => {
+      resolve(doc)
+    })
+  }
+  return new Promise((resolve, reject) => {
+    doc.save((err, activity) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(activity)
+    })
+  })
+}
 
-  console.log("swimJson: ", swimJson)
-  console.log("runJson: ", runJson)
-  console.log("jumpJson: ", jumpJson)
+// updates the run, swim, jump collections and the user's 
+// bests and totals
+async function update(userID, jumpJson, runJson, swimJson) {
+
+  // console.log("swimJson: ", swimJson)
+  // console.log("runJson: ", runJson)
+  // console.log("jumpJson: ", jumpJson)
 
   // create documents using the jsons from the request body
-  // return null if the number is 0 (user didn't do any activity)
-  var newRunData = (runJson.num === 0) ? null : new Run(runJson)
-  var newJumpData = (jumpJson.num === 0) ? null : new Jump(jumpJson)
-  var newSwimData = (swimJson.num === 0) ? null : new Swim(swimJson)
+  // return the original default json if the number is 0 (user didn't do any activity)
+  var runDoc = (runJson.num === 0) ? runJson : new Run(runJson)
+  var jumpDoc = (jumpJson.num === 0) ? jumpJson : new Jump(jumpJson)
+  var swimDoc = (swimJson.num === 0) ? swimJson : new Swim(swimJson)
 
-  console.log("run", newRunData, "jump", newJumpData, "swim", newSwimData)
-  var errors = { success: true, msgs: [] }
-  //save to database collections runs, jumps, swims
-  if (newRunData !== null) {
-    newRunData.save(function (err, run) {
-      if (err) {
-        console.error(err)
-        errors.success = false
-        errors.msgs.push(err.toString())
-      }
-      console.log("saved run data")
-    })
-  } else {
-    console.log("run data is null. Either there was a bug with the upload or it didn't fit the schema")
+  var errors = { success: true, messages: [] }
+  // save to database collections runs, jumps, swims
+  var savedRun;
+  var savedJump;
+  var savedSwim;
+  try {
+    // if saveData is passed the default json it will just return the default
+    [
+      savedRun,
+      savedJump, 
+      savedSwim
+    ] = await Promise.all([saveData(runDoc), saveData(jumpDoc), saveData(swimDoc)]);
+    console.log(savedRun)
+    console.log(savedJump)
+    console.log(savedSwim)
+    console.log("saved run, swim, jump data")
+    errors.messages.push('saved all activity data successfully')
+  } catch(e) {
+    console.error(e)
+    errors.success = false
+    errors.messages.push(e.toString())
   }
 
-  if (newJumpData !== null) {
-    newJumpData.save(function (err, jump) {
-      if (err) {
-        console.error(err)
-        errors.success = false
-        errors.msgs.push(err.toString())
-      }
-      console.log("saved jump data")
-    })
-  } else {
-    console.log("jump data is null. Either there was a bug with the upload or it didn't fit the schema")
-  }
-
-  if (newSwimData !== null) {
-    newSwimData.save(function (err, swim) {
-      if (err){
-        console.error(err)
-        errors.success = false
-        errors.msgs.push(err.toString())
-      }
-      console.log("saved swim data")
-    })
-  } else {
-    console.log("swim data is null. Either there was a bug with the upload or it didn't fit the schema")
+  // update the bests and totals next
+  try {
+    let filter = {_id: userID}
+    let update = { 
+      $max: {
+        'bests.jump': Math.max(savedJump.heights),
+        'bests.run': Math.max(savedRun.num),
+      },
+      $inc: {
+        'totals.steps': savedRun.num,
+        'totals.laps': savedSwim.num,
+        'totals.verticalJumps': savedJump.num,
+        'totals.sessions': 1,
+        'totals.minutes': savedJump.time + savedSwim.time + savedRun.time,
+        'totals.calories': savedRun.calories + savedSwim.calories  // jumping doesnt count calories
+      },
+    }
+    console.log("updating user")
+    var newUser = await User.findOneAndUpdate(filter, update)
+    console.log('updated user bests')
+  } catch(e) {
+    // delete the run, swim, jump entries if they were saved
+    console.error(e)
+    errors.success = false
+    errors.messages.push(e.toString())
+    try {
+      console.log("deleting...")
+      await Promise.all([Run.findOneAndDelete({userID: userID}),
+                        Jump.findOneAndDelete({userID: userID}),
+                        Swim.findOneAndDelete({userID: userID})])
+    } catch(e) {
+      console.err(e.toString())
+      errors.messages.push(e.toString())
+    }
   }
   return errors
 }
@@ -78,13 +115,14 @@ function parseAuthHeader(auth) {
   return bearerToken
 }
 
-module.exports = function upload(req, res, next) {
+module.exports = async function upload(req, res, next) {
 
   var form = new IncomingForm()
+  // i dont think form.parse or jwt.verify can return promises :(
   form.parse(req, async function(err, fields, files) {
     if (err) throw err
     console.log("parsing form...")
-    console.log(files)
+    //console.log(files)
     var converted;
     // convert encoded file to correct byte file
     try {
@@ -95,13 +133,13 @@ module.exports = function upload(req, res, next) {
       throw e
     }
 
-    jwt.verify(parseAuthHeader(req.headers['authorization']), secret, function(err, decoded) {
+    jwt.verify(parseAuthHeader(req.headers['authorization']), secret, async function(err, decoded) {
       console.log("verifying...")
       // invalid token!
       if (err) {
         return res.send({
           success: false,
-          message: err.toString()
+          messages: [err.toString()]
         })
       }
 
@@ -116,14 +154,15 @@ module.exports = function upload(req, res, next) {
         console.error(e)
         return res.send({
           success: false,
-          err: e
+          messages: [e.toString()]
         })
       }
 
-      var result = update(jumpJson, runJson, swimJson)
+      var result = await update(decoded._id, jumpJson, runJson, swimJson)
       if (result.success) {
         return res.send({
-          success: true
+          success: true,
+          messages: ['successfully updated your recent activities']
         })
       } else {
         // something went wrong with uploading the database. Probably schema didn't match

@@ -27,12 +27,22 @@ class FormCard extends Component {
         </input><label htmlFor="tab-2" className="tab">Sign Up</label>
         <div className="login-form">
           <SignIn
+            signInEmail={this.props.signInEmail}
+            signInPassword={this.props.signInPassword}
+
             onEmailChange={this.props.onSignInEmailChange}
             onPwChange={this.props.onSignInPwChange}
             onSignIn={this.props.handleSignIn}
             onCheck={this.props.onCheck}
           />
           <SignUp
+            signUpEmail={this.props.signUpEmail}
+            signUpPassword={this.props.signUpPassword}
+            signUpPasswordConf={this.props.signUpPasswordConf}
+            signUpFirstName={this.props.signUpFirstName}
+            signUpLastName={this.props.signUpLastName}
+            signUpUserName={this.props.signUpUserName}
+
             onEmailChange={this.props.onSignUpEmailChange}
             onPwChange={this.props.onSignUpPwChange}
             onPwConfChange={this.props.onSignUpPwChangeConf}

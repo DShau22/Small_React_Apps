@@ -17,7 +17,7 @@ const JumpSchema = new Schema({
   num: {
     type: Number,
     required: true,
-    default: -1,
+    default: 0,
   },
   heights: {
     type: [Number],
@@ -27,8 +27,13 @@ const JumpSchema = new Schema({
   calories: {
     type: Number,
     required: true,
-    default: -1,
+    default: 0,
   },
+  time: {
+    type: Number,
+    required: true,
+    default: 0
+  }
 })
 
 const RunSchema = new Schema({
@@ -92,6 +97,11 @@ const SwimSchema = new Schema({
     type: Number,
     required: true,
     default: 0,
+  },
+  time: {
+    type: Number,
+    required: true,
+    default: 0
   },
 })
 

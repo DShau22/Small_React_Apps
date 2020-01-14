@@ -4,10 +4,10 @@ import {
   getToken,
   getFromLocalStorage,
   setInLocalStorage,
-  removeFromLocalStorage,
   setInSessionStorage,
   storageKey
 } from '../utils/storage';
+import { validateSignUp } from "./loginUtils/validators"
 
 import { Redirect } from 'react-router';
 
@@ -49,6 +49,8 @@ class Login extends Component {
       signUpFirstName: '',
       signUpLastName: '',
       signUpUserName: '',
+      errorMsgs: new Set(),
+      successMsgs: new Set(),
     };
 
     this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
@@ -60,18 +62,23 @@ class Login extends Component {
     this.onTextboxChangeSignUpLastName = this.onTextboxChangeSignUpLastName.bind(this);
     this.onTextboxChangeSignUpUsername = this.onTextboxChangeSignUpUsername.bind(this);
     this.onCheck = this.onCheck.bind(this)
+
     this.displayErrors = this.displayErrors.bind(this)
     this.showSuccesses = this.showSuccesses.bind(this)
+    this.showError = this.showError.bind(this)
+    this.showSuccess = this.showSuccess.bind(this)
+
     this.switchToSignIn = this.switchToSignIn.bind(this)
     this.switchToSignUp = this.switchToSignUp.bind(this)
 
     this.clearSignUp = this.clearSignUp.bind(this)
+    this.clearSignIn = this.clearSignIn.bind(this)
 
     this.onSignIn = this.onSignIn.bind(this);
     this.onSignUp = this.onSignUp.bind(this)
     this.tokenLogin = this.tokenLogin.bind(this)
   }
-
+  
   componentDidMount() {
     console.log("mounting...")
     // get the localstorage object which may contain the _id token
@@ -135,12 +142,23 @@ class Login extends Component {
       remember: !this.state.remember
     })
   }
+
+  clearSignIn() {
+    this.setState({
+      isLoading: false,
+      signInEmail: '',
+      signInPassword: '',
+      remember: false,
+    })
+  }
+
   clearSignUp() {
     console.log("clearing...")
     this.setState({
       isLoading: false,
       signUpEmail: '',
       signUpPassword: '',
+      signUpPasswordConf: '',
       signUpFirstName: '',
       signUpLastName: '',
       signUpUserName: '',
@@ -171,7 +189,7 @@ class Login extends Component {
       })
     } else {
       console.log("verification of token went wrong")
-      console.log(json.message)
+      console.log(json.messages)
       this.setState({
         isLoading: false,
       })
@@ -180,7 +198,9 @@ class Login extends Component {
 
   // MAKE SURE TO DISALLOW WHITELISTED SPECIAL CHARACTERS
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
-  async onSignUp() {
+  async onSignUp(e) {
+    e.preventDefault()
+    this.setState({ errorMsgs: [], successMsgs: []})
     console.log("signing up...")
     var {
       signUpEmail,
@@ -191,6 +211,16 @@ class Login extends Component {
       signUpUserName,
     } = this.state
     
+    var validationJson = validateSignUp(this.state)
+    if (!validationJson.success) {
+      console.log("validation error!")
+      validationJson.messages.forEach((msg, i) => {
+        console.log(msg)
+        this.setState(prevState => ({ errorMsgs: new Set([...prevState.errorMsgs, msg]) }))
+      })
+      return
+    }
+
     this.setState({
       isLoading: true,
     });
@@ -213,19 +243,19 @@ class Login extends Component {
     var json = await res.json()
     console.log('json', json);
     if (json.success) {
-      setInLocalStorage(storageKey + "_signUpSuccess", json.messages)
+      this.setState({ successMsgs: new Set([...json.messages]) })
       this.clearSignUp()
     } else {
-      setInLocalStorage(storageKey + "_signUpErrors", json.messages)
-      this.setState({
-        isLoading: false,
-      })
+      var newErrors = new Set([...json.messages])
+      this.setState({isLoading: false, errorMsgs: newErrors})
     }
   }
 
   // MAKE SURE TO DISALLOW WHITELISTED SPECIAL CHARACTERS
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
-  async onSignIn() {
+  async onSignIn(e) {
+    e.preventDefault()
+    this.setState({ errorMsgs: [], successMsgs: [] })
     // Grab state
     const {
       signInEmail,
@@ -235,13 +265,17 @@ class Login extends Component {
     console.log("signing in...")
     const stored = getFromLocalStorage(storageKey)
 
+    if (signInEmail === "test") {
+      this.setState({isLoading: false})
+    }
+
     // if there's already a token in local storage log then just login with that
+    // THIS MIGHT BE BUGGY
     if (stored && stored.token) {
       alert("token already present")
       var { token } = stored
       return await this.tokenLogin(token)
     }
-    alert("token not present")
 
     this.setState({
       isLoading: true,
@@ -270,77 +304,49 @@ class Login extends Component {
         isLoading: false,
         signInPassword: '',
         signInEmail: '',
-        signUpErrors: {},
-        signInErrors: {},
         token: json.token, // still keep the token in the state to get activity queries
         signedIn: true,
       });
+      this.clearSignIn()
     } else {
-      setInLocalStorage(storageKey + "_signInErrors", json.messages)
-      this.setState({
-        // signInErrors: json.messages,
+      console.log(json)
+      this.setState(prevState => ({
         isLoading: false,
-      })
+        errorMsgs: new Set([...prevState.errorMsgs, ...json.messages])
+      }))
     }
   }
 
   // takes in an object of error messages and returns html elements to display them
   showError(msg, idx) {
-    return (
-      <ErrorAlert msg={msg} key={idx} onClose={() => {}}/>
-    )
+    const onClose = () => {
+      this.setState(prevState => ({
+        errorMsgs: new Set( [...prevState.errorMsgs].filter(errMsg => errMsg !== msg))
+      }))
+    }
+    return ( <ErrorAlert msg={msg} key={idx} onClose={onClose}/> )
   }
 
   // Shows all the errors due to bad signin or signup
   displayErrors() {
-    var { renderSignIn } = this.state
-    // returns null if not in local storage, otherwise gets error messages
-    var signInErrors = getFromLocalStorage(storageKey + "_signInErrors")
-    var signUpErrors = getFromLocalStorage(storageKey + "_signUpErrors")
-    var pwResetErrors = getFromLocalStorage(storageKey + "_pwResetEmailErr")
-    // clear the errors so they don't show up again
-    removeFromLocalStorage(storageKey + "_signInErrors")
-    removeFromLocalStorage(storageKey + "_signUpErrors")
-    removeFromLocalStorage(storageKey + "_pwResetEmailErr")
-    // thoroughly check if it is empty object or not
-    var msgArray;
-    if (signInErrors !== null && renderSignIn) {
-      msgArray = Object.values(signInErrors)
-      return msgArray.map(this.showError)
-    } else if (signUpErrors !== null && !renderSignIn) {
-      msgArray = Object.values(signUpErrors)
-      return msgArray.map(this.showError)
-    } else if (pwResetErrors !== null && renderSignIn) {
-      msgArray = Object.values(pwResetErrors)
-      return msgArray.map(this.showError)
-    }
+    var errorMsgs = [...this.state.errorMsgs]
+    return errorMsgs.map(this.showError)
   }
 
   //shows a signle success message
   showSuccess(msg, idx) {
-    return (
-      <Success msg={msg} key={idx} onClose={() => {}} />
-    )
+    const onClose = () => {
+      this.setState(prevState => ({
+        successMsgs: new Set([...prevState.successMsgs].filter(successMsg => successMsg !== msg))
+      }))
+    }
+    return ( <Success msg={msg} key={idx} onClose={onClose} /> )
   }
 
   // shows success messages
   showSuccesses() {
-    var { renderSignIn } = this.state
-    // returns null if not in local storage, otherwise gets error messages
-    var signUpSuccess = getFromLocalStorage(storageKey + "_signUpSuccess")
-    var pwResetSuccess = getFromLocalStorage(storageKey + "_pwResetEmailMsg")
-    // clear from storage so it doesn't show up again
-    removeFromLocalStorage(storageKey + "_signUpSuccess")
-    removeFromLocalStorage(storageKey + "_pwResetEmailMsg")
-    // there is a success message, and use is looking at the SignUp part of the card
-    var successArray;
-    if (signUpSuccess !== null && !renderSignIn) {
-      successArray = Object.values(signUpSuccess)
-      return successArray.map(this.showSuccess)
-    } else if (pwResetSuccess !== null && renderSignIn) {
-      successArray = Object.values(pwResetSuccess)
-      return successArray.map(this.showSuccess)
-    }
+    var successMsgs = [...this.state.successMsgs]
+    return successMsgs.map(this.showSuccess)
   }
 
   //switches from signup to signin on the card
@@ -382,6 +388,16 @@ class Login extends Component {
               </div>
               <LoadingScreen />
               <FormCard
+                signInEmail={this.state.signInEmail}
+                signInPassword={this.state.signInPassword}
+                
+                signUpEmail={this.state.signUpEmail}
+                signUpPassword={this.state.signUpPassword}
+                signUpPasswordConf={this.state.signUpPasswordConf}
+                signUpFirstName={this.state.signUpFirstName}
+                signUpLastName={this.state.signUpLastName}
+                signUpUserName={this.state.signUpUserName}
+
                 renderSignIn={this.state.renderSignIn}
                 onSignInClick={this.switchToSignIn}
                 onSignUpClick={this.switchToSignUp}

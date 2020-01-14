@@ -83,6 +83,7 @@ class SignIn extends Component {
               type="text"
               className="input"
               onChange={this.props.onEmailChange}
+              value={this.props.signInEmail}
               required
             />
           </div>
@@ -94,6 +95,7 @@ class SignIn extends Component {
               className="input"
               data-type="password"
               onChange={this.props.onPwChange}
+              value={this.props.signInPassword}
               required
             />
           </div>

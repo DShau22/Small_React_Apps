@@ -16,6 +16,7 @@ class SignUp extends Component {
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Must be a valid email address"
               onChange={this.props.onEmailChange}
+              value={this.props.signUpEmail}
               required
             ></input>
           </div>
@@ -31,6 +32,7 @@ class SignUp extends Component {
               title="Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long."
               maxLength='30'
               onChange={this.props.onPwChange}
+              value={this.props.signUpPassword}
               required
             ></input>
           </div>
@@ -42,8 +44,9 @@ class SignUp extends Component {
               className="input"
               data-type="password"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+              title="Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long."
               onChange={this.props.onPwConfChange}
+              value={this.props.signUpPasswordConf}
               maxLength='30'
               required
             ></input>
@@ -60,6 +63,7 @@ class SignUp extends Component {
               minLength='1'
               pattern="[a-zA-Z0-9]+"
               title="Must only contain alphanumeric characters"
+              value={this.props.signUpUserName}
               required
             />
           </div>
@@ -73,7 +77,8 @@ class SignUp extends Component {
               onChange={this.props.onFirstNameChange}
               maxLength='30'
               pattern="[a-zA-Z0-9]+"
-              title="Must only contain alphanumeric characters"
+              title="Must only contain alphanumeric characters and no spaces"
+              value={this.props.signUpFirstName}
               required
             />
           </div>
@@ -88,6 +93,7 @@ class SignUp extends Component {
               maxLength='40'
               pattern="[a-zA-Z0-9]+"
               title="Must only contain alphanumeric characters"
+              value={this.props.signUpLastName}
               required
             />
           </div>

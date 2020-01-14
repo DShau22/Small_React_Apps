@@ -26,7 +26,7 @@ function hashPass(password) {
 function sendErr(res, err) {
   return res.send({
     success: false,
-    message: err.toString()
+    messages: [err.toString()]
   })
 }
 
@@ -50,7 +50,7 @@ function verifyToken(req, res, next) {
     // token is invalid or expired
     return res.send({
       success: false,
-      message: 'Error: Token is either expired or invalid. Please sign in again.'
+      messages: ['Error: Token is either expired or invalid. Please sign in again.']
     })
   }
 }
@@ -176,9 +176,7 @@ router.post('/api/account/signup', function(req, res, next) {
       console.log("no errors", results)
       return res.send({
         success: true,
-        messages: {
-          success: `Successfully signed up! Please check your inbox at ${email} for a confirmation email.`
-        }
+        messages: [`Successfully signed up! Please check your inbox at ${email} for a confirmation email.`]
       })
     }
   }
@@ -250,13 +248,13 @@ router.post('/api/account/signin', (req, res, next) => {
   let { email } = body;
 
   // make sure email, password aren't empty
-  let failResBody = { success: false, messages: {} }
+  let failResBody = { success: false, messages: [] }
   // user entered a blank email
   if (!email) {
-    failResBody.messages.email = 'Error: Email cannot be blank.'
+    failResBody.messages.push('Error: Email cannot be blank.')
   }
   if (!password) {
-    failResBody.messages.password = 'Error: Password cannot be blank.'
+    failResBody.messages.push('Error: Password cannot be blank.')
   }
   if (!email || !password) {
     return res.send(failResBody)
@@ -270,7 +268,7 @@ router.post('/api/account/signin', (req, res, next) => {
       if (user) {
         // wrong password entered
         if (!user.validPassword(password)) {
-          failResBody.messages.password = 'Error: Incorrect Password'
+          failResBody.messages.push('Error: Incorrect Password')
           return res.send(failResBody)
         }
         //get the _id from the queried user
@@ -280,16 +278,18 @@ router.post('/api/account/signin', (req, res, next) => {
         var expiration = "60d"
         // return a signed jwt token using the _id unique to the user
         jwt.sign({_id}, secret, {expiresIn: expiration}, (err, token) => {
-          if (err) throw err
+          if (err) {
+            return sendErr(res, err)
+          }
           return res.send({
             success: true,
             token,
-            messages: {}
+            messages: ['successfully verified token']
           })
         })
       } else { // else for if (user)
         // couldn't find email in the database
-        failResBody.messages.email = "Error: This email has not been registered yet."
+        failResBody.messages.push("Error: This email has not been registered yet.")
         return res.send(failResBody)
       }
     })
@@ -307,12 +307,12 @@ router.get('/api/account/verify', verifyToken, (req, res, next) => {
       console.log(err)
       res.json({
         success: false,
-        message: err.toString(),
+        messages: [err.toString()],
       })
     } else {
       res.json({
         success: true,
-        message: 'token was successfully verified!',
+        messages: ['token was successfully verified!'],
         token: authData,
       })
     }

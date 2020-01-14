@@ -4,12 +4,11 @@ import React, { Component } from 'react'
 import {
   Redirect,
   withRouter,
-  NavLink
 } from "react-router-dom";
 import ShowMoreText from 'react-show-more-text';
 
 import SpaContext from '../Context';
-import { weightConvert, heightConvert, englishHeight, parseDate, rawHeightConvert } from "../utils/unitConverter"
+import { weightConvert, heightConvert } from "../utils/unitConverter"
 import "./css/userProfile.css"
 // replace with default avatar link
 const imgAlt = "./default_profile.png"
@@ -113,8 +112,6 @@ class UserProfile extends Component {
       // debugger;
       return ( <Redirect to={{pathname: `${this.props.match.url}/edit`,}}/> )
     }
-    var { history } = this.props
-    console.log(this.props.history)
     if (context.mounted) {
       return (
         <div className="profile-container">

@@ -10,7 +10,6 @@ const semicolon_ascii = ";".charCodeAt(0)
 // IF THIS IS FALSE, SEND A FAILED REQUEST SOMEHOW
 function validate(byte, idx) {
   let string_representation = String.fromCharCode(byte)
-  console.log(string_representation)
   if (!markerSet.has(string_representation)) {
     console.log("*********** NOT A VALID FILE ************")
   }
@@ -94,7 +93,6 @@ module.exports = {
         byteArr.push(buffer[0])
         let res = await fsRead(fd, buffer, 0, 1, null);
         numBytesRead = res.bytesRead
-        console.log(numBytesRead)
       }
       converted = convert(byteArr)
     } catch(e) {
