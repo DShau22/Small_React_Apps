@@ -25,6 +25,22 @@ a {
   text-decoration: none;
 }
 
+.react-inputs-validation__textbox__wrapper___3tnXv input {
+  border: none !important;
+  padding: 15px 20px !important;
+  border-radius: 25px !important;
+  background: rgba(255, 255, 255, 0.246) !important;
+  width: 100% !important;
+  color: #fff !important;
+  display: block !important;
+}
+
+.react-inputs-validation__error___2aXSp input {
+  border-style: solid !important;
+  border-color: rgba(255, 59, 59, 0.256) !important;
+  border-width: 1px;
+}
+
 .login-wrap {
   width: 100%;
   margin: auto;
@@ -49,6 +65,7 @@ a {
   height: 100%;
   position: absolute;
   padding: 40px 70px 50px 70px;
+  overflow: auto;
 }
 .login-html .headers .tab {
   cursor: pointer;

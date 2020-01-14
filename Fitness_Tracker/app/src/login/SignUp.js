@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
 // const regexWhitelist = '^[a-zA-Z0-9]'
+import 'react-inputs-validation/lib/react-inputs-validation.min.css';
+import { Textbox } from 'react-inputs-validation';
+import validator from 'validator';
+var passwordValidator = require('password-validator');
+var passSchema = new passwordValidator();
+passSchema
+.is().min(8)                                    // Minimum length 8
+.is().max(100)                                  // Maximum length 100
+.has().uppercase()                              // Must have uppercase letters
+.has().lowercase()                              // Must have lowercase letters
+.has().digits()                                 // Must have digits
+.has().not().spaces()                           // Should not have spaces
+
 class SignUp extends Component {
 
   render() {
@@ -8,93 +21,152 @@ class SignUp extends Component {
         <form id="signup-form" onSubmit={this.props.onSubmit}>
           <div className="group mt-3">
             <label htmlFor="signup-email" className="label">Email Address</label>
-            <input
-              id="signup-email"
-              type="text"
-              name="email"
-              className="input"
-              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-              title="Must be a valid email address"
-              onChange={this.props.onEmailChange}
-              value={this.props.signUpEmail}
-              required
-            ></input>
+            <Textbox
+              attributesInput={{
+                id: "signup-email",
+                type: "text"
+              }}
+              value={this.props.signUpEmail} //Optional.[String].Default: "".
+              onChange={(email, e) => {this.props.onEmailChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "email", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: email => {
+                  if (validator.isEmail(email)) {
+                    this.props.signUpValid[0] = true
+                    return true
+                  }
+                  this.props.signUpValid[0] = false
+                  return "please enter a valid email"
+                }
+              }}
+            />
           </div>
           <div className="group">
             <label htmlFor="signup-pass" className="label">Password</label>
-            <input
-              id="signup-pass"
-              type="password"
-              name="password"
-              className="input"
-              data-type="password"
-              pattern="(?=[-\w+_!@#$%^&*.,?]*\d)(?=[-\w+_!@#$%^&*.,?]*[a-z])(?=[-\w+_!@#$%^&*.,?]*[A-Z])[-\w+_!@#$%^&*.,?]{8,}"
-              title="Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long."
-              maxLength='30'
-              onChange={this.props.onPwChange}
-              value={this.props.signUpPassword}
-              required
-            ></input>
+            <Textbox
+              attributesInput={{
+                id: "signup-pass",
+                type: "password"
+              }}
+              value={this.props.signUpPassword} //Optional.[String].Default: "".
+              onChange={(pass, e) => {this.props.onPwChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "pass", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: pass => {
+                  if (passSchema.validate(pass)) {
+                    this.props.signUpValid[1] = true
+                    return true
+                  }
+                  this.props.signUpValid[1] = false
+                  return "Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long and have no spaces."
+                }
+              }}
+            />
           </div>
           <div className="group">
-            <label htmlFor="reap-pass" className="label">Repeat Password</label>
-            <input
-              id="reap-pass"
-              type="password"
-              className="input"
-              data-type="password"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long."
-              onChange={this.props.onPwConfChange}
-              value={this.props.signUpPasswordConf}
-              maxLength='30'
-              required
-            ></input>
+            <label htmlFor="rep-pass" className="label">Repeat Password</label>
+            <Textbox
+              attributesInput={{
+                id: "rep-pass",
+                type: "password"
+              }}
+              value={this.props.signUpPasswordConf} //Optional.[String].Default: "".
+              onChange={(passConf, e) => {this.props.onPwConfChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "passConf", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: passConf => {
+                  if (passSchema.validate(passConf)) {
+                    this.props.signUpValid[2] = true
+                    return true
+                  }
+                  this.props.signUpValid[2] = false
+                  return "Must contain at least one number, one uppercase and one lowercase letter. Must be 8+ characters long and have no spaces."
+                }
+              }}
+            />
           </div>
           <div className="group">
-            <label htmlFor="prod-code" className="label">Username</label>
-            <input
-              id="prod-code"
-              type="text"
-              name="productCode"
-              className="input"
-              onChange={this.props.onSignUpUserNameChange}
-              maxLength='30'
-              minLength='1'
-              pattern="[a-zA-Z0-9]+"
-              title="Must only contain alphanumeric characters"
-              value={this.props.signUpUserName}
-              required
+            <label htmlFor="username-input" className="label">Username</label>
+            <Textbox
+              attributesInput={{
+                id: "username-input",
+                type: "text"
+              }}
+              value={this.props.signUpUserName} //Optional.[String].Default: "".
+              onChange={(pass, e) => {this.props.onSignUpUserNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "username", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: username => {
+                  if (validator.isAlphanumeric(username)) {
+                    this.props.signUpValid[3] = true
+                    return true
+                  }
+                  this.props.signUpValid[3] = false
+                  return "Must only contain alphanumeric characters and have no spaces."
+                }
+              }}
             />
           </div>
           <div className="group">
             <label htmlFor="first-name" className="label">First Name</label>
-            <input
-              id="first-name"
-              type="text"
-              name="firstName"
-              className="input"
-              onChange={this.props.onFirstNameChange}
-              maxLength='30'
-              pattern="[a-zA-Z0-9]+"
-              title="Must only contain alphanumeric characters and no spaces"
-              value={this.props.signUpFirstName}
-              required
+            <Textbox
+              attributesInput={{
+                id: "first-name",
+                type: "text"
+              }}
+              value={this.props.signUpFirstName} //Optional.[String].Default: "".
+              onChange={(pass, e) => {this.props.onFirstNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "firstName", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: fname => {
+                  if (validator.isAlpha(fname)) {
+                    this.props.signUpValid[4] = true
+                    return true
+                  }
+                  this.props.signUpValid[4] = false
+                  return "Must only contain letters and have no spaces."
+                }
+              }}
             />
           </div>
           <div className="group">
             <label htmlFor="last-name" className="label">Last Name</label>
-            <input
-              id="last-name"
-              type="text"
-              name="lastName"
-              className="input"
-              onChange={this.props.onLastNameChange}
-              maxLength='40'
-              pattern="[a-zA-Z0-9]+"
-              title="Must only contain alphanumeric characters"
-              value={this.props.signUpLastName}
-              required
+            <Textbox
+              attributesInput={{
+                id: "last-name",
+                type: "text"
+              }}
+              value={this.props.signUpLastName} //Optional.[String].Default: "".
+              onChange={(pass, e) => {this.props.onLastNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
+              validationOption={{
+                name: "lastName", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
+                check: true, //Optional.[Bool].Default: true. To determin if you need to validate.
+                required: true, //Optional.[Bool].Default: true. To determin if it is a required field.
+                customFunc: lname => {
+                  if (validator.isAlpha(lname)) {
+                    this.props.signUpValid[5] = true
+                    return true
+                  }
+                  this.props.signUpValid[5] = false
+                  return "Must only contain letters and have no spaces."
+                }
+              }}
             />
           </div>
           <div className="group">

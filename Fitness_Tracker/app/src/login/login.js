@@ -17,6 +17,8 @@ import "./style.css"
 import ErrorAlert from "../messages/Error"
 import Success from "../messages/Success"
 
+import 'react-inputs-validation/lib/react-inputs-validation.min.css';
+
 const verifyURL = "http://localhost:8080/api/account/verify"
 const signUpURL = "http://localhost:8080/api/account/signup"
 const signInURL = 'http://localhost:8080/api/account/signin'
@@ -52,6 +54,10 @@ class Login extends Component {
       errorMsgs: new Set(),
       successMsgs: new Set(),
     };
+    // init array of length 6 for signup errors
+    this.signUpValid = [false, false, false, false, false, false]
+    // init array of length 2 for signin errors
+    this.signInValid = [false, false]
 
     this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
     this.onTextboxChangeSignInPassword = this.onTextboxChangeSignInPassword.bind(this);
@@ -96,7 +102,6 @@ class Login extends Component {
       })
     }
   }
-
   onTextboxChangeSignUpPasswordConf(event) {
     this.setState({
       signUpPasswordConf: event.target.value
@@ -200,6 +205,11 @@ class Login extends Component {
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
   async onSignUp(e) {
     e.preventDefault()
+    // every entry must be true for all input fields to be valid
+    if (!this.signUpValid.every((bool) => bool)) {
+      this.setState({ errorMsgs: ['Your form still has some errors. Please fill out all inputs or check the red outlined fields.']})
+      return
+    }
     this.setState({ errorMsgs: [], successMsgs: []})
     console.log("signing up...")
     var {
@@ -255,6 +265,10 @@ class Login extends Component {
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
   async onSignIn(e) {
     e.preventDefault()
+    if (!this.signInValid.every((bool) => bool)) {
+      this.setState({errorMsgs: ['Your form still has some errors. Please fill out all inputs or check the red outlined fields.']})
+      return
+    }
     this.setState({ errorMsgs: [], successMsgs: [] })
     // Grab state
     const {
@@ -412,6 +426,9 @@ class Login extends Component {
                 onSignUpLastNameChange={this.onTextboxChangeSignUpLastName}
                 onSignUpUserNameChange={this.onTextboxChangeSignUpUsername}
                 handleSignUp={this.onSignUp}
+
+                signUpValid={this.signUpValid}
+                signInValid={this.signInValid}
               />
             </div>
           </div>

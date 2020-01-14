@@ -10,6 +10,27 @@
 .clearfix:after{clear:both;display:block}
 a{color:inherit;text-decoration:none}
 
+// for hacking the style of the custom input library
+.react-inputs-validation__textbox__wrapper___3tnXv {
+  input {
+    border:none !important;
+    padding:15px 20px !important;
+    border-radius:25px !important;
+    background:rgba(255, 255, 255, 0.246) !important;
+    width:100% !important;
+    color:#fff !important;
+    display:block !important;
+  }
+}
+
+.react-inputs-validation__error___2aXSp {
+  input {
+    border-style: solid !important;
+    border-color: rgb(255, 59, 59, .256) !important;
+    border-width: 1px;
+  }
+}
+
 .login-wrap{
   width:100%;
 	margin:auto;
@@ -34,7 +55,8 @@ a{color:inherit;text-decoration:none}
 	width:100%;
 	height:100%;
 	position:absolute;
-	padding: 40px 70px 50px 70px;
+  padding: 40px 70px 50px 70px;
+  overflow: auto;
   // background:rgba(40,57,101,.9);
 
   // cursor pointers for the signin and signup tabs

@@ -34,6 +34,8 @@ class FormCard extends Component {
             onPwChange={this.props.onSignInPwChange}
             onSignIn={this.props.handleSignIn}
             onCheck={this.props.onCheck}
+            setError={this.props.setError}
+            signInValid={this.props.signInValid}
           />
           <SignUp
             signUpEmail={this.props.signUpEmail}
@@ -51,6 +53,7 @@ class FormCard extends Component {
             onSignUpUserNameChange={this.props.onSignUpUserNameChange}
             onSubmit={this.props.handleSignUp}
             switchToSignIn={this.props.onSignInClick}
+            signUpValid={this.props.signUpValid}
           />
         </div>
       </div>
