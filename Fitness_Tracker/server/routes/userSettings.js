@@ -46,7 +46,7 @@ router.post("/updateSettings", async (req, res) => {
 
   try {
     var doc = await User.findOneAndUpdate(
-      {_id: userID},
+      {_id: userID._id},
       {settings: settings},
     )
     return res.send({

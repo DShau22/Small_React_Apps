@@ -298,7 +298,7 @@ class Community extends Component {
       //<Header />
       <div className="wrapper">
         <Header />
-        <Friends renderFriends={this.renderFriends}/>
+        <Friends />
         <div className="searchbar-wrapper">
           <link
             rel="stylesheet"

@@ -15,11 +15,7 @@ import SideMenu from "../generic/SideMenu"
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import './header.css'
-// for router transitions
-import {
-  TransitionGroup,
-  CSSTransition
-} from "react-transition-group"
+
 import "../transitions.css"
 import Media from 'react-media';
 
@@ -407,30 +403,21 @@ class Header extends Component {
             {this.renderSideMenu()}
             <div className='col-8'>
               <div className="card text-center h-100">
-                <TransitionGroup>
-                  <CSSTransition
-                    key={this.props.location.key}
-                    timeout={1000}
-                    classNames="fade"
-                    appear
-                  >
-                    <Switch location={this.props.location}>
-                      <Route exact path={`${root}`} component={Home}/>
-                      <Route path={`${root}/community`} component={Community}/>
-                      <Route path={`${root}/fitness`} component={Fitness}/>
-                      <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
-                      <Route path={`${root}/swimDetails`} component={SwimDetails}/>
-                      <Route path={`${root}/runDetails`} component={RunDetails}/>
-                      <Route exact path={`${root}/profile/:username?`} component={Profile}/>
-                      <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
-                      <Route
-                        exact path={`${root}/settings`}
-                        render={(props) => <Settings {...props} updateUserInfo={this.updateUserInfo} />}
-                      />
-                      <Route path={`${root}/settings/stats`} component={Stats}/>
-                    </Switch>
-                  </CSSTransition>
-                </TransitionGroup>
+                <Switch location={this.props.location}>
+                  <Route exact path={`${root}`} component={Home}/>
+                  <Route path={`${root}/community`} component={Community}/>
+                  <Route path={`${root}/fitness`} component={Fitness}/>
+                  <Route path={`${root}/jumpDetails`} component={JumpDetails}/>
+                  <Route path={`${root}/swimDetails`} component={SwimDetails}/>
+                  <Route path={`${root}/runDetails`} component={RunDetails}/>
+                  <Route exact path={`${root}/profile/:username?`} component={Profile}/>
+                  <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
+                  <Route
+                    exact path={`${root}/settings`}
+                    render={(props) => <Settings {...props} updateUserInfo={this.updateUserInfo} />}
+                  />
+                  <Route path={`${root}/settings/stats`} component={Stats}/>
+                </Switch>
               </div>
             </div>
           </div>

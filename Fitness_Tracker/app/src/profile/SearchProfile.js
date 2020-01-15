@@ -7,145 +7,208 @@ import React, { Component } from 'react'
 // } from "react-router-dom";
 // import { englishHeight }from "../utils/unitConverter"
 import SpaContext from '../Context';
+import { withRouter } from 'react-router-dom';
+import ErrorAlert from "../messages/Error"
+import './css/userProfile.css'
+import { getToken } from "../utils/storage"
 
-export default class SearchProfile extends Component {
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     bestJump: "",
-  //     bestSwim: "",
-  //     bestRun: "",
-  //     editProfile: false,
-  //   }
-  // }
+const getSettingsURL = "http://localhost:8080/getSearchUser"
+const getBasicInfoURL = "http://localhost:8080/getSearchUserBasicInfo"
+const getFriendsURL = "http://localhost:8080/getSearchUserFriends"
+const getFitnessURL = "http://localhost:8080/getSearchUserFitness"
 
-  // componentDidMount() {
-  //   console.log("profile mounted")
-  //   // make a fetch request to get the bests of each user,
-  //   // as well as the units they wanna display
-  // }
+const imgAlt = "./default_profile.png"
 
-  // renderBio() {
-  //   var { bio } = this.props.context
-  //   // var { displayBio } = settings
-  //   if (bio /* && displayBio */) {
-  //     return (
-  //       <p>{bio}</p>
-  //     )
-  //   }
-  //   return (
-  //     <p>hidden</p>
-  //   )
-  // }
+class SearchProfile extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+      errorMsgs: [],
+      settings: {},
+      firstName: '',
+      lastName: '',
+      isFriend: false,
+      bio: '',
+      age: 0,
+      height: '',
+      weight: '',
+      totals: {},
+      bests: {},
+      friends: []
+    }
+    this.getBasicInfo = this.getBasicInfo.bind(this)
+    this.getFriends = this.getFriends.bind(this)
+    this.getTotalsAndBests = this.getTotalsAndBests.bind(this)
+  }
 
-  // renderGender() {
-  //   var { gender } = this.props.context
-  //   // var { displayGender } = settings
-  //   if (gender /* && displayGender */) {
-  //     return (
-  //       <p>{gender}</p>
-  //     )
-  //   }
-  //   return (
-  //     <p>hidden</p>
-  //   )
-  // }
+  async getBasicInfo() {
+    var { seeBasicInfo } = this.state.settings
+    var { isFriend } = this.state
+    var { username } = this.props.match.params
+    if (seeBasicInfo === "everyone" || (seeBasicInfo === 'friends' && isFriend)) {
+      var res = await fetch(getBasicInfoURL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      })
+      var { bio, weight, height, age, gender } = await res.json()
+      this.setState({ bio, weight, height, age, gender })
+    }
+  }
 
-  // renderHeight() {
-  //   var { height, settings } = this.props.context
-  //   var { unitSystem } = settings
-  //   unitSystem = unitSystem.toLowerCase()
-  //   // var { displayHeight } = settings
-  //   if (height /* && displayHeight */) {
-  //     var englishDisplay = englishHeight(height)
-  //     return (
-  //       unitSystem === "english" ? 
-  //         (<p>{englishDisplay.feet} ft {englishDisplay.inches} in</p>) :
-  //         (<p>{height} cm</p>)
-  //     )
-  //   }
-  //   return (
-  //     <p>hidden</p>
-  //   )
-  // }
+  async getFriends() {
+    var { seeFriendsList } = this.state.settings
+    var { isFriend } = this.state
+    var { username } = this.props.match.params
+    if (seeFriendsList === "everyone" || (seeFriendsList === "friends" && isFriend)) {
+      var res = await fetch(getFriendsURL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      })
+      var { friends } = await res.json()
+      this.setState({ friends })
+    }
+  }
 
-  // renderWeight() {
-  //   var { weight, settings } = this.props.context
-  //   var { unitSystem } = settings
-  //   unitSystem = unitSystem.toLowerCase()
-  //   var units = (unitSystem === "english") ? "lbs" : "kg"
-  //   // var { displayWeight } = settings
-  //   if (weight /* && displayWeight */) {
-  //     return (
-  //       <p>{weight} {units}</p>
-  //     )
-  //   }
-  //   return (
-  //     <p>hidden</p>
-  //   )
-  // }
+  async getTotalsAndBests() {
+    var { seeFitness } = this.state.settings
+    var { isFriend } = this.state
+    var { username } = this.props.match.params
+    if (seeFitness === "everyone" || (seeFitness === "friends" && isFriend)) {
+      var res = await fetch(getFitnessURL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      })
+      var { bests, totals } = await res.json()
+      this.setState({ bests, totals })
+    }
+  }
 
-  // renderBests() {
-  //   // calculate bests based off of state and settings
-  // }
+  async componentDidMount() {
+    console.log("mounting search profile")
+    // query this user's settings, bests, totals and set state
+    let { username } = this.props.match.params
+    var token = getToken()
+    let postBody = { searchUserName: username, userToken: token }
+    try {
+      var res = await fetch(getSettingsURL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postBody),
+      })
+      var { success, settings, firstName, lastName, isFriend } = await res.json()
+      if (!success) {
+        this.setState(prevState => ({
+          errorMsgs: [...prevState.errorMsgs, 'Something went wrong. Please refresh and try again']
+        }))
+        return
+      }
+      this.setState({ settings, firstName, lastName, isFriend })
+      await Promise.all([this.getBasicInfo(), this.getTotalsAndBests(), this.getFriends()])
+    } catch(e) {
+      console.log("poswjefioawef")
+      console.error(e)
+      alert('Something went wrong. Please refresh and try again')
+      this.setState(prevState => ({
+        errorMsgs: [...prevState.errorMsgs, e.toString()]
+      }))
+    }
+  }
 
-  // renderNumFriends() {
-  //   var { friends } = this.props.context
-  //   return (
-  //     <p>{"friends: " + friends.length}</p>
-  //   )
-  // }
+  // takes in an object of error messages and returns html elements to display them
+  showError(msg, idx) {
+    const onClose = () => {
+      this.setState(prevState => ({
+        errorMsgs: new Set( [...prevState.errorMsgs].filter(errMsg => errMsg !== msg))
+      }))
+    }
+    return ( <ErrorAlert msg={msg} key={idx} onClose={onClose}/> )
+  }
+
+  // Shows all the errors due to bad signin or signup
+  displayErrors() {
+    var errorMsgs = [...this.state.errorMsgs]
+    return errorMsgs.map(this.showError)
+  }
 
   render() {
-    return ( <div> OTHER USER </div>)
-    // if user clicked the button to go to the edit profile page
-    // if (this.state.editProfile) {
-    //   // debugger;
-    //   return ( <Redirect to={{pathname: `/${this.props.path}/edit`,}}/> )
-    // }
-    // if (this.props.context.mounted) {
-    //   return (
-    //     <div className="profile-container" style={protoStyle}>
-    //       <div className="edit-container" style={protoStyle}>
-    //         <h2>edit profile button</h2>
-    //         <button
-    //           onClick={() => {
-    //             this.setState({ editProfile: true })
-    //           }}
-    //         >
-    //           edit
-    //         </button>
-    //       </div>
-    //       <div className="profile-picture-container" style={protoStyle}>
-    //         <p>image goes here...</p>
-    //         <img src={this.props.context.profilePicture.profileURL} height="50" width="50" />
-    //       </div>
-    //       <div className="weight-container" style={protoStyle}>
-    //         {this.renderWeight()}
-    //       </div>
-    //       <div className="gender-container" style={protoStyle}>
-    //         {this.renderGender()}
-    //       </div>
-    //       <div className="height-container" style={protoStyle}>
-    //         {this.renderHeight()}
-    //       </div>
-    //       <div className="bio-container" style={protoStyle}>
-    //         {this.renderNumFriends()}
-    //       </div>
-    //       <div className="num-friends-container" style={protoStyle}>
-    //         {this.renderBio()}
-    //       </div>
-    //     </div>
-    //   )
-    // } else {
-    //   // spa hasn't mounted and established context yet
-    //   return (
-    //     <div className="profile-loading-container">
-    //       <span>loading...</span>
-    //     </div>
-    //   )
-    // }
+    console.log("search profile has rendered")
+    var { context } = this
+    var { firstName, lastName, age, height, bio, weight, totals, bests } = this.state
+    if (context.mounted) {
+      return (
+        <div className="profile-container">
+          <div className='top-half'>
+            <div className='img-container mt-2'>
+              <img 
+                className='profile-pic'
+                src={context.profilePicture.profileURL}
+                height="75%"
+                width="75%"
+                alt={imgAlt}
+              />
+            </div>
+            <div className="name-container">
+              <span className='fname'>{firstName}</span>
+              <span className='lname'>{lastName}</span>
+            </div>
+            <div className='info-container m-3'>
+              <div className='row'>
+                <div className='col-4'>
+                  <h5>Age</h5>
+                  <span>{age}</span>
+                </div>
+                <div className='col-4'>
+                  <h5>Height</h5>
+                  <span>{height}</span>
+                </div>
+                <div className='col-4'>
+                  <h5>Weight</h5>
+                  <span>{weight}</span>
+                </div>
+              </div>
+            </div>
+            <div className='bio-container m-3'>
+              <span>{bio}</span>
+            </div>
+          </div>
+          <div className='bot-half'>
+            <div className='row'>
+              <div className='col-6'>
+                <h5>Total Steps</h5>
+                <span>{totals.steps}</span>
+              </div>
+              <div className='col-6'>
+                <h5>Total Min</h5>
+                <span>{totals.minutes}</span>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-6'>
+                <h5>Total Laps</h5>
+                <span>{totals.laps}</span>
+              </div>
+              <div className='col-6'>
+                <h5>Highest Jump</h5>
+                <span>{bests.jump}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    } else {
+      // spa hasn't mounted and established context yet
+      return (
+        <div className="profile-loading-container">
+          <span>loading...</span>
+        </div>
+      )
+    }
   }
 }
 SearchProfile.contextType = SpaContext
 
+export default withRouter(SearchProfile)
