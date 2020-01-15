@@ -28,9 +28,11 @@ const loginRouter = require("./routes/loginServer")
 const activityRouter = require("./routes/activities")
 const emailRouter = require("./routes/emails")
 const searchRouter = require("./routes/search")
-const usersRouter = require("./routes/users")
-const userSettings = require("./routes/userSettings")
-const searchUsers = require("./routes/searchUsers")
+const userSettings = require("./routes/users/userSettings")
+const searchUsers = require("./routes/users/searchUsers")
+const usersGeneral = require("./routes/users/usersGeneral")
+const userFriends = require("./routes/users/userFriends")
+const profilePic = require("./routes/users/profilePic")
 // initialize object that maps userIDs to a set of sockets
 var idMap = {}
 
@@ -52,9 +54,12 @@ app.use('/', loginRouter)
 app.use('/', activityRouter)
 app.use('/', emailRouter)
 app.use('/', searchRouter)
-app.use('/', usersRouter)
+app.use('/', usersGeneral)
 app.use('/', userSettings)
 app.use('/', searchUsers)
+app.use('/', usersGeneral)
+app.use('/', userFriends)
+app.use('/', profilePic)
 // add route methods for dashboard
 app.post('/upload', asyncMiddleware(upload))
 

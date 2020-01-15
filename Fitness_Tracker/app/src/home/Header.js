@@ -345,7 +345,7 @@ class Header extends Component {
     return (
       <Media query={`(min-width: ${sidebarMediaQuery})`} render={() => 
         (
-          <div className='col-3 ml-3 mr-3'>
+          <div className='col-3 ml-3'>
             <div className='card text-center'>
               <div className="sideMenu-container">
                 <SideMenu
@@ -401,7 +401,7 @@ class Header extends Component {
           {/* only returns elements if it's not a phone */}
           <div className='row mt-3 p-1 content'>
             {this.renderSideMenu()}
-            <div className='col-8'>
+            <div className='col ml-3 mr-3'>
               <div className="card text-center h-100">
                 <Switch location={this.props.location}>
                   <Route exact path={`${root}`} component={Home}/>

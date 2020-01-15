@@ -8,7 +8,7 @@ import {
 import React, { Component } from 'react'
 import Searchbar from "./Searchbar"
 import FriendRequests from "./friends/FriendRequests"
-import Header from "./header/Header.js"
+import CommunityHeader from "./header/CommunityHeader"
 import Friends from "./friends/Friends"
 
 import SpaContext from '../Context'
@@ -297,7 +297,7 @@ class Community extends Component {
     return (
       //<Header />
       <div className="wrapper">
-        <Header />
+        <CommunityHeader />
         <Friends />
         <div className="searchbar-wrapper">
           <link

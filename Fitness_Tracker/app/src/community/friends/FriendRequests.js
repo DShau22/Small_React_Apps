@@ -26,7 +26,7 @@ class FriendRequests extends Component {
       var { id, firstName, lastName } = sender
       liTags.push(
         <div key={id} className="user-container">
-          <li>{firstName}, {lastName}</li>
+          <li>{firstName} {lastName}</li>
           <button
             onClick={() => {
               acceptRequest(id, firstName, lastName);

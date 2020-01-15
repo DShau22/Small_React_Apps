@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 
 // imports for mongo
-const mongoConfig = require("../database/MongoConfig")
+const mongoConfig = require("../../database/MongoConfig")
 const { User} = mongoConfig
 
 function sendError(res, err) {
