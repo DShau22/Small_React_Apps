@@ -12,7 +12,7 @@ import ErrorAlert from "../messages/Error"
 import './css/userProfile.css'
 import { getToken } from "../utils/storage"
 
-const getSettingsURL = "http://localhost:8080/getSearchUser"
+const getSearchUserUrl = "http://localhost:8080/getSearchUser"
 const getBasicInfoURL = "http://localhost:8080/getSearchUserBasicInfo"
 const getFriendsURL = "http://localhost:8080/getSearchUserFriends"
 const getFitnessURL = "http://localhost:8080/getSearchUserFitness"
@@ -94,19 +94,19 @@ class SearchProfile extends Component {
     var token = getToken()
     let postBody = { searchUserName: username, userToken: token }
     try {
-      var res = await fetch(getSettingsURL, {
+      var res = await fetch(getSearchUserUrl, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(postBody),
       })
-      var { success, settings, firstName, lastName, isFriend } = await res.json()
+      var { success, settings, firstName, lastName, isFriend, profilePicture } = await res.json()
       if (!success) {
         this.setState(prevState => ({
           errorMsgs: [...prevState.errorMsgs, 'Something went wrong. Please refresh and try again']
         }))
         return
       }
-      this.setState({ settings, firstName, lastName, isFriend })
+      this.setState({ settings, firstName, lastName, isFriend, profilePicture })
       await Promise.all([this.getBasicInfo(), this.getTotalsAndBests(), this.getFriends()])
     } catch(e) {
       console.log("poswjefioawef")
@@ -137,7 +137,7 @@ class SearchProfile extends Component {
   render() {
     console.log("search profile has rendered")
     var { context } = this
-    var { firstName, lastName, age, height, bio, weight, totals, bests } = this.state
+    var { firstName, lastName, age, height, bio, weight, totals, bests, profilePicture } = this.state
     if (context.mounted) {
       return (
         <div className="profile-container">
@@ -145,7 +145,7 @@ class SearchProfile extends Component {
             <div className='img-container mt-2'>
               <img 
                 className='profile-pic'
-                src={context.profilePicture.profileURL}
+                src={profilePicture.profileURL}
                 height="75%"
                 width="75%"
                 alt={imgAlt}

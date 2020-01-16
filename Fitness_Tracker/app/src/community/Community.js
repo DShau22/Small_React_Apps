@@ -12,13 +12,13 @@ import CommunityHeader from "./header/CommunityHeader"
 import Friends from "./friends/Friends"
 
 import SpaContext from '../Context'
-import "./style/Community.css"
+import "./style/css/Community.css"
 const searchURL = "http://localhost:8080/searchUser"
 const friendReqURL = "http://localhost:8080/sendFriendReq"
 // const getUserInfoURL = "http://localhost:8080/getUserInfo"
 const tokenToID = "http://localhost:8080/tokenToID"
 const acceptFriendURL = "http://localhost:8080/acceptRequest"
-
+const imgAlt = "default"
 class Community extends Component {
   // used to keep track of mounting lifecycle
   // sometimes components in the router get
@@ -28,6 +28,7 @@ class Community extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      display: 'friends',
       searches: [],
       searchText: "",
       showQueries: false,
@@ -43,6 +44,8 @@ class Community extends Component {
     this.removeFriendReq = this.removeFriendReq.bind(this)
     this.acceptRequest = this.acceptRequest.bind(this)
     this.clearSearch = this.clearSearch.bind(this)
+    this.setDisplay = this.setDisplay.bind(this)
+    this.renderDisplay = this.renderDisplay.bind(this)
   }
 
   componentWillUnmount() {
@@ -53,6 +56,10 @@ class Community extends Component {
   componentDidMount() {
     console.log("community has mounted")
     this._isMounted = true
+  }
+
+  setDisplay(newDisplay) {
+    this.setState({ display: newDisplay })
   }
 
   removeFriendReq(id) {
@@ -82,7 +89,8 @@ class Community extends Component {
     })
   }
 
-  async search() {
+  async search(e) {
+    e.preventDefault()
     var { searchText } = this.state
     var userToken = getToken()
 
@@ -110,6 +118,7 @@ class Community extends Component {
           emptySearch: true,
         })
       } else {
+        console.log(users)
         this.setState({
           searches: users,
           showQueries: true,
@@ -120,7 +129,6 @@ class Community extends Component {
   }
 
   mouseLeave() {
-    // alert("left")
     this.setState({
       searchText: ""
     })
@@ -233,7 +241,7 @@ class Community extends Component {
     if (emptySearch) {
       liTags.push(
         <div className="empty-search-container" key="empty-key">
-          <span>no search results :(</span>
+          <span>No search results :( try being more specific</span>
         </div>
       )
     }
@@ -243,81 +251,87 @@ class Community extends Component {
       var { firstName, lastName, _id, username} = user
       if (friendSet.has(_id)) {
         return (
-          <span> already friends </span>
+          <React.Fragment>
+            <i className="fas fa-check ml-1 mr-1"></i>
+            <span className='mr-1'>Friends</span>
+          </React.Fragment>
         )
       } else if (requestSet.has(_id)) {
         return (
-          <button
+          <div
+            className='rel-wrapper'              
             onClick={() => {
               this.acceptRequest(_id, firstName, lastName)
               this.removeFriendReq(_id)
               this.addFriendToState(_id, firstName, lastName)
             }}
           >
-            accept
-          </button> 
+            <i className="fas fa-user-plu req-sent ml-1 mr-1"></i>
+            <span className='accept-req-btn'>
+              accept
+            </span>
+          </div>
         )
       } else if (pendingSet.has(_id)) {
-        return ( <span> request sent </span> )
+        return (
+          <React.Fragment>
+            <i className="fas fa-user-plu req-sent ml-1 mr-1"></i>
+            <span className=''>Request Sent</span>
+          </React.Fragment>
+        )
       } else {
         return (
-          <button onClick={() => {this.sendReq(_id, firstName, lastName, username)}}>
-            friend {firstName}
-          </button>
+            <div
+              className='rel-wrapper'
+              onClick={() => {this.sendReq(_id, firstName, lastName, username)}}
+            >
+              <i className="fas fa-user-plu req-sent ml-1 mr-1"></i>
+              <span className='add-friend-btn ml-1'>Add</span> 
+            </div>
         )
       }
     }
 
     searches.forEach((user, i) => {
-      var { firstName, lastName, _id, username } = user
-      
+      var { firstName, lastName, _id, username, profilePicture } = user
       // capitalize first and last name before displaying
       firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
       lastName  = lastName.charAt(0).toUpperCase() + lastName.slice(1)
       liTags.push(
         <div key={_id + "_search"} className="user-container">
-          <NavLink to={{pathname: `${rootURL}/profile/${username}`}} style={{"cursor": "pointer"}}>
+          <img
+            src={profilePicture.profileURL}
+            alt={imgAlt}
+          ></img>
+          <NavLink
+            to={{pathname: `${rootURL}/profile/${username}`}}
+            className='search-name ml-3'
+          >
             {firstName}, {lastName}
           </NavLink>
-          {displayButton(user, friendSet, requestSet, pendingSet)}
+          <div className='search-relationship'>
+            {displayButton(user, friendSet, requestSet, pendingSet)}
+          </div>
         </div>
       )
     })
 
     liTags.push(
-      <div className="clear-search-container" key="clear-search-container">
-        <button onClick={this.clearSearch}>clear search</button>
+      <div className="clear-search-container mt-3" key="clear-search-container">
+        <span onClick={this.clearSearch}>Clear Search</span>
       </div>
     )
     return liTags
   }
 
-  render() {
+  renderDisplay() {
+    var { display } = this.state
     var { context } = this
-    return (
-      //<Header />
-      <div className="wrapper">
-        <CommunityHeader />
-        <Friends />
-        <div className="searchbar-wrapper">
-          <link
-            rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-            integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-            crossOrigin="anonymous"
-          />
-          <h4>Search for users</h4>
-          <Searchbar
-            search={this.search}
-            onSearchTextChange={this.onSearchTextChange}
-            mouseLeave={this.mouseLeave}
-            searchText={this.state.searchText}
-          />
-          <div className={"queries" + (this.state.showQueries ? " expand" : " collapsed")}>
-            {this.renderSearch()}
-          </div>
-        </div>
-        {/* just set contexttype of friendRequests later */}
+    display = display.toLowerCase()
+    if (display === 'friends') {
+      return <Friends />
+    } else if (display === 'requests') {
+      return (
         <FriendRequests
           userToken={getToken()}
           userFirstName={context.userFirstName}
@@ -330,6 +344,36 @@ class Community extends Component {
           numRequests={context.numRequests}
           acceptRequest={this.acceptRequest}
         />
+      )     
+    } else if (display === 'search') {
+      return (
+        <div className='search-wrapper'>
+          <h4>Search for users</h4>
+          <Searchbar
+            search={this.search}
+            onSearchTextChange={this.onSearchTextChange}
+            mouseLeave={this.mouseLeave}
+            searchText={this.state.searchText}
+          />
+          <div className={"queries" + (this.state.showQueries ? " expand" : " collapsed")}>
+            {this.renderSearch()}
+          </div>
+        </div>
+      )
+    } else {
+      console.log('display is not friends, requests, or search')
+      return null
+    }
+  }
+
+  render() {
+    return (
+      //<Header />
+      <div className="community-container">
+        <CommunityHeader 
+          setDisplay={this.setDisplay}
+        />
+        {this.renderDisplay()}
       </div>
     )
   }

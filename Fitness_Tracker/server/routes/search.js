@@ -1,3 +1,4 @@
+const { sendError } = require("../utils/errors")
 // express router imports
 const express = require('express')
 const router = express.Router()
@@ -14,10 +15,7 @@ router.post("/searchUser", (req, res) => {
 
   jwt.verify(userToken, secret, (err, decoded) => {
     if (err) {
-      return res.send({
-        success: false,
-        message: err.toString()
-      })
+      return sendError(res, err)
     }
 
     // perform text search on user first and last name
@@ -29,14 +27,24 @@ router.post("/searchUser", (req, res) => {
       .limit(10)
       .where('_id').ne(decoded._id)
       .where('registered').equals(true)
-      .select({"firstName": 1, "lastName": 1, "_id": 1, "username": 1, "bests": 1})
+      .select({"firstName": 1, "lastName": 1, "_id": 1, "username": 1, "bests": 1, 'profilePicture': 1})
       .sort({"score": {"$meta": "textScore"}})
-      .exec((err, users) => {
-        if (err) {throw err}
-        resBody = {
-          users,
+      .exec(async (err, users) => {
+        if (err) {
+          console.error(err)
+          sendError(res, err)
         }
-        return res.send(resBody)
+        // let { friends } = await User.findOne({_id: decoded._id}, 'friends')
+        // label each user as a friend or not a friend of the one who is searching
+        // users.forEach((user, idx) => {
+        //   friends.forEach((friend, idx) => {
+        //     if (user._id === friend.id) {
+        //       user.isFriend = true
+        //     }
+        //     user.isFriend = false
+        //   })
+        // })
+        return res.send({ users })
       })
   })
 })

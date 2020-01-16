@@ -1,45 +1,58 @@
 import React, { Component } from 'react';
 // const friendReqURL = "http://localhost:8080/getFriendReqs"
+import {
+  getBests,
+  getProfile,
+  getUsername
+} from "../../utils/userInfo"
+import FriendDisplay from "./FriendDisplay"
+import { withRouter } from 'react-router-dom'
+const defaultProfile = 'default'
+const imgAlt = 'alt'
 
 class FriendRequests extends Component {
-  _isMounted = false
   constructor(props) {
     super(props)
-    this.renderFriends = this.renderFriends.bind(this)
+    this.state = {
+      friendRequestListItems: []
+    }
+    this.createFriendRequests = this.createFriendRequests.bind(this)
   }
 
-  componentWillUnmount() {
-    this._isMounted = false
-    console.log('friendRequests has unmounted')
+  async componentDidMount() {
+    await this.createFriendRequests()
   }
 
-  componentDidMount() {
-    this._isMounted = true
-    console.log("frienRequests has mounted")
-  }
-
-  renderFriends() {
+  async createFriendRequests() {
     // onClick function definition
     var { friendRequests, addFriendToState, removeFriendReq, acceptRequest } = this.props
     var liTags = []
-    friendRequests.forEach((sender, idx) => {
-      var { id, firstName, lastName } = sender
+    for (let i = 0; i < friendRequests.length; i++) {
+      var { id, firstName, lastName } = friendRequests[i]
+      var [username, bests, profileUrl] = await Promise.all([getUsername(id), getBests(id), getProfile(id)])
       liTags.push(
-        <div key={id} className="user-container">
-          <li>{firstName} {lastName}</li>
-          <button
-            onClick={() => {
-              acceptRequest(id, firstName, lastName);
-              removeFriendReq(id);
-              addFriendToState(id, firstName, lastName);
-            }}
-          >
-            accept
-          </button>
-        </div>
+        <FriendDisplay 
+          key={id}
+          isFriend={false}
+          isFriendRequest={true}
+          onClick={() => {
+            this.props.history.push(`/app/profile/${username}`)
+          }}
+          onAcceptRequest={() => {
+            acceptRequest(id, firstName, lastName);
+            removeFriendReq(id);
+            addFriendToState(id, firstName, lastName);
+          }}
+          profileUrl={profileUrl}
+          defaultProfile={defaultProfile}
+          imgAlt={imgAlt}
+          firstName={firstName}
+          lastName={lastName}
+          bests={bests}
+        />
       )
-    })
-    return liTags
+    }
+    this.setState({ friendRequestListItems: liTags })
   }
 
   render() {
@@ -47,7 +60,7 @@ class FriendRequests extends Component {
       <div className="friend-requests" style={protoStyle}>
         <h4>requests... {this.props.numRequests}</h4>
         <ul className="friend-requests-list">
-          {this.renderFriends()}
+          {this.state.friendRequestListItems}
         </ul>
       </div>
     )
@@ -58,4 +71,4 @@ const protoStyle = {
   "marginTop": "100px"
 }
 
-export default FriendRequests
+export default withRouter(FriendRequests)

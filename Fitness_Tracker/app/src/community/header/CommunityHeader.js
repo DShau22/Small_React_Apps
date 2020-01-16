@@ -1,16 +1,39 @@
 import React, { Component } from 'react'
+import {
+  NavLink,
+  withRouter
+} from "react-router-dom";
 
-export default class CommunityHeader extends Component {
+class CommunityHeader extends Component {
   render() {
+    console.log(this.props)
     return (
       <div className="community-header">
-        <nav className="navbar navbar-expand sticky navbar-dark bg-dark">
-          <ul className="navbar-nav mr-auto">
+        <nav className="navbar navbar-expand sticky bg-light">
+          <ul className="navbar-nav">
             <li className="nav-item">
-              <span className="nav-link">Friends</span>
+              <span 
+                className='nav-link mr-3' 
+                onClick={() => {this.props.setDisplay('friends')}}
+              >
+                Friends
+              </span>
+            </li>
+            <li className="nav-item mr-3">
+              <span
+                className='nav-link'
+                onClick={() => {this.props.setDisplay('requests')}}
+              >
+                Requests
+              </span>
             </li>
             <li className="nav-item">
-              <span className="nav-link">Requests</span>
+              <span
+                className='nav-link'
+                onClick={() => {this.props.setDisplay('search')}}
+              >
+                Search
+              </span>
             </li>
           </ul>
         </nav>
@@ -18,3 +41,5 @@ export default class CommunityHeader extends Component {
     )
   }
 }
+
+export default withRouter(CommunityHeader)

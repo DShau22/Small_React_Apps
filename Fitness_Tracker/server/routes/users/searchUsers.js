@@ -25,7 +25,13 @@ router.post('/getSearchUser', async (req, res) => {
   }
 
   try {
-    var { settings, firstName, lastName, friends } = await User.findOne({username: searchUserName}, 'settings firstName lastName friends')
+    var {
+      settings,
+      firstName,
+      lastName,
+      friends,
+      profilePicture,
+    } = await User.findOne({username: searchUserName}, 'settings firstName lastName friends profilePicture')
     var isFriend = false
     for (let i = 0; i < friends.length; i++) {
       if (friends[i].id === payload._id) {
@@ -42,7 +48,8 @@ router.post('/getSearchUser', async (req, res) => {
     settings,
     firstName,
     lastName,
-    isFriend
+    isFriend,
+    profilePicture
   })
 })
 

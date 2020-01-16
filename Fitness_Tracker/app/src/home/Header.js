@@ -12,6 +12,7 @@ import Stats from "../settings/Stats"
 import Navbar from "../generic/Navbar"
 import Home from "./Home";
 import SideMenu from "../generic/SideMenu"
+import FriendDisplay from "../community/friends/FriendDisplay"
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import './header.css'
@@ -177,11 +178,6 @@ class Header extends Component {
     var trackedFitness = await res.json()
     return trackedFitness
   }
-  visitProfile(username) {
-    // this.props.history.push(`/app/profile/${username}`)
-    //debugger
-    console.log("visiting...")
-  }
 
   /**
    * for each friend in the friend array, return
@@ -189,41 +185,35 @@ class Header extends Component {
    */  
   async addFriendRows(friends, numFriendsDisplay) {
     var tableRows = []
-    const onClick = () => {
-      this.props.history.push(`/app/profile/${username}`)
-    }
-    for (var i = 0; i < friends.length; i++) {
+
+    // DONT FORGET TO SORT FRIENDS
+    for (let i = 0; i < friends.length; i++) {
       if (i === numFriendsDisplay - 1) { break }
-      var { id, firstName, lastName } = friends[i]
-      // should return [bests (object), profileURL (string), username (string)]
-      var userInfo = await Promise.all([getBests(id), getProfile(id), getUsername(id)])
-      console.log(userInfo)
-      var bests = userInfo[0]
-      var profileUrl = userInfo[1]
-      var username = userInfo[2]
+      let { id, firstName, lastName } = friends[i]
+      let [bests, profileUrl, username] = await Promise.all([getBests(id), getProfile(id), getUsername(id)])
+      console.log(username)
       tableRows.push(
-        <tr 
-          key={id} 
-          onClick={onClick}
-          className="friend-row"
-        >
-          <th scope="col">{i + 1}</th>
-          <td>
-            <img src={(profileUrl ? profileUrl : defaultProfile)} height="35" width="35" alt={imgAlt}/>
-          </td>
-          <td>{firstName} {lastName}</td>
-          <td>{(bests.run > 0) ? bests.run : "N/A"}</td>
-          <td>{(bests.jump > 0) ? bests.jump : "N/A"}</td>
-          <td>swim</td>
-        </tr>
+        <FriendDisplay 
+          key={id}
+          isFriend={true}
+          isFriendRequest={false}
+          rank={i + 1}
+          onClick={() => {this.props.history.push(`/app/profile/${username}`)}}
+          profileUrl={profileUrl}
+          defaultProfile={defaultProfile}
+          imgAlt={imgAlt}
+          firstName={firstName}
+          lastName={lastName}
+          bests={bests}
+        />
       )
     }
+    console.log(tableRows)
     return tableRows
   }
 
   async componentDidMount() {
     this._isMounted = true
-    console.log("header has mounted...")
     // if there is no token then user hasn't logged in...
     // log them out and redirect them back to login page,
     // and don't run the rest of this method cuz it involves setting
@@ -237,7 +227,6 @@ class Header extends Component {
       return
     }
 
-    console.log("setting up socket")
     // set up the web socket connection to server
     var socket = await this.setUpSocket()
 
@@ -259,9 +248,7 @@ class Header extends Component {
     var swimsTracked = await this.getActivityJson("swim")
     var runsTracked = await this.getActivityJson("run")
     var gotAllInfo = userJson.success && jumpsTracked.success && swimsTracked.success && runsTracked.success
-    console.log(gotAllInfo)
     if (gotAllInfo && this._isMounted) {
-      console.log("state setting")
       // one bug that could come up is if another setState occurred outside this function before
       // the fetch response finished running. This delayed setState would then
       // run after the other setState which could cause some mixups in which state is correct
@@ -399,7 +386,7 @@ class Header extends Component {
             </div>
           </div>
           {/* only returns elements if it's not a phone */}
-          <div className='row mt-3 p-1 content'>
+          <div className='row mt-3 ml-2 p-1 content'>
             {this.renderSideMenu()}
             <div className='col ml-3 mr-3'>
               <div className="card text-center h-100">
