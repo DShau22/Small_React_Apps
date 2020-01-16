@@ -6,20 +6,9 @@
   width: 100%;
   height: 100%;
 }
-.profile-container .edit-btn-container {
-  position: absolute;
-  top: 8%;
-  right: 5%;
-  background-color: #7c99f8;
-  padding: 8px;
-}
-.profile-container .edit-btn-container i {
-  color: white;
-  margin-right: 2px;
-}
-.profile-container .edit-btn-container .edit-btn {
-  color: white;
-  font-size: 20px;
+.profile-container .bot-half {
+  width: 90%;
+  height: 90%;
 }
 
 .top-half {
@@ -27,6 +16,30 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+.top-half .edit-btn-container {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  background-color: #7c99f8;
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.top-half .edit-btn-container i {
+  color: white;
+  margin-right: 2px;
+  font-size: 2vw;
+}
+.top-half .edit-btn-container .edit-btn {
+  color: white;
+  font-size: 2vw;
 }
 .top-half .img-container {
   display: flex;

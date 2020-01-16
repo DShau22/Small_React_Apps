@@ -30,6 +30,7 @@ class Jump extends Component {
     var { unitSystem } = this.context.settings
     var { activityData } = this.context.jumpJson
     var { activityIndex } = this.props
+    if (activityData.length === 0) { return null }
     var session = activityData[activityIndex]
     var best = Math.max(...session.heights)
     best = unitSystem === "metric" ? rawHeightConvert(unitSystem, best) : best

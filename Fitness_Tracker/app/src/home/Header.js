@@ -294,13 +294,14 @@ class Header extends Component {
 
   renderHeader() {
     const { match } = this.props
+    console.log(this.props)
     // if there is a token in session or local storage...
     if (getToken()) {
       return (
         <div className="header w-100">
           <div className="d-flex align-items-center w-100 h-100">
             <span className='header-title position-absolute w-100'>
-              title display
+              placeholder
             </span>
             {/* dont display the sidebar opener (the thing with three lines) unless it's a phone */}
             <Media query={`(max-width: ${sidebarMediaQuery})`} render={() => 

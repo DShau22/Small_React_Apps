@@ -75,15 +75,15 @@ class Fitness extends Component {
             </li>
           </ul>
         </nav>
-        <TransitionGroup>
+        {/* <TransitionGroup>
           <CSSTransition
             key={this.state.activityDisplay}
             timeout={600}
             classNames='fitnessFade'
-          >
+          > */}
             { this.renderActivity() }
-          </CSSTransition>
-        </TransitionGroup>
+          {/* </CSSTransition>
+        </TransitionGroup> */}
       </div>
     )
   }

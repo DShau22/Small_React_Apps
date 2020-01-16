@@ -115,11 +115,14 @@ class UserProfile extends Component {
     if (context.mounted) {
       return (
         <div className="profile-container">
-          <div className='edit-btn-container'>
-            <i style={{'fontSize':'24px'}} className='far'>&#xf044;</i>
-            <button className="edit-btn" onClick={() =>{this.setState({editProfile: true})}}>Edit Profile</button>
-          </div>
           <div className='top-half'>
+            <div
+              className='edit-btn-container'
+              onClick={() =>{this.setState({editProfile: true})}}
+            >
+              <i className='far'>&#xf044;</i>
+              <span className="edit-btn">Edit Profile</span>
+            </div>
             <div className='img-container mt-2'>
               <img 
                 className='profile-pic'

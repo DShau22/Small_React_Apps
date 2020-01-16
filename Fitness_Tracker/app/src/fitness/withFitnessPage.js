@@ -94,6 +94,9 @@ export default function withFitnessPage( WrappedComponent ) {
     displayDate() {
       var { activityJson } = this.props
       var { activityIndex } = this.state
+      if (activityJson.activityData.length === 0) {
+        return "No uploads yet"
+      }
       var { uploadDate } = activityJson.activityData[activityIndex]
       var parsed = parseDate(new Date(uploadDate))
       var date = parsed[0] + ", " + parsed[1] + " " + parsed[2]

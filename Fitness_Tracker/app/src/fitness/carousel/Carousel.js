@@ -32,7 +32,7 @@ class Carousel extends React.Component {
     var { stats, previousSlide, nextSlide, activityIndex, displayDate, renderSecondary } = this.props
     return (
       <div className="carousel">
-        <div className="btn-group dropright">
+        <div className="btn-group dropdown">
           <button
             className="btn btn-secondary btn-sm mt-3 dropdown-toggle"
             type="button"

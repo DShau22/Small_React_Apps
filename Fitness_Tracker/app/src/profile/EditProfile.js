@@ -4,6 +4,7 @@ import {
   getFromSessionStorage,
   storageKey,
 } from '../utils/storage';
+import SpaContext from '../Context';
 
 // server url
 const serverURL = "http://localhost:8080"
@@ -126,7 +127,7 @@ class EditProfile extends Component {
       unitSystem = unitSystem.toLowerCase()
       var units = (unitSystem === "english") ? "lbs" : "kg"
       return (
-        <div className="field">
+        <div className="form-group">
           <label>Weight</label>
           <input type="number" placeholder="weight" min="0" value={updateWeight} onChange={this.onWeightChange}/>
           <span>{units}</span>
@@ -140,7 +141,7 @@ class EditProfile extends Component {
     var { unitSystem } = settings
     if (unitSystem === "English") {
       return (
-        <div className="field">
+        <div className="form-group">
           <label>Height</label>
           <input type="number" value={updateHeightFt} placeholder="feet" min="0" onChange={this.onHeightFtChange}/>
           <span>ft</span>
@@ -150,7 +151,7 @@ class EditProfile extends Component {
       )
     }
     return (
-      <div className="field">
+      <div className="form-group">
         <label>Height</label>
         <input type="number" placeholder="cm" value={updateHeightCm} min="0" onChange={this.onHeightCmChange}/>
         <span>cm</span>
@@ -316,22 +317,21 @@ class EditProfile extends Component {
   }
 
   render() {
-    if (this.props.context.mounted) {
+    if (this.context.mounted) {
       return (
         <div className="edit-profile-container">
-          <form className="ui form" onSubmit={this.updateProfile}>
-            <div className="profile-picture-container">
+          <form>
+            <div className='form-group prof-pic-container'>
               <img src={this.state.currProfilePicInfo.profileURL} width="300" height="300" alt={imgAlt}/>
-            </div>
-            <div className="field">
               <label>Profile Picture</label>
               <input type="file" onChange={this.addFile} accept="image/x-png,image/jpeg"/>
             </div>
-  
-            <div className="field">
-              <label>First Name</label>
-              <input 
+            <div class="form-group">
+              <label for='fname'>First Name</label>
+              <input
+                id='fname'
                 type="text"
+                className="form-control"
                 placeholder="first name"
                 onChange={this.onFirstNameChange}
                 value={this.state.updateFirstName}
@@ -339,11 +339,12 @@ class EditProfile extends Component {
                 required
               />
             </div>
-  
-            <div className="field">
-              <label>Last Name</label>
+            <div class="form-group">
+              <label for="lname">Last Name</label>
               <input
+                id='lname'
                 type="text"
+                className='form-control'
                 placeholder="last name"
                 onChange={this.onLastNameChange}
                 value={this.state.updateLastName}
@@ -351,29 +352,52 @@ class EditProfile extends Component {
                 required
               />
             </div>
-  
-            <div className="field">
-              <label>Bio</label>
-              <textarea placeholder="tell us about yourself..." onChange={this.onBioChange} value={this.state.updateBio}></textarea>
+            <div className='form-group'>
+              <label for='bio'>Bio</label>
+              <textarea
+                id='bio'
+                className='form-control'
+                placeholder="tell us about yourself..."
+                onChange={this.onBioChange}
+                value={this.state.updateBio}
+              />
             </div>
-  
-            <div className="field">
-              <label>Gender</label>
-              <input type="text" placeholder="Male/Female/Other..." onChange={this.onGenderChange} value={this.state.updateGender}/>
+            <div className='form-group'>
+              <label for='gender'>Gender</label>
+              <input
+                id='gender'
+                type="text"
+                className='form-control'
+                placeholder="Male/Female/Other..."
+                onChange={this.onGenderChange}
+                value={this.state.updateGender}
+              />
             </div>
-  
+            <div className='form-group'>
+              <label for='age'>Age</label>
+              <input
+                id='age'
+                type="number"
+                className='form-control'
+                placeholder="Male/Female/Other..."
+                onChange={this.onGenderChange}
+                value={this.state.updateGender}
+              />
+            </div>
+            <div className='form-group'>
+              <label for='location'>Location</label>
+              <input
+                id='location'
+                type="text"
+                className='form-control'
+                placeholder="Your location"
+                onChange={this.onLocationChange}
+                value={this.state.updateLocation}
+              />
+            </div>
             {this.displayHeightInput()}
-  
             {this.displayWeight()}
-  
-            <div className="field">
-              <label>Location</label>
-              <input type="text" placeholder="Your location" onChange={this.onLocationChange} value={this.state.updateLocation} />
-            </div>
-  
-            <div className="field">
-              <input type="submit" className="button" value="Update Profile" id="update-button" onClick={this.onUpdateClick}/>
-            </div>
+            <input type="submit" className="button" value="Update Profile" id="update-button" onClick={this.onUpdateClick}/>
           </form>
         </div>
       )
@@ -387,5 +411,5 @@ class EditProfile extends Component {
     }
   }
 }
-
+EditProfile.contextType = SpaContext
 export default EditProfile

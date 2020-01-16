@@ -32,13 +32,9 @@ class ImageSlide extends Component {
 
   renderNum(stats, indexDisplay) {
     var { activityData } = stats
-    var { num } = activityData[indexDisplay]
     var labels = this.getLabels(stats.action)
-    return (
-      <span>
-        {num + " : " + labels.numLabel}
-      </span>
-    )
+    var num = activityData.length === 0 ? 0 : activityData[indexDisplay].num
+    return ( <span> {`${num} ${labels.numLabel}`} </span> )
   }
 
   render() {
