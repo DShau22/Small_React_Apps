@@ -5,7 +5,7 @@ import {
   storageKey,
 } from '../utils/storage';
 import SpaContext from '../Context';
-
+import { useFormik } from 'formik';
 // server url
 const serverURL = "http://localhost:8080"
 const getUserInfoURL = `${serverURL}/getUserInfo`
@@ -48,6 +48,7 @@ class EditProfile extends Component {
     this.displayWeight = this.displayWeight.bind(this)
     this.addFile = this.addFile.bind(this)
     this.onUpdateClick = this.onUpdateClick.bind(this)
+    this.initFormik = this.initFormik.bind(this)
   }
 
   getToken() {
@@ -116,6 +117,36 @@ class EditProfile extends Component {
   componentWillUnmount() {
     console.log("unmounting editprofile")
     this._isMounted = false
+  }
+
+  initFormik() {
+    const validate = values => {
+      var errors = {}
+      if (!values.updateFirstName) {
+        errors.updateFirstName = 'cannot be blank'
+      }
+      return errors
+    }
+    const formik = useFormik({
+      initialValues: {
+        updateFirstName: "",
+        updateLastName: "",
+        updateBio: "",
+        updateAge: 0,
+        updateLocation: "",
+        updateGender: "",
+        updateHeightCm: 0,
+        updateHeightIn: 0,
+        updateHeightFt: 0,
+        updateWeight: 0,
+        picFile: null,
+        currProfilePicInfo: {}
+      },
+      onSubmit: values => {
+        this.updateProfile(values)
+      },
+      validate,
+    })
   }
   
   displayWeight() {
@@ -236,13 +267,16 @@ class EditProfile extends Component {
     }
   }
 
-  async updateProfile(e) {
-    e.preventDefault()
+  async updateProfile(formValues) {
+    // e.preventDefault()
     
     alert("updating")
-    var { updateFirstName, updateLastName, updateBio, updateLocation, updateGender, settings } = this.state
-    var { updateHeightFt, updateHeightIn, updateHeightCm, updateWeight } = this.state
-    var { picFile, currProfilePicInfo } = this.state
+    // var { updateFirstName, updateLastName, updateBio, updateLocation, updateGender, settings } = this.state
+    // var { updateHeightFt, updateHeightIn, updateHeightCm, updateWeight } = this.state
+    // var { picFile, currProfilePicInfo } = this.state
+    var { updateFirstName, updateLastName, updateBio, updateLocation, updateGender, settings } = formValues
+    var { updateHeightFt, updateHeightIn, updateHeightCm, updateWeight } = formValues
+    var { picFile, currProfilePicInfo } = formValues
     var { unitSystem } = settings
     unitSystem = unitSystem.toLowerCase()
     var userToken = this.getToken()
@@ -317,10 +351,11 @@ class EditProfile extends Component {
   }
 
   render() {
+    var formik = this.initFormik()
     if (this.context.mounted) {
       return (
         <div className="edit-profile-container">
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <div className='form-group prof-pic-container'>
               <img src={this.state.currProfilePicInfo.profileURL} width="300" height="300" alt={imgAlt}/>
               <label>Profile Picture</label>
@@ -328,16 +363,10 @@ class EditProfile extends Component {
             </div>
             <div class="form-group">
               <label for='fname'>First Name</label>
-              <input
-                id='fname'
-                type="text"
-                className="form-control"
-                placeholder="first name"
-                onChange={this.onFirstNameChange}
-                value={this.state.updateFirstName}
-                ref={this.firstNameInput}
-                required
-              />
+              <input id='fname' className="form-control" {...formik.getFieldProps('updateFirstName')}/>
+              {formik.touched.updateFirstName && formik.errors.updateFirstName ? (
+                <div>{formik.errors.updateFirstName}</div>
+              ) : null}
             </div>
             <div class="form-group">
               <label for="lname">Last Name</label>
@@ -345,22 +374,22 @@ class EditProfile extends Component {
                 id='lname'
                 type="text"
                 className='form-control'
-                placeholder="last name"
-                onChange={this.onLastNameChange}
-                value={this.state.updateLastName}
-                ref={this.lastNameInput}
-                required
+                {...formik.getFieldProps('updateLastName')}
               />
+              {formik.touched.updateLastName && formik.errors.updateLastName ? (
+                <div>{formik.errors.updateLastName}</div>
+              ) : null}
             </div>
             <div className='form-group'>
               <label for='bio'>Bio</label>
               <textarea
                 id='bio'
                 className='form-control'
-                placeholder="tell us about yourself..."
-                onChange={this.onBioChange}
-                value={this.state.updateBio}
+                {...formik.getFieldProps('updateBio')}
               />
+              {formik.touched.updateBio && formik.errors.updateBio ? (
+                <div>{formik.errors.updateBio}</div>
+              ) : null}
             </div>
             <div className='form-group'>
               <label for='gender'>Gender</label>
@@ -368,10 +397,11 @@ class EditProfile extends Component {
                 id='gender'
                 type="text"
                 className='form-control'
-                placeholder="Male/Female/Other..."
-                onChange={this.onGenderChange}
-                value={this.state.updateGender}
+                {...formik.getFieldProps('updateGender')}
               />
+              {formik.touched.updateGender && formik.errors.updateGender ? (
+                <div>{formik.errors.updateGender}</div>
+              ) : null}
             </div>
             <div className='form-group'>
               <label for='age'>Age</label>
@@ -379,10 +409,11 @@ class EditProfile extends Component {
                 id='age'
                 type="number"
                 className='form-control'
-                placeholder="Male/Female/Other..."
-                onChange={this.onGenderChange}
-                value={this.state.updateGender}
+                {...formik.getFieldProps('updateAge')}
               />
+              {formik.touched.updateAge && formik.errors.updateAge ? (
+                <div>{formik.errors.updateAge}</div>
+              ) : null}
             </div>
             <div className='form-group'>
               <label for='location'>Location</label>
@@ -390,14 +421,15 @@ class EditProfile extends Component {
                 id='location'
                 type="text"
                 className='form-control'
-                placeholder="Your location"
-                onChange={this.onLocationChange}
-                value={this.state.updateLocation}
+                {...formik.getFieldProps('updateLocation')}
               />
+              {formik.touched.updateLocation && formik.errors.updateLocation ? (
+                <div>{formik.errors.updateLocation}</div>
+              ) : null}
             </div>
             {this.displayHeightInput()}
             {this.displayWeight()}
-            <input type="submit" className="button" value="Update Profile" id="update-button" onClick={this.onUpdateClick}/>
+            <input type="submit" className="button" value="Update Profile" id="update-button"/>
           </form>
         </div>
       )

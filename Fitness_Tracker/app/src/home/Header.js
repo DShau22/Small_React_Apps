@@ -41,6 +41,7 @@ import {
   removeFromSessionStorage,
   storageKey,
 } from '../utils/storage';
+import EditProfileFunc from "../profile/EditProfileFunc";
 
 // server url
 const serverURL = "http://localhost:8080"
@@ -399,7 +400,8 @@ class Header extends Component {
                   <Route path={`${root}/swimDetails`} component={SwimDetails}/>
                   <Route path={`${root}/runDetails`} component={RunDetails}/>
                   <Route exact path={`${root}/profile/:username?`} component={Profile}/>
-                  <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/>
+                  {/* <Route path={`${root}/profile/:username?/edit`} component={EditProfile}/> */}
+                  <Route path={`${root}/profile/:username?/edit`} component={EditProfileFunc}/>
                   <Route
                     exact path={`${root}/settings`}
                     render={(props) => <Settings {...props} updateUserInfo={this.updateUserInfo} />}

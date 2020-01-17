@@ -1,0 +1,49 @@
+.edit-profile-container {
+  padding: 8px;
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .field-container {
+      float:left;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      label {
+        text-align: left;
+        margin-left: 3px;
+        margin-bottom: 2px;
+      }
+    }
+
+    input[type="email"],
+    input[type="text"],
+    textarea,
+    input[type="number"] {
+      background-color: rgb(226, 239, 251);
+      color: black;
+      padding: .5em;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      width: 100%;
+    }
+    img {
+      border-radius: 50%;
+    }
+    .submit-container {
+      width: 90%;
+      input[type="submit"] {
+        float: right;
+        margin-top: 14px;
+        margin-bottom: 10px;
+        background-color: rgb(134, 184, 250);
+        border: 1px solid #eee;
+        border-radius: 5px;
+        padding: 5px;
+      }
+    }
+  }
+}
