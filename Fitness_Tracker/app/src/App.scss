@@ -61,10 +61,6 @@ html, body {
   outline: 0;
 }
 
-// button {
-//   @include buttonTheme
-// }
-
 .routeButton {
   @include buttonTheme;
   margin-right: 20px;

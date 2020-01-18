@@ -334,16 +334,18 @@ class Header extends Component {
     return (
       <Media query={`(min-width: ${sidebarMediaQuery})`} render={() => 
         (
-          <div className='card text-center'>
-            <div className="sideMenu-container">
-              <SideMenu
-                homeURL="/app"
-                communityURL={`${match.url}/community`}
-                fitnessURL={`${match.url}/fitness`}
-                profileURL={`${match.url}/profile/${this.state.username}`}
-                settingsURL={`${match.url}/settings`}
-                logout={this.logout}
-              />
+          <div className='col-md-3 sideMenu-container'>
+            <div className='card text-center'>
+              <div className="sideMenu-container">
+                <SideMenu
+                  homeURL="/app"
+                  communityURL={`${match.url}/community`}
+                  fitnessURL={`${match.url}/fitness`}
+                  profileURL={`${match.url}/profile/${this.state.username}`}
+                  settingsURL={`${match.url}/settings`}
+                  logout={this.logout}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -387,10 +389,8 @@ class Header extends Component {
           </div>
           {/* only returns elements if it's not a phone */}
           <div className='mt-3 ml-2 p-1 content'>
-            <div className='col-md-3 sideMenu-container'>
-              {this.renderSideMenu()}
-            </div>
-            <div className='col-md-9 page-container'>
+            {this.renderSideMenu()}
+            <div className='col-md-9 col-12 page-container'>
               <div className="card text-center h-100">
                 <Switch location={this.props.location}>
                   <Route exact path={`${root}`} component={Home}/>

@@ -4,7 +4,7 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import Spa from "./Spa"
-
+import Particles from 'react-particles-js';
 import "./transitions.css"
 
 class App extends Component {
