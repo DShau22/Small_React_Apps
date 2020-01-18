@@ -6,7 +6,8 @@ const inToCm = (2.54 / 1.0)
 const cmToIn = (1.0 / 2.54)
 const ftToCm = (30.48 / 1.0)
 
-// FOR FORMATED STRINGS
+// system is the system you wanna display in
+// returns 'num kg' or 'num lbs'
 function weightConvert(system, weight) {
   if (!system) return ""
   var parsed = weight.split(" ") // [num units]
@@ -27,6 +28,7 @@ function weightConvert(system, weight) {
 }
 
 // system is the system you wanna display in
+// returns 'num ft num in' or 'num cm'
 function heightConvert(system, height) {
   if (!system) return ""
   var parsed = height.split(" ") // either [num, ft, num, in] or [num, cm]
@@ -35,20 +37,17 @@ function heightConvert(system, height) {
   if (system === "english" && parsed[1] === "cm") {
     //convert cm to in, then in to ft and in
     var heightInCm = parsed[0]
-    convertedHeight = parseInt(heightInCm) * cmToIn
-    let feet = Math.floor(convertedHeight / 12.0)
-    let inches = Math.round(convertedHeight - feet * 12)
-    convertedHeight = feet.toString() + " ft " + inches.toString() + " in"
+    convertedHeight = `${parseInt(heightInCm) * cmToIn} in`
   } else if (system === "metric" && parsed[1] === "ft") {
     // convert ft, in to cm
     let feet = parseInt(parsed[0])
     let inches = parseInt(parsed[2])
-    convertedHeight = Math.round((feet * ftToCm) + (inches * inToCm))
+    convertedHeight = `${Math.round((feet * ftToCm) + (inches * inToCm)).toString()} cm`
   }
   return convertedHeight.toString()
 }
 
-// takes height in inches and returns {ft, in}
+// takes height in inches and returns 'num ft num in'
 function englishHeight(height) {
   var feet = Math.floor(height / 12)
   var inches = Math.round(height - (12 * feet))
@@ -71,4 +70,4 @@ function parseDate(date) {
   return parsed
 }
 
-module.exports = { weightConvert, heightConvert, englishHeight, parseDate, rawHeightConvert }
+export { weightConvert, heightConvert, englishHeight, parseDate, rawHeightConvert }

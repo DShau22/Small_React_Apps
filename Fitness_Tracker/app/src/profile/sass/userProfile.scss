@@ -10,6 +10,27 @@
     width: 90%;
     height: 90%;
   }
+
+  .popup-content {
+    width: 80% !important;
+    max-width: 600px;
+    max-height: 95vh;
+    overflow: scroll;
+  }
+  .popup-header {
+    margin: 10px 0;
+  }
+  .popup-close {
+    margin-right: 15px;
+    position: absolute;
+    right: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+  }
 }
 
 .top-half {

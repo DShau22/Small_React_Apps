@@ -10,6 +10,8 @@ import ShowMoreText from 'react-show-more-text';
 import SpaContext from '../Context';
 import { weightConvert, heightConvert } from "../utils/unitConverter"
 import "./css/userProfile.css"
+import Popup from "reactjs-popup";
+import EditProfileFunc from "./EditProfileFunc"
 // replace with default avatar link
 const imgAlt = "./default_profile.png"
 
@@ -105,24 +107,38 @@ class UserProfile extends Component {
     )
   }
 
+  renderPopup() {
+    const editBtn = (
+      <div className='edit-btn-container'>
+        <i className='far'>&#xf044;</i>
+        <span className="edit-btn">Edit Profile</span>
+      </div>
+    )
+    return (
+      <Popup trigger={editBtn} modal>
+        {close => (
+          <div className="popup-modal">
+            <a className="popup-close" onClick={close}>
+              &times;
+            </a>
+            <h4 className="popup-header"> Edit your profile </h4>
+            <div className="content">
+              <EditProfileFunc closePopup={close}/>
+            </div>
+          </div>
+        )}
+      </Popup>
+    )
+  }
+
   render() {
     var { context } = this
     // if user clicked the button to go to the edit profile page
-    if (this.state.editProfile) {
-      // debugger;
-      return ( <Redirect to={{pathname: `${this.props.match.url}/edit`,}}/> )
-    }
     if (context.mounted) {
       return (
         <div className="profile-container">
           <div className='top-half'>
-            <div
-              className='edit-btn-container'
-              onClick={() =>{this.setState({editProfile: true})}}
-            >
-              <i className='far'>&#xf044;</i>
-              <span className="edit-btn">Edit Profile</span>
-            </div>
+            {this.renderPopup()}
             <div className='img-container mt-2'>
               <img 
                 className='profile-pic'

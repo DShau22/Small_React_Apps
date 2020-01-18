@@ -20,7 +20,6 @@ class Fitness extends Component {
   }
 
   renderActivity() {
-    // debugger
     var { activityDisplay } = this.state
     var { runJson, jumpJson, swimJson } = this.context
     if (activityDisplay === "run") {
