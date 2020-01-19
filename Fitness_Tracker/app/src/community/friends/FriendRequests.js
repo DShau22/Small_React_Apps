@@ -27,6 +27,14 @@ class FriendRequests extends Component {
     // onClick function definition
     var { friendRequests, addFriendToState, removeFriendReq, acceptRequest } = this.props
     var liTags = []
+    const onClick = () => {
+      this.props.history.push(`/app/profile/${username}`)
+    }
+    const onAcceptRequest = () => {
+      acceptRequest(id, firstName, lastName);
+      removeFriendReq(id);
+      addFriendToState(id, firstName, lastName);
+    }
     for (let i = 0; i < friendRequests.length; i++) {
       var { id, firstName, lastName } = friendRequests[i]
       var [username, bests, profileUrl] = await Promise.all([getUsername(id), getBests(id), getProfile(id)])
@@ -35,14 +43,8 @@ class FriendRequests extends Component {
           key={id}
           isFriend={false}
           isFriendRequest={true}
-          onClick={() => {
-            this.props.history.push(`/app/profile/${username}`)
-          }}
-          onAcceptRequest={() => {
-            acceptRequest(id, firstName, lastName);
-            removeFriendReq(id);
-            addFriendToState(id, firstName, lastName);
-          }}
+          onClick={onClick}
+          onAcceptRequest={onAcceptRequest}
           profileUrl={profileUrl}
           defaultProfile={defaultProfile}
           imgAlt={imgAlt}

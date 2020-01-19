@@ -4,7 +4,7 @@ import Jump from "./jump/Jump"
 import Swim from "./swim/Swim"
 import "./Fitness.css"
 import SpaContext from "../Context"
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
+// import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import './fitnessTransitions.css'
 
 class Fitness extends Component {

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import SignIn from "./SignIn"
 import SignUp from "./SignUp"
-
+import SignInFunc from "./SignInFunc"
+import SignUpFunc from "./SignUpFunc"
 class FormCard extends Component {
   render() {
     return (
@@ -26,34 +27,11 @@ class FormCard extends Component {
         >
         </input><label htmlFor="tab-2" className="tab">Sign Up</label>
         <div className="login-form">
-          <SignIn
-            signInEmail={this.props.signInEmail}
-            signInPassword={this.props.signInPassword}
-
-            onEmailChange={this.props.onSignInEmailChange}
-            onPwChange={this.props.onSignInPwChange}
-            onSignIn={this.props.handleSignIn}
-            onCheck={this.props.onCheck}
-            setError={this.props.setError}
-            signInValid={this.props.signInValid}
+          <SignInFunc 
+            onSignIn={this.props.onSignIn}
           />
-          <SignUp
-            signUpEmail={this.props.signUpEmail}
-            signUpPassword={this.props.signUpPassword}
-            signUpPasswordConf={this.props.signUpPasswordConf}
-            signUpFirstName={this.props.signUpFirstName}
-            signUpLastName={this.props.signUpLastName}
-            signUpUserName={this.props.signUpUserName}
-
-            onEmailChange={this.props.onSignUpEmailChange}
-            onPwChange={this.props.onSignUpPwChange}
-            onPwConfChange={this.props.onSignUpPwChangeConf}
-            onFirstNameChange={this.props.onSignUpFirstNameChange}
-            onLastNameChange={this.props.onSignUpLastNameChange}
-            onSignUpUserNameChange={this.props.onSignUpUserNameChange}
-            onSubmit={this.props.handleSignUp}
-            switchToSignIn={this.props.onSignInClick}
-            signUpValid={this.props.signUpValid}
+          <SignUpFunc
+            onSignUp={this.props.onSignUp}
           />
         </div>
       </div>

@@ -2,7 +2,6 @@
 // They should be able to see everything
 import React, { Component } from 'react'
 import {
-  Redirect,
   withRouter,
 } from "react-router-dom";
 import ShowMoreText from 'react-show-more-text';
@@ -118,9 +117,9 @@ class UserProfile extends Component {
       <Popup trigger={editBtn} modal>
         {close => (
           <div className="popup-modal">
-            <a className="popup-close" onClick={close}>
+            <div className="popup-close" onClick={close}>
               &times;
-            </a>
+            </div>
             <h4 className="popup-header"> Edit your profile </h4>
             <div className="content">
               <EditProfileFunc closePopup={close}/>

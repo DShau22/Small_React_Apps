@@ -1,22 +1,17 @@
 import React, { useContext } from 'react'
 import SpaContext from "../Context"
 import { getToken } from '../utils/storage'
-import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Formik, Form } from 'formik'
 import * as Yup from 'yup';
-import styled from "@emotion/styled"
 import "./css/editProfile.css"
 import { weightConvert, heightConvert, englishHeight } from "../utils/unitConverter"
 import { textField, textArea, weightDisplay, heightDisplay } from '../generic/fieldComponents'
 // server url
 const serverURL = "http://localhost:8080"
-const getUserInfoURL = `${serverURL}/getUserInfo`
 const updateProfileURL = `${serverURL}/updateProfile`
 const checkDuplicateURL = `${serverURL}/checkDuplicatePic`
 const uploadPicURL = `${serverURL}/uploadProfilePic`
 const imgAlt = "./default_profile.png"
-
-const inputErrorStyle = {'border': '2px solid rgb(255, 162, 162)'}
-const errorMsgStyle = { 'color' : 'rgb(255, 162, 162)', 'fontSize': '10pt', 'width': '90%', 'textAlign': 'left' }
 
 export default function EditProfileFunc(props) {
   const context = useContext(SpaContext);
@@ -149,7 +144,7 @@ export default function EditProfileFunc(props) {
             setSubmitting(false)
           }}
         >
-          {({ errors, setFieldValue }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <div className='prof-pic-container'>
                 <img src={context.profilePicture.profileURL} width="300" height="300" alt={imgAlt}/>
@@ -165,14 +160,21 @@ export default function EditProfileFunc(props) {
                   Upload an Image
                 </label>
               </div>
-              {textField('updateFirstName', 'field', errors.updateFirstName)}
-              {textField('updateLastName', 'field', errors.updateLastName)}
-              {textArea('updateBio', 'field', errors.updateBio)}
-              {textField('updateGender', 'field', errors.updateGender)}
-              {textField('updateAge', 'field', errors.updateAge)}
-              {textField('updateLocation', 'field', errors.updateLocation)}
-              {weightDisplay('updateWeight', 'field', unitSystem, errors)}
-              {heightDisplay('updateHeight', 'field', unitSystem, errors)}
+              {textField('First Name', 'updateFirstName', 'field', errors.updateFirstName, touched.updateFirstName)}
+              {textField('Last Name', 'updateLastName', 'field', errors.updateLastName, touched.updateLastName)}
+              {textArea('Bio', 'updateBio', 'field', errors.updateBio, touched.updateBio)}
+              {textField('Gender', 'updateGender', 'field', errors.updateGender, touched.updateGender)}
+              {textField('Age', 'updateAge', 'field', errors.updateAge, touched.updateAge)}
+              {textField('Location', 'updateLocation', 'field', errors.updateLocation, touched.updateLocation)}
+              {weightDisplay('Weight', 'updateWeight', 'field', unitSystem, errors, touched.updateWeight)}
+              {heightDisplay(
+                'Height',
+                'updateHeight',
+                'field',
+                unitSystem,
+                errors,
+                touched.updateHeightIn || touched.updateHeightFt || touched.updateHeightCm 
+              )}
               <div className='submit-container'>
                 <input type="submit" className="button" value="Update Profile" id="update-button"/>
                 <div className='cancel' onClick={props.closePopup}>Cancel</div>

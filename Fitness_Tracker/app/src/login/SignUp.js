@@ -16,6 +16,7 @@ passSchema
 class SignUp extends Component {
 
   render() {
+    console.log(this.props.signUpValid)
     return (
       <div className="sign-up-htm">
         <form id="signup-form" onSubmit={this.props.onSubmit}>
@@ -27,7 +28,14 @@ class SignUp extends Component {
                 type: "text"
               }}
               value={this.props.signUpEmail} //Optional.[String].Default: "".
-              onChange={(email, e) => {this.props.onEmailChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(email, e) => {
+                this.props.onEmailChange(e)
+                if (validator.isEmail(email)) {
+                  this.props.signUpValid[0] = true
+                } else {
+                  this.props.signUpValid[0] = false
+                }
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "email", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -52,7 +60,13 @@ class SignUp extends Component {
                 type: "password"
               }}
               value={this.props.signUpPassword} //Optional.[String].Default: "".
-              onChange={(pass, e) => {this.props.onPwChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(pass, e) => {
+                this.props.onPwChange(e)
+                if (passSchema.validate(pass)) {
+                  this.props.signUpValid[1] = true
+                }
+                this.props.signUpValid[1] = false
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "pass", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -77,7 +91,13 @@ class SignUp extends Component {
                 type: "password"
               }}
               value={this.props.signUpPasswordConf} //Optional.[String].Default: "".
-              onChange={(passConf, e) => {this.props.onPwConfChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(passConf, e) => {
+                this.props.onPwConfChange(e)
+                if (passSchema.validate(passConf)) {
+                  this.props.signUpValid[2] = true
+                }
+                this.props.signUpValid[2] = false
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "passConf", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -102,7 +122,13 @@ class SignUp extends Component {
                 type: "text"
               }}
               value={this.props.signUpUserName} //Optional.[String].Default: "".
-              onChange={(pass, e) => {this.props.onSignUpUserNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(username, e) => {
+                this.props.onSignUpUserNameChange(e)
+                if (validator.isAlphanumeric(username)) {
+                  this.props.signUpValid[3] = true
+                }
+                this.props.signUpValid[3] = false
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "username", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -127,7 +153,13 @@ class SignUp extends Component {
                 type: "text"
               }}
               value={this.props.signUpFirstName} //Optional.[String].Default: "".
-              onChange={(pass, e) => {this.props.onFirstNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(fname, e) => {
+                this.props.onFirstNameChange(e)
+                if (validator.isAlpha(fname)) {
+                  this.props.signUpValid[4] = true
+                }
+                this.props.signUpValid[4] = false
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "firstName", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -152,7 +184,13 @@ class SignUp extends Component {
                 type: "text"
               }}
               value={this.props.signUpLastName} //Optional.[String].Default: "".
-              onChange={(pass, e) => {this.props.onLastNameChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(lname, e) => {
+                this.props.onLastNameChange(e)
+                if (validator.isAlpha(lname)) {
+                  this.props.signUpValid[5] = true
+                }
+                this.props.signUpValid[5] = false
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "lastName", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.

@@ -88,7 +88,14 @@ class SignIn extends Component {
                 type: "text"
               }}
               value={this.props.signInEmail} //Optional.[String].Default: "".
-              onChange={(email, e) => {this.props.onEmailChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(email, e) => {
+                this.props.onEmailChange(e)
+                if (validator.isEmpty(email)) {
+                  this.props.signInValid[0] = false
+                } else {
+                  this.props.signInValid[0] = true
+                }
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "email", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.
@@ -113,7 +120,14 @@ class SignIn extends Component {
                 type: "password"
               }}
               value={this.props.signInPassword} //Optional.[String].Default: "".
-              onChange={(email, e) => {this.props.onPwChange(e)}} //Required.[Func].Default: () => {}. Will return the value.
+              onChange={(pw, e) => {
+                this.props.onPwChange(e);
+                if (validator.isEmpty(pw)) {
+                  this.props.signInValid[1] = false
+                } else {
+                  this.props.signInValid[1] = true
+                }
+              }}
               onBlur={e => {}} //Optional.[Func].Default: none. In order to validate the value on blur, you MUST provide a function, even if it is an empty function. Missing this, the validation on blur will not work.
               validationOption={{
                 name: "email", //Optional.[String].Default: "". To display in the Error message. i.e Please enter your {name}.

@@ -73,12 +73,12 @@ function heightDisplay(name, className, unitSystem, errors) {
   }
 }
 
-function textField(name, className, error) {
+function textField(label, name, className, error, touched) {
   return (
-    <div className='field-container'>
-      <label htmlFor={name}>First Name</label>
+    <div className='field-container group'>
+      <label className='label' htmlFor={name}>{label}</label>
       <Field 
-        style={error ? inputErrorStyle : null}
+        style={error && touched ? inputErrorStyle : null}
         name={name}
         className={className}
         type="text"
@@ -87,18 +87,33 @@ function textField(name, className, error) {
     </div>
   )
 }
-function textArea(name, className, error) {
+function textArea(label, name, className, error, touched) {
   return (
-    <div className='field-container'>
-      <label htmlFor={name}>Bio</label>
+    <div className='field-container group'>
+      <label className='label' htmlFor={name}>{label}</label>
       <Field
         name={name}
         className={className}
         type="text"
         as='textarea'
-        style={error ? inputErrorStyle : null}
+        style={error && touched ? inputErrorStyle : null}
       />
       <ErrorMessage style={errorMsgStyle} name={name}/>
+    </div>
+  )
+}
+function checkBox(label, name, spanClassName) {
+  return (
+    <div className='group'>
+      <Field
+        type="checkbox"
+        name={name}
+        id='check'
+        className='check'
+      />
+      <label htmlFor="check">
+        <span className={spanClassName}></span> {label}
+      </label>
     </div>
   )
 }
@@ -107,4 +122,5 @@ export {
   heightDisplay,
   textArea,
   textField,
+  checkBox,
 }

@@ -2,10 +2,6 @@ const getBestsURL = "http://localhost:8080/getBests"
 const getProfileURL = "http://localhost:8080/getProfilePic"
 const getUsernameURL = "http://localhost:8080/getUsername"
 
-  async function getBestsAndTotals() {
-    
-  }
-
   /**
    * gets the bests of a user given their id
    */

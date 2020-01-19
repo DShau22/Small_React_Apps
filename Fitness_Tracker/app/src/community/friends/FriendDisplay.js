@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
 
 // FUNCTIONAL COMPONENT FOR DISPLAY FRIENDS AND FRIEND REQUESTS
 // IN A LIST FORMAT FOR THE COMMUNITY COMPONENT

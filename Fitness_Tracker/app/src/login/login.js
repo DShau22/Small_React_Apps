@@ -7,7 +7,6 @@ import {
   setInSessionStorage,
   storageKey
 } from '../utils/storage';
-import { validateSignUp } from "./loginUtils/validators"
 
 import { Redirect } from 'react-router';
 
@@ -42,32 +41,9 @@ class Login extends Component {
       signedIn: false,
       token: '',
       renderSignIn: true, // specifies whether the card should show signin or signup
-      signInEmail: '',
-      signInPassword: '',
-      remember: false,
-      signUpEmail: '',
-      signUpPassword: '',
-      signUpPasswordConf: '',
-      signUpFirstName: '',
-      signUpLastName: '',
-      signUpUserName: '',
       errorMsgs: new Set(),
       successMsgs: new Set(),
     };
-    // init array of length 6 for signup errors
-    this.signUpValid = [false, false, false, false, false, false]
-    // init array of length 2 for signin errors
-    this.signInValid = [false, false]
-
-    this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
-    this.onTextboxChangeSignInPassword = this.onTextboxChangeSignInPassword.bind(this);
-    this.onTextboxChangeSignUpEmail = this.onTextboxChangeSignUpEmail.bind(this);
-    this.onTextboxChangeSignUpPassword = this.onTextboxChangeSignUpPassword.bind(this);
-    this.onTextboxChangeSignUpPasswordConf = this.onTextboxChangeSignUpPasswordConf.bind(this);
-    this.onTextboxChangeSignUpFirstName = this.onTextboxChangeSignUpFirstName.bind(this);
-    this.onTextboxChangeSignUpLastName = this.onTextboxChangeSignUpLastName.bind(this);
-    this.onTextboxChangeSignUpUsername = this.onTextboxChangeSignUpUsername.bind(this);
-    this.onCheck = this.onCheck.bind(this)
 
     this.displayErrors = this.displayErrors.bind(this)
     this.showSuccesses = this.showSuccesses.bind(this)
@@ -101,51 +77,6 @@ class Login extends Component {
         isLoading: false,
       })
     }
-  }
-  onTextboxChangeSignUpPasswordConf(event) {
-    this.setState({
-      signUpPasswordConf: event.target.value
-    })
-  }
-  onTextboxChangeSignInEmail(event) {
-    this.setState({
-      signInEmail: event.target.value,
-    });
-  }
-  onTextboxChangeSignInPassword(event) {
-    this.setState({
-      signInPassword: event.target.value,
-    });
-  }
-  onTextboxChangeSignUpEmail(event) {
-    this.setState({
-      signUpEmail: event.target.value,
-    });
-  }
-  onTextboxChangeSignUpPassword(event) {
-    this.setState({
-      signUpPassword: event.target.value,
-    });
-  }
-  onTextboxChangeSignUpFirstName(event) {
-    this.setState({
-      signUpFirstName: event.target.value,
-    });
-  }
-  onTextboxChangeSignUpLastName(event) {
-    this.setState({
-      signUpLastName: event.target.value,
-    });
-  }
-  onTextboxChangeSignUpUsername(event) {
-    this.setState({
-      signUpUserName: event.target.value,
-    });
-  }
-  onCheck() {
-    this.setState({
-      remember: !this.state.remember
-    })
   }
 
   clearSignIn() {
@@ -203,13 +134,8 @@ class Login extends Component {
 
   // MAKE SURE TO DISALLOW WHITELISTED SPECIAL CHARACTERS
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
-  async onSignUp(e) {
-    e.preventDefault()
+  async onSignUp(values) {
     // every entry must be true for all input fields to be valid
-    if (!this.signUpValid.every((bool) => bool)) {
-      this.setState({ errorMsgs: ['Your form still has some errors. Please fill out all inputs or check the red outlined fields.']})
-      return
-    }
     this.setState({ errorMsgs: [], successMsgs: []})
     console.log("signing up...")
     var {
@@ -218,22 +144,8 @@ class Login extends Component {
       signUpPasswordConf,
       signUpFirstName,
       signUpLastName,
-      signUpUserName,
-    } = this.state
-    
-    var validationJson = validateSignUp(this.state)
-    if (!validationJson.success) {
-      console.log("validation error!")
-      validationJson.messages.forEach((msg, i) => {
-        console.log(msg)
-        this.setState(prevState => ({ errorMsgs: new Set([...prevState.errorMsgs, msg]) }))
-      })
-      return
-    }
-
-    this.setState({
-      isLoading: true,
-    });
+      signUpUsername,
+    } = values
 
     // Post request to backend
     var res = await fetch(signUpURL, {
@@ -247,7 +159,7 @@ class Login extends Component {
         email: signUpEmail,
         firstName: signUpFirstName,
         lastName: signUpLastName,
-        username: signUpUserName
+        username: signUpUsername
       }),
     })
     var json = await res.json()
@@ -255,6 +167,7 @@ class Login extends Component {
     if (json.success) {
       this.setState({ successMsgs: new Set([...json.messages]) })
       this.clearSignUp()
+      this.signUpValid = [false, false, false, false, false, false]
     } else {
       var newErrors = new Set([...json.messages])
       this.setState({isLoading: false, errorMsgs: newErrors})
@@ -263,19 +176,14 @@ class Login extends Component {
 
   // MAKE SURE TO DISALLOW WHITELISTED SPECIAL CHARACTERS
   // MAKE SURE TO VALIDATE INPUTS ON SERVER SIDE EVENTUALLY
-  async onSignIn(e) {
-    e.preventDefault()
-    if (!this.signInValid.every((bool) => bool)) {
-      this.setState({errorMsgs: ['Your form still has some errors. Please fill out all inputs or check the red outlined fields.']})
-      return
-    }
+  async onSignIn(values) {
     this.setState({ errorMsgs: [], successMsgs: [] })
     // Grab state
     const {
       signInEmail,
       signInPassword,
       remember
-    } = this.state;
+    } = values;
     console.log("signing in...")
     const stored = getFromLocalStorage(storageKey)
 
@@ -402,33 +310,15 @@ class Login extends Component {
               </div>
               <LoadingScreen />
               <FormCard
-                signInEmail={this.state.signInEmail}
-                signInPassword={this.state.signInPassword}
-                
-                signUpEmail={this.state.signUpEmail}
-                signUpPassword={this.state.signUpPassword}
-                signUpPasswordConf={this.state.signUpPasswordConf}
-                signUpFirstName={this.state.signUpFirstName}
-                signUpLastName={this.state.signUpLastName}
-                signUpUserName={this.state.signUpUserName}
-
                 renderSignIn={this.state.renderSignIn}
                 onSignInClick={this.switchToSignIn}
                 onSignUpClick={this.switchToSignUp}
-                onSignInEmailChange={this.onTextboxChangeSignInEmail}
-                onSignInPwChange={this.onTextboxChangeSignInPassword}
-                onCheck={this.onCheck}
-                handleSignIn={this.onSignIn}
-                onSignUpEmailChange={this.onTextboxChangeSignUpEmail}
-                onSignUpPwChange={this.onTextboxChangeSignUpPassword}
-                onSignUpPwChangeConf={this.onTextboxChangeSignUpPasswordConf}
-                onSignUpFirstNameChange={this.onTextboxChangeSignUpFirstName}
-                onSignUpLastNameChange={this.onTextboxChangeSignUpLastName}
-                onSignUpUserNameChange={this.onTextboxChangeSignUpUsername}
-                handleSignUp={this.onSignUp}
 
                 signUpValid={this.signUpValid}
                 signInValid={this.signInValid}
+
+                onSignIn={this.onSignIn}
+                onSignUp={this.onSignUp}
               />
             </div>
           </div>
