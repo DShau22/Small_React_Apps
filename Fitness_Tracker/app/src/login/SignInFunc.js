@@ -28,8 +28,8 @@ export default function SignInFunc(props) {
       >
         {({ errors, touched }) => (
           <Form>
-            {textField('Email', 'signInEmail', 'input-field', errors.signInEmail, touched.signInEmail)}
-            {textField('Password', 'signInPassword', 'input-field', errors.signInPassword, touched.signInPassword)}
+            {textField('Email', 'text', 'signInEmail', 'input-field', errors.signInEmail, touched.signInEmail)}
+            {textField('Password', 'password', 'signInPassword', 'input-field', errors.signInPassword, touched.signInPassword)}
             {checkBox('Keep me signed in', 'remember', 'icon')}
             <div className="group">
               <input type="submit" className="button" value="Sign In" id="signInButton" />

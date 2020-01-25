@@ -49,12 +49,19 @@ export default function SignUpFunc(props) {
       >
         {({ errors, touched }) => (
           <Form>
-            {textField('Email', 'signUpEmail', 'input-field', errors.signUpEmail, touched.signUpEmail)}
-            {textField('Password', 'signUpPassword', 'input-field', errors.signUpPassword, touched.signUpPassword)}
-            {textField('Repeat Password', 'signUpPasswordConf', 'input-field', errors.signUpPasswordConf, touched.signUpPasswordConf)}
-            {textField('First Name', 'signUpFirstName', 'input-field', errors.signUpFirstName, touched.signUpFirstName)}
-            {textField('Last Name', 'signUpLastName', 'input-field', errors.signUpLastName, touched.signUpLastName)}
-            {textField('Username', 'signUpUsername', 'input-field', errors.signUpUsername, touched.signUpUsername)}
+            {textField(
+              'Email',
+              'text',
+              'signUpEmail',
+              'input-field',
+              errors.signUpEmail,
+              touched.signUpEmail
+            )}
+            {textField('Password', 'password', 'signUpPassword', 'input-field', errors.signUpPassword, touched.signUpPassword)}
+            {textField('Repeat Password', 'password', 'signUpPasswordConf', 'input-field', errors.signUpPasswordConf, touched.signUpPasswordConf)}
+            {textField('First Name', 'text', 'signUpFirstName', 'input-field', errors.signUpFirstName, touched.signUpFirstName)}
+            {textField('Last Name', 'text', 'signUpLastName', 'input-field', errors.signUpLastName, touched.signUpLastName)}
+            {textField('Username', 'text', 'signUpUsername', 'input-field', errors.signUpUsername, touched.signUpUsername)}
             <div className="group">
               <input type="submit" className="button" value="Sign In" id="signInButton" />
             </div>

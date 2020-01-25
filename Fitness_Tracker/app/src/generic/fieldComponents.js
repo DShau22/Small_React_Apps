@@ -73,7 +73,7 @@ function heightDisplay(name, className, unitSystem, errors) {
   }
 }
 
-function textField(label, name, className, error, touched) {
+function textField(label, type, name, className, error, touched) {
   return (
     <div className='field-container group'>
       <label className='label' htmlFor={name}>{label}</label>
@@ -81,7 +81,7 @@ function textField(label, name, className, error, touched) {
         style={error && touched ? inputErrorStyle : null}
         name={name}
         className={className}
-        type="text"
+        type={type}
       />
       <ErrorMessage name={name}>{msg => <div style={errorMsgStyle}>{msg}</div>}</ErrorMessage>
     </div>

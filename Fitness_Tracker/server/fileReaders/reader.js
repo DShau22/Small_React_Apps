@@ -11,6 +11,7 @@ const semicolon_ascii = ";".charCodeAt(0)
 function validate(byte, idx) {
   let string_representation = String.fromCharCode(byte)
   if (!markerSet.has(string_representation)) {
+    console.log(string_representation)
     console.log("*********** NOT A VALID FILE ************")
   }
   return markerSet.has(string_representation)
@@ -18,19 +19,10 @@ function validate(byte, idx) {
 
 function merge_two_bytes(first8, second8) {
   return (first8 << 8) + second8
-  two_byte = parseInt("0x0000");
-  two_byte = two_byte | (first8 << 8);
-  two_byte = two_byte | second8;
-  return two_byte
 }
 
 function merge_three_bytes(first8, second8, third8) {
   return (first8 << 16) + (second8 << 8) + third8
-  three_byte = parseInt("0x00000000");
-  three_byte = three_byte | (first8 << 16)
-  three_byte = three_byte | (second8 << 8)
-  three_byte = three_byte | (third8)
-  return three_byte
 }
 
 // jump[0]: '3' (report height), '4' (report hangtime), '5' (bball)

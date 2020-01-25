@@ -12,7 +12,8 @@ a{color:inherit;text-decoration:none}
 
 // for hacking the style of the custom input library
 // .react-inputs-validation__textbox__wrapper___3tnXv {
-input[type=text], .react-inputs-validation__textbox__wrapper___3tnXv.input {
+input[type=text], input[type=password], 
+.react-inputs-validation__textbox__wrapper___3tnXv.input {
   border:none;
   padding:15px 20px;
   border-radius:25px;

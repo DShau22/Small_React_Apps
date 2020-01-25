@@ -137,6 +137,7 @@ module.exports = async function upload(req, res, next) {
       console.log("verifying...")
       // invalid token!
       if (err) {
+        console.error(err)
         return res.send({
           success: false,
           messages: [err.toString()]
