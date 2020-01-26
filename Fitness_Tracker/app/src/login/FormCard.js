@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import SignIn from "./SignIn"
-import SignUp from "./SignUp"
 import SignInFunc from "./SignInFunc"
 import SignUpFunc from "./SignUpFunc"
 class FormCard extends Component {

@@ -10,6 +10,45 @@
 .clearfix:after{clear:both;display:block}
 a{color:inherit;text-decoration:none}
 
+// CONFIRMATION EMAIL PAGE
+.conf-page {
+	height: 60%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.card {
+		min-width: 50%;
+	}
+	.conf-header-error {
+		color: white;
+		background-image: linear-gradient(160deg, #ff0844 0%, #ffb199 100%);
+		text-align: center;
+	}
+	.conf-header {
+		color: white;
+		background-image: linear-gradient(170deg, #e0c3fc 0%, #8ec5fc 100%);
+		text-align: center;
+	}
+	.card-body {
+		background-color: rgb(250, 250, 250);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		.navLink {
+			width: 50%;
+			color: white;
+			border-radius: 5px;
+			background-image: linear-gradient(170deg, #e0c3fc 0%, #8ec5fc 100%);
+			padding: 10px;
+			margin-top: 10px;
+			cursor: pointer;
+		}
+	}
+}
+
+
 // for hacking the style of the custom input library
 // .react-inputs-validation__textbox__wrapper___3tnXv {
 input[type=text], input[type=password], 

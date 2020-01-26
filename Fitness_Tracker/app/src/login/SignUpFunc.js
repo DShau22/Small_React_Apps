@@ -63,7 +63,7 @@ export default function SignUpFunc(props) {
             {textField('Last Name', 'text', 'signUpLastName', 'input-field', errors.signUpLastName, touched.signUpLastName)}
             {textField('Username', 'text', 'signUpUsername', 'input-field', errors.signUpUsername, touched.signUpUsername)}
             <div className="group">
-              <input type="submit" className="button" value="Sign In" id="signInButton" />
+              <input type="submit" className="button" value="Sign Up" id="signInButton" />
             </div>
           </Form>
         )}

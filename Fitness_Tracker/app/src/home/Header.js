@@ -302,7 +302,7 @@ class Header extends Component {
         <div className="header w-100">
           <div className="d-flex align-items-center w-100 h-100">
             <span className='header-title position-absolute w-100'>
-              placeholder
+              Athlos Tracker
             </span>
             {/* dont display the sidebar opener (the thing with three lines) unless it's a phone */}
             <Media query={`(max-width: ${sidebarMediaQuery})`} render={() => 

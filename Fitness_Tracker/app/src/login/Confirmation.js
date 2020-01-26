@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import LoadingScreen from "../generic/LoadingScreen"
 import queryString from "query-string"
 import {
-  NavLink,
+  withRouter
 } from "react-router-dom";
 import {
   getFromLocalStorage,
-  setInLocalStorage,
   removeFromLocalStorage,
+  setInLocalStorage,
   storageKey
 } from '../utils/storage';
 import Error from "../messages/Error"
+import "./style.css"
 
 class Confirmation extends Component {
   constructor(props) {
@@ -23,7 +24,6 @@ class Confirmation extends Component {
   }
 
   componentDidMount() {
-    alert("mounting")
     // get the token parameter in the URI
     var queryValues = queryString.parse(this.props.location.search)
     var emailToken = queryValues.token
@@ -43,7 +43,6 @@ class Confirmation extends Component {
           })
         } else {
           // set error message in local storage
-          alert("something went wrong...")
           setInLocalStorage(storageKey + "_confirmationErr", json.messages)
           this.setState({
             errors: true,
@@ -59,7 +58,7 @@ class Confirmation extends Component {
   // takes in an object of error messages and returns html elements to display them
   showError(msg, idx) {
     return (
-      <Error msg={msg} key={idx}/>
+      <Error msg={msg} key={idx} onClose={() => {}}/>
     )
   }
 
@@ -86,24 +85,43 @@ class Confirmation extends Component {
       return (
         // MESSAGE SAYING YOU'RE GOOD TO GO TO LOGIN,
         // PROBABLY A NAVLINK OR SOMETHING TO LOGIN PAGE
-        <div>
-          <p>Registration successful! Click the link below to return to the login page.</p>
-          <NavLink activeClassName="navLink" to="/">Login</NavLink>
-        </div>
+        <React.Fragment>
+          <h5 className="card-header conf-header">You're All Set!</h5>
+          <div className='card-body text-center'>
+            <p>
+              Your registration was successful! Click below to return to the login page.
+            </p>
+            <div
+              className="navLink"
+              onClick={() => {this.props.history.push("/")}}
+            >
+              Back to login
+            </div>
+            {/* <NavLink activeClassName="navLink" to="/">Back to login</NavLink> */}
+          </div>
+        </React.Fragment>
+      )
+    } else {
+      return (
+        <React.Fragment>
+          <h5 className="card-header conf-header-error">Oh No :(</h5>
+          <div className="card-body text-center errors-container">
+            {this.displayErrors()}
+          </div>
+        </React.Fragment>
       )
     }
   }
 
   render() {
     return (
-      <div>
-        <div className="errors-container">
-          {this.displayErrors()}
+      <div className='conf-page'>
+        <div className='card m-5'>
+          {this.renderDisplay()}              
         </div>
-        {this.renderDisplay()}
       </div>
     )
   }
 }
 
-export default Confirmation
+export default withRouter(Confirmation)

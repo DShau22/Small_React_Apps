@@ -3,7 +3,9 @@
 }
 
 .header {
-  background-image: linear-gradient(to bottom right, #e6f3ff, #cce6ff);
+  background-image: linear-gradient(to bottom right, #6f9dfa, #e6e6ff);
+  color: white;
+  font-size: 20pt;
   height: 85px;
   text-align: center;
 }

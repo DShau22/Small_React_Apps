@@ -25,6 +25,43 @@ a {
   text-decoration: none;
 }
 
+.conf-page {
+  height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.conf-page .card {
+  min-width: 50%;
+}
+.conf-page .conf-header-error {
+  color: white;
+  background-image: linear-gradient(160deg, #ff0844 0%, #ffb199 100%);
+  text-align: center;
+}
+.conf-page .conf-header {
+  color: white;
+  background-image: linear-gradient(170deg, #e0c3fc 0%, #8ec5fc 100%);
+  text-align: center;
+}
+.conf-page .card-body {
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.conf-page .card-body .navLink {
+  width: 50%;
+  color: white;
+  border-radius: 5px;
+  background-image: linear-gradient(170deg, #e0c3fc 0%, #8ec5fc 100%);
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
 input[type=text], input[type=password],
 .react-inputs-validation__textbox__wrapper___3tnXv.input {
   border: none;

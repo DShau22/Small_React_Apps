@@ -3,7 +3,7 @@ import {
   NavLink,
   withRouter
 } from "react-router-dom";
-import "./sidebar.css"
+import "./css/sidebar.css"
 import SpaContext from '../Context';
 
 const imgAlt = "../profile/default_profile.png"
