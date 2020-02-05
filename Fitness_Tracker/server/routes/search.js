@@ -5,8 +5,7 @@ const router = express.Router()
 
 // imports for mongo
 const mongoConfig = require("../database/MongoConfig")
-const {User, UserSession} = mongoConfig
-const mongoose = require('mongoose')
+const { User } = mongoConfig
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 

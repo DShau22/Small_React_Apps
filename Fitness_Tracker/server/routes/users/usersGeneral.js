@@ -3,21 +3,11 @@ const extractToken = require("../extract.js")
 const express = require('express')
 const router = express.Router()
 
-// for profile picture uploads. Cloudinary stuff with multer for body parsing
-const dotenv = require('dotenv')
-const multer = require("multer")
-const cloudinary = require("cloudinary")
-const cloudinaryStorage = require("multer-storage-cloudinary")
-const md5File = require("md5-file")
-var formidable = require('formidable')
-
 // imports for mongo
 const mongoConfig = require("../../database/MongoConfig")
-const { User, Jump, Run, Swim } = mongoConfig
-const mongoose = require('mongoose')
+const { User } = mongoConfig
 
 // other modules and constants
-const async = require("async")
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 

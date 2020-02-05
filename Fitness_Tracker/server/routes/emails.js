@@ -1,7 +1,4 @@
-const queryString = require('query-string')
-const fs = require("fs");
 const express = require('express')
-const extractToken = require("./extract")
 const router = express.Router()
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer");
@@ -11,12 +8,10 @@ dotenv.config()
 
 const mongoConfig = require("../database/MongoConfig")
 const { User } = mongoConfig
-const mongoose = require('mongoose')
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 const async = require("async")
 const date = new Date()
-const confRedirectRoute = "http://localhost:3000/confirmation?"
 
 // returns the hashed output given a password input with bcrypt
 function hashPass(password) {
