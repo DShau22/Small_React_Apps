@@ -121,6 +121,7 @@ export default function EditProfileFunc(props) {
   const { unitSystem } = context.settings
   weight = weightConvert(unitSystem, weight)
   height = heightConvert(unitSystem, height)
+  console.log(context)
   if (context.mounted) {
     return (
       <div className="edit-profile-container">
@@ -132,9 +133,9 @@ export default function EditProfileFunc(props) {
             updateAge: age,
             updateLocation: location,
             updateGender: gender,
-            updateHeightCm: unitSystem === 'metric' ? height : '',
+            updateHeightCm: unitSystem === 'metric' ? height.split(' ')[0] : '',
             updateHeightIn: unitSystem === 'english' ? englishHeight(height).split(' ')[0] : '', // num ft num in
-            updateHeightFt: unitSystem === 'english' ? englishHeight(height).split(' ')[2] : '',
+            updateHeightFt: unitSystem === 'english' ? englishHeight(height).split(' ')[2] : '', // num ft num in
             updateWeight: weight ? weight.split(' ')[0] : '' // weight format is 'weight units'
           }}
           validationSchema={validationSchema}
@@ -160,20 +161,18 @@ export default function EditProfileFunc(props) {
                   Upload an Image
                 </label>
               </div>
-              {textField('First Name', 'updateFirstName', 'field', errors.updateFirstName, touched.updateFirstName)}
-              {textField('Last Name', 'updateLastName', 'field', errors.updateLastName, touched.updateLastName)}
+              {textField('First Name', 'text', 'updateFirstName', 'field', errors.updateFirstName, touched.updateFirstName)}
+              {textField('Last Name', 'text', 'updateLastName', 'field', errors.updateLastName, touched.updateLastName)}
               {textArea('Bio', 'updateBio', 'field', errors.updateBio, touched.updateBio)}
-              {textField('Gender', 'updateGender', 'field', errors.updateGender, touched.updateGender)}
-              {textField('Age', 'updateAge', 'field', errors.updateAge, touched.updateAge)}
-              {textField('Location', 'updateLocation', 'field', errors.updateLocation, touched.updateLocation)}
-              {weightDisplay('Weight', 'updateWeight', 'field', unitSystem, errors, touched.updateWeight)}
+              {textField('Gender', 'text', 'updateGender', 'field', errors.updateGender, touched.updateGender)}
+              {textField('Age', 'text', 'updateAge', 'field', errors.updateAge, touched.updateAge)}
+              {textField('Location', 'text', 'updateLocation', 'field', errors.updateLocation, touched.updateLocation)}
+              {weightDisplay('updateWeight', 'field', unitSystem, errors)}
               {heightDisplay(
-                'Height',
-                'updateHeight',
+                'updateHeight', //revisit how this is implemented cuz there could be 3 different things
                 'field',
                 unitSystem,
                 errors,
-                touched.updateHeightIn || touched.updateHeightFt || touched.updateHeightCm 
               )}
               <div className='submit-container'>
                 <input type="submit" className="button" value="Update Profile" id="update-button"/>
