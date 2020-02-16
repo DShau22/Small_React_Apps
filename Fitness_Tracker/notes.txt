@@ -1,0 +1,2 @@
+gcloud functions deploy athlos-server --runtime nodejs8 --trigger-http --entry-point app
+https://us-central1-athlos-live.cloudfunctions.net/athlos-server
