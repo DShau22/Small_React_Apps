@@ -73,7 +73,7 @@ class Header extends Component {
       settings: {},
       isLoading: false,
       logout: false,
-      socket: null,
+      // socket: null,
       notification: null,
       mounted: false,
       rootURL: this.props.match.url,
@@ -96,74 +96,74 @@ class Header extends Component {
       },
     }
     this.logout = this.logout.bind(this);
-    this.setUpSocket = this.setUpSocket.bind(this)
+    // this.setUpSocket = this.setUpSocket.bind(this)
     this.getActivityJson = this.getActivityJson.bind(this)
     this.addFriendRows = this.addFriendRows.bind(this)
     this.renderHeader = this.renderHeader.bind(this)
     this.updateUserInfo = this.updateUserInfo.bind(this)
   }
 
-  setUpSocket() {
-    var prom = new Promise(async (resolve, reject) => {
-      // send request to get decoded user ID
-      var userToken = getToken()
-      var headers = new Headers()
-      headers.append("authorization", `Bearer ${userToken}`)
-      var response = await fetch(serverURL + getID, { method: "GET", headers })
-      var json = await response.json()
-      var { userID } = json
+  // setUpSocket() {
+  //   var prom = new Promise(async (resolve, reject) => {
+  //     // send request to get decoded user ID
+  //     var userToken = getToken()
+  //     var headers = new Headers()
+  //     headers.append("authorization", `Bearer ${userToken}`)
+  //     var response = await fetch(serverURL + getID, { method: "GET", headers })
+  //     var json = await response.json()
+  //     var { userID } = json
 
-      // establish socket connection and send socket ID, userID
-      var data = { userID }
-      var connectionOptions = {
-        'sync disconnect on unload':false
-      }
-      var socket = io.connect(serverURL, connectionOptions)
+  //     // establish socket connection and send socket ID, userID
+  //     var data = { userID }
+  //     var connectionOptions = {
+  //       'sync disconnect on unload':false
+  //     }
+  //     var socket = io.connect(serverURL, connectionOptions)
 
-      // send userID after socket connects
-      socket.on("connect", () => {
-        socket.emit("sendUserID", data)
-        // put socket is session storage
-      })
+  //     // send userID after socket connects
+  //     socket.on("connect", () => {
+  //       socket.emit("sendUserID", data)
+  //       // put socket is session storage
+  //     })
 
-      socket.on('receiveFriendRequest', (data) => {
-        alert("got friend request!")
-        console.log(data)
-        this.setState({
-          notification: "!"
-        })
-      })
+  //     socket.on('receiveFriendRequest', (data) => {
+  //       alert("got friend request!")
+  //       console.log(data)
+  //       this.setState({
+  //         notification: "!"
+  //       })
+  //     })
 
-      socket.on("newFriend", (data) => {
-        alert("got new friend")
-        console.log(data)
-        this.setState({
-          notification: "***"
-        })
-      })
+  //     socket.on("newFriend", (data) => {
+  //       alert("got new friend")
+  //       console.log(data)
+  //       this.setState({
+  //         notification: "***"
+  //       })
+  //     })
 
-      socket.on("logoutClient", (data) => {
-        // data should contain the socketID that did the logging out
-        // socket should have also been disconnected by the server
-        var { logoutSocketID } = data
-        console.log(logoutSocketID)
-        if (socket.id !== logoutSocketID) {
-          alert("You have been logged out from another tab or browser")
-        }
-        // remove user token
-        removeFromLocalStorage(storageKey)
-        removeFromSessionStorage(storageKey)
-        // remove socket id from session storage
-        this.setState({
-          isLoading: true,
-          logout: true,
-        });
-        this.props.history.push("/")
-      })
-      resolve(socket)
-    })
-    return prom
-  }
+  //     socket.on("logoutClient", (data) => {
+  //       // data should contain the socketID that did the logging out
+  //       // socket should have also been disconnected by the server
+  //       var { logoutSocketID } = data
+  //       console.log(logoutSocketID)
+  //       if (socket.id !== logoutSocketID) {
+  //         alert("You have been logged out from another tab or browser")
+  //       }
+  //       // remove user token
+  //       removeFromLocalStorage(storageKey)
+  //       removeFromSessionStorage(storageKey)
+  //       // remove socket id from session storage
+  //       this.setState({
+  //         isLoading: true,
+  //         logout: true,
+  //       });
+  //       this.props.history.push("/")
+  //     })
+  //     resolve(socket)
+  //   })
+  //   return prom
+  // }
 
   async getActivityJson(activity) {
     // CHANGE TO GET THE FIRST 10-50 ENTRIES MAYBE
@@ -229,7 +229,7 @@ class Header extends Component {
     }
 
     // set up the web socket connection to server
-    var socket = await this.setUpSocket()
+    // var socket = await this.setUpSocket()
 
     // get the user's information here from database
     // make request to server to user information and set state
@@ -256,7 +256,7 @@ class Header extends Component {
       // Shouldn't be a problem thoughsince the socket field is only updated here and users can't see it.
       this.setState(prevState => ({
         ...userJson,
-        socket,
+        // socket,
         mounted: true,
         friendTableRows,
         jumpJson: {
@@ -284,13 +284,20 @@ class Header extends Component {
 
   logout() {
     console.log("logging out...")
-    var { socket } = this.state
-    console.log(socket)
-
+    // var { socket } = this.state
+    // console.log(socket)
+    removeFromLocalStorage(storageKey)
+    removeFromSessionStorage(storageKey)
+    // remove socket id from session storage
+    this.setState({
+      isLoading: true,
+      logout: true,
+    });
+    this.props.history.push("/")
     // emit logout event to server
-    var userToken = getToken()
-    var data = { userToken }
-    socket.emit("logoutServer", data)
+    // var userToken = getToken()
+    // var data = { userToken }
+    // socket.emit("logoutServer", data)
   }
 
   renderHeader() {
@@ -367,7 +374,7 @@ class Header extends Component {
     var userJson = await res.json()
     this.setState(prevState => ({
       ...userJson,
-      socket: prevState.socket,
+      // socket: prevState.socket,
       mounted: true,
       friendTableRows: prevState.friendTableRows,
       jumpJson: prevState.jumpJson,
