@@ -35,7 +35,8 @@ class SearchProfile extends Component {
       weight: '',
       totals: {},
       bests: {},
-      friends: []
+      friends: [],
+      profilePicture: {},
     }
     this.getBasicInfo = this.getBasicInfo.bind(this)
     this.getFriends = this.getFriends.bind(this)
