@@ -20,6 +20,7 @@ const { asyncMiddleware } = require('./utils/asyncMiddleware')
 
 // web sockets
 const socket = require("socket.io")
+socket.set('origins', '*:*')
 
 const jwt = require("jsonwebtoken")
 
