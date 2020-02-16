@@ -91,7 +91,7 @@ class Upload extends Component {
     postFormData.append("id", "id") //change this to be user specific during account login steps
     postFormData.append("prodCode", "29shf92ka0d91201asd")
 
-    req.open("POST", "http://localhost:8080/upload");
+    req.open("POST", "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/upload");
     req.send(postFormData);
    });
   }

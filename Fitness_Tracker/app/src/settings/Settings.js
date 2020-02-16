@@ -33,7 +33,7 @@ const basicInfoID = 'info'
 const swimLapID = 'swim lap'
 const unitSystemID = 'unit system'
 
-const settingsURL = 'http://localhost:8080/updateSettings'
+const settingsURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/updateSettings'
 
 class Settings extends Component {
   constructor(props) {

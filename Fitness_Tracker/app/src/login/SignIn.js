@@ -4,7 +4,7 @@ import 'react-inputs-validation/lib/react-inputs-validation.min.css';
 import { Textbox } from 'react-inputs-validation';
 import validator from 'validator';
 
-const forgotUrl = 'http://localhost:8080/forgotPassword'
+const forgotUrl = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/forgotPassword'
 
 class SignIn extends Component {
   constructor(props) {

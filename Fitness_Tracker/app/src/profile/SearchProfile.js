@@ -12,10 +12,10 @@ import ErrorAlert from "../messages/Error"
 import './css/userProfile.css'
 import { getToken } from "../utils/storage"
 
-const getSearchUserUrl = "http://localhost:8080/getSearchUser"
-const getBasicInfoURL = "http://localhost:8080/getSearchUserBasicInfo"
-const getFriendsURL = "http://localhost:8080/getSearchUserFriends"
-const getFitnessURL = "http://localhost:8080/getSearchUserFitness"
+const getSearchUserUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUser"
+const getBasicInfoURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserBasicInfo"
+const getFriendsURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserFriends"
+const getFitnessURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserFitness"
 
 const imgAlt = "./default_profile.png"
 

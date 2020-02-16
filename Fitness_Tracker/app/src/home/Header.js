@@ -44,7 +44,7 @@ import {
 import EditProfileFunc from "../profile/EditProfileFunc";
 
 // server url
-const serverURL = "http://localhost:8080"
+const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
 const getUserInfoURL = serverURL + "/getUserInfo"
 const getID = "/tokenToID"
 const defaultProfile = "./profile/default_profile.png"
@@ -53,7 +53,7 @@ const root = "/app"
 const imgAlt = "../profile/default_profile.png"
 
 const sidebarMediaQuery = '600px'
-
+const dataURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/data'
 class Header extends Component {
   constructor(props) {
     super(props)
@@ -172,7 +172,7 @@ class Header extends Component {
     headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", activity)
 
-    var res = await fetch('http://localhost:8080/data', {
+    var res = await fetch(dataURL, {
       method: "GET",
       headers: headers,
     })

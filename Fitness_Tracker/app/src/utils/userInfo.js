@@ -1,6 +1,6 @@
-const getBestsURL = "http://localhost:8080/getBests"
-const getProfileURL = "http://localhost:8080/getProfilePic"
-const getUsernameURL = "http://localhost:8080/getUsername"
+const getBestsURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getBests"
+const getProfileURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getProfilePic"
+const getUsernameURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getUsername"
 
 /**
  * gets the bests of a user given their id

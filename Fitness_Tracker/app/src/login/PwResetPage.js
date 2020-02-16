@@ -7,8 +7,8 @@ import {
 
 import { makeID } from "../utils/keyGenerator"
 
-const confirmPwRestUrl = "http://localhost:8080/confPasswordReset"
-const verifyUrl = "http://localhost:8080/api/account/verify"
+const confirmPwRestUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/confPasswordReset"
+const verifyUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/api/account/verify"
 
 const storageKey = makeID(8)
 

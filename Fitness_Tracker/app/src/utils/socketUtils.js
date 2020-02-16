@@ -8,7 +8,7 @@ import {
 } from './storage';
 
 // server url
-const serverURL = "http://localhost:8080"
+const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
 const getID = "/tokenToID"
 
 function setUpSocket() {

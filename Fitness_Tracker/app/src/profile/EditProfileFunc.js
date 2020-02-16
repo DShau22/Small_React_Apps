@@ -7,7 +7,7 @@ import "./css/editProfile.css"
 import { weightConvert, heightConvert, englishHeight } from "../utils/unitConverter"
 import { textField, textArea, weightDisplay, heightDisplay } from '../generic/fieldComponents'
 // server url
-const serverURL = "http://localhost:8080"
+const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
 const updateProfileURL = `${serverURL}/updateProfile`
 const checkDuplicateURL = `${serverURL}/checkDuplicatePic`
 const uploadPicURL = `${serverURL}/uploadProfilePic`

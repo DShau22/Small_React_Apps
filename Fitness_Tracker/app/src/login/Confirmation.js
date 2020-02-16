@@ -29,7 +29,7 @@ class Confirmation extends Component {
     var emailToken = queryValues.token
     console.log(queryValues)
 
-    const confirmUrl = `http://localhost:8080/confirmation?token=${emailToken}`
+    const confirmUrl = `https://us-central1-athlos-live.cloudfunctions.net/athlos-server/confirmation?token=${emailToken}`
     // send request to server to verify confirmation, and add registration to database
     fetch(confirmUrl, {
       method: "GET"

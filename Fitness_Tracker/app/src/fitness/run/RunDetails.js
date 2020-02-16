@@ -4,6 +4,8 @@ import DateBar from "../charts/DateBar"
 import Past from "../charts/Past"
 import SpaContext from "../../Context"
 import {getToken, localStorageKey} from "../../utils/storage"
+const dataURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/data'
+
 class RunDetails extends Component {
   constructor(props) {
     super(props)
@@ -26,7 +28,7 @@ class RunDetails extends Component {
     headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", "run")
 
-    fetch('http://localhost:8080/data', {
+    fetch(dataURL, {
       method: "GET",
       headers: headers,
     })
