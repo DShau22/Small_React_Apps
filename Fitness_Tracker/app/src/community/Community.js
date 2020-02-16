@@ -13,9 +13,8 @@ import Friends from "./friends/Friends"
 
 import SpaContext from '../Context'
 import "./style/css/Community.css"
-const searchURL = "http://localhost:8080/searchUser"
+const searchURL = "http:/localhost:8080//searchUser"
 const friendReqURL = "http://localhost:8080/sendFriendReq"
-// const getUserInfoURL = "http://localhost:8080/getUserInfo"
 const tokenToID = "http://localhost:8080/tokenToID"
 const acceptFriendURL = "http://localhost:8080/acceptRequest"
 const imgAlt = "default"

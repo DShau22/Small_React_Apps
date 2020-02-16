@@ -10,6 +10,8 @@ import {
   localStorageKey
 } from '../../utils/storage'
 
+const dataURL = 'http://localhost:8080/data'
+
 class JumpDetails extends Component {
   constructor(props) {
     super(props)
@@ -33,7 +35,7 @@ class JumpDetails extends Component {
     headers.append("authorization", `Bearer ${token}`)
     headers.append("activity", "jump")
 
-    fetch('http://localhost:8080/data', {
+    fetch(dataURL, {
       method: "GET",
       headers: headers,
     })
