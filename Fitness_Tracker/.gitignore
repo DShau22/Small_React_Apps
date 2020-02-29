@@ -5,9 +5,13 @@
 /.pnp
 .pnp.js
 
+# netlify
+app/.netlify
+
 # security and IP
 server/.env
 server/fileReaders/reader.js
+server/athlos-live-beta-2460851de8dc.json
 
 # testing
 /coverage

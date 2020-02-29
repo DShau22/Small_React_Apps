@@ -1,7 +1,6 @@
 
   // MAKE NOTE TO MAYBE SCRAP ASYNC JS LIBRARY CODE LATER
   // LOOKS UGLY AF TO MAINTAIN
-
 const mongoConfig = require('../database/MongoConfig');
 const { User } = mongoConfig
 const express = require('express')
@@ -129,11 +128,17 @@ router.post('/api/account/signup', function(req, res, next) {
       // 4. send email
       // send the confirmation email
       function(emailToken, callback) {
+        console.log(process.env.CLIENT_ID)
+        console.log(process.env.PRIVATE_KEY)
         var transporter = nodemailer.createTransport({
-          service: 'Gmail',
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
           auth: {
-            user: "blueshushi.shau@gmail.com",
-            pass: process.env.EMAIL_PASSWORD,
+            type: 'OAuth2',
+            user: process.env.EMAIL,
+            serviceClient: process.env.CLIENT_ID,
+            privateKey: process.env.PRIVATE_KEY
           }
         })
         const confRedirect = `http://localhost:3000/confirmation?token=${emailToken}`

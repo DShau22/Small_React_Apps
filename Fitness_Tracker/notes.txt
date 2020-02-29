@@ -1,2 +1,6 @@
+run gcloud init to create new configs (this is what was run to add athlos-live account instead of berkeley account)
+gcloud config list => lists some of the settings of the current configuration
+
 gcloud functions deploy athlos-server --runtime nodejs8 --trigger-http --entry-point app
-https://us-central1-athlos-live.cloudfunctions.net/athlos-server
+davidshau22@berkeley.edu endpoint: https://us-central1-athlos-live.cloudfunctions.net/athlos-server
+athlos-team endpoint: https://us-central1-athlos-live-beta.cloudfunctions.net/athlos-server
