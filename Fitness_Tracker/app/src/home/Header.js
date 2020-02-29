@@ -44,7 +44,7 @@ import {
 import EditProfileFunc from "../profile/EditProfileFunc";
 
 // server url
-const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
+const serverURL = "https://us-central1-.cloudfunctions.net/athlos-server"
 const getUserInfoURL = serverURL + "/getUserInfo"
 const getID = "/tokenToID"
 const defaultProfile = "./profile/default_profile.png"
@@ -53,7 +53,8 @@ const root = "/app"
 const imgAlt = "../profile/default_profile.png"
 
 const sidebarMediaQuery = '600px'
-const dataURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/data'
+import ENDPOINTS from "../endpoints"
+const dataURL = ENDPOINTS.data
 class Header extends Component {
   constructor(props) {
     super(props)

@@ -6,9 +6,9 @@ import {
 } from '../utils/storage';
 
 import { makeID } from "../utils/keyGenerator"
-
-const confirmPwRestUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/confPasswordReset"
-const verifyUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/api/account/verify"
+import ENDPOINTS from "../endpoints"
+const confirmPwRestUrl = ENDPOINTS.passwordReset
+const verifyUrl = ENDPOINTS.emailVerify
 
 const storageKey = makeID(8)
 

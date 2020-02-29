@@ -6,11 +6,10 @@ import * as Yup from 'yup';
 import "./css/editProfile.css"
 import { weightConvert, heightConvert, englishHeight } from "../utils/unitConverter"
 import { textField, textArea, weightDisplay, heightDisplay } from '../generic/fieldComponents'
-// server url
-const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
-const updateProfileURL = `${serverURL}/updateProfile`
-const checkDuplicateURL = `${serverURL}/checkDuplicatePic`
-const uploadPicURL = `${serverURL}/uploadProfilePic`
+import ENDPOINTS from "../endpoints"
+const updateProfileURL = ENDPOINTS.updateProfile
+const checkDuplicateURL = ENDPOINTS.checkDuplicatePic
+const uploadPicURL = ENDPOINTS.uploadProfilePic
 const imgAlt = "./default_profile.png"
 
 export default function EditProfileFunc(props) {

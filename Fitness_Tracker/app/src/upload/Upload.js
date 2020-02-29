@@ -9,11 +9,8 @@ import {
   Redirect,
   Link
 } from "react-router-dom";
-import Graph from "../graph/Graph"
-import Home from "../Home"
-import Button from '@material-ui/core/Button';
-
-
+import ENDPOINTS from "../endpoints"
+const uploadURL = ENDPOINTS.upload
 class Upload extends Component {
   constructor(props) {
     super(props);
@@ -91,7 +88,7 @@ class Upload extends Component {
     postFormData.append("id", "id") //change this to be user specific during account login steps
     postFormData.append("prodCode", "29shf92ka0d91201asd")
 
-    req.open("POST", "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/upload");
+    req.open("POST", uploadURL);
     req.send(postFormData);
    });
   }

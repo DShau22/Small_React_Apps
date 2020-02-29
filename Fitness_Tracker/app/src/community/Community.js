@@ -13,11 +13,12 @@ import Friends from "./friends/Friends"
 
 import SpaContext from '../Context'
 import "./style/css/Community.css"
-const searchURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/searchUser"
-const friendReqURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/sendFriendReq"
+import ENDPOINTS from "../endpoints"
+const searchURL = ENDPOINTS.searchUser
+const friendReqURL = ENDPOINTS.sendFriendReq
 // const getUserInfoURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getUserInfo"
-const tokenToID = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/tokenToID"
-const acceptFriendURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/acceptRequest"
+const tokenToID = ENDPOINTS.tokenToID
+const acceptFriendURL = ENDPOINTS.acceptFriendReq
 const imgAlt = "default"
 class Community extends Component {
   // used to keep track of mounting lifecycle

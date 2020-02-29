@@ -4,7 +4,8 @@ import {
   getFromSessionStorage,
   storageKey,
 } from '../utils/storage';
-const updateSettingsURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/updateSettings"
+import ENDPOINTS from "../endpoints"
+const updateSettingsURL = ENDPOINTS.updateSettings
 
 function getToken() {
   var lsUserToken = getFromLocalStorage(storageKey)

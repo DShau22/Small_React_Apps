@@ -33,7 +33,8 @@ const basicInfoID = 'info'
 const swimLapID = 'swim lap'
 const unitSystemID = 'unit system'
 
-const settingsURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/updateSettings'
+import ENDPOINTS from '../endpoints'
+const settingsURL = ENDPOINTS.updateSettings
 
 class Settings extends Component {
   constructor(props) {

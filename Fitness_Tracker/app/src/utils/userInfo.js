@@ -1,6 +1,8 @@
-const getBestsURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getBests"
-const getProfileURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getProfilePic"
-const getUsernameURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getUsername"
+import ENDPOINTS from "../endpoints"
+
+const getBestsURL = ENDPOINTS.getBests
+const getProfileURL = ENDPOINTS.getProfilePic
+const getUsernameURL = ENDPOINTS.getUsername
 
 /**
  * gets the bests of a user given their id

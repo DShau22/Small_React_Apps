@@ -11,11 +11,11 @@ import { withRouter } from 'react-router-dom';
 import ErrorAlert from "../messages/Error"
 import './css/userProfile.css'
 import { getToken } from "../utils/storage"
-
-const getSearchUserUrl = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUser"
-const getBasicInfoURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserBasicInfo"
-const getFriendsURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserFriends"
-const getFitnessURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getSearchUserFitness"
+import ENDPOINTS from '../endpoints'
+const getSearchUserUrl = ENDPOINTS.getSearchUser
+const getBasicInfoURL = ENDPOINTS.getSearchUserBasicInfo
+const getFriendsURL = ENDPOINTS.getSearchUserFriends
+const getFitnessURL = ENDPOINTS.getSearchUserFitness
 
 const imgAlt = "./default_profile.png"
 

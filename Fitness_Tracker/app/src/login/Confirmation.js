@@ -12,6 +12,7 @@ import {
 } from '../utils/storage';
 import Error from "../messages/Error"
 import "./style.css"
+import ENDPOINTS from "../endpoints"
 
 class Confirmation extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class Confirmation extends Component {
     var emailToken = queryValues.token
     console.log(queryValues)
 
-    const confirmUrl = `https://us-central1-athlos-live.cloudfunctions.net/athlos-server/confirmation?token=${emailToken}`
+    const confirmUrl = `${ENDPOINTS.confirm}?token=${emailToken}`
     // send request to server to verify confirmation, and add registration to database
     fetch(confirmUrl, {
       method: "GET"

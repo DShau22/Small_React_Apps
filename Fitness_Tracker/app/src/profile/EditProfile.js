@@ -7,11 +7,11 @@ import {
 import SpaContext from '../Context';
 import { useFormik } from 'formik';
 // server url
-const serverURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server"
-const getUserInfoURL = `${serverURL}/getUserInfo`
-const updateProfileURL = `${serverURL}/updateProfile`
-const checkDuplicateURL = `${serverURL}/checkDuplicatePic`
-const uploadPicURL = `${serverURL}/uploadProfilePic`
+import ENDPOINTS from "../endpoints"
+const getUserInfoURL = ENDPOINTS.getUserInfo
+const updateProfileURL = ENDPOINTS.updateProfile
+const checkDuplicateURL = ENDPOINTS.checkDuplicatePic
+const uploadPicURL = ENDPOINTS.uploadProfilePic
 
 const imgAlt = "./default_profile.png"
 class EditProfile extends Component {

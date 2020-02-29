@@ -4,7 +4,8 @@ import DateBar from "../charts/DateBar"
 import Past from "../charts/Past"
 import SpaContext from "../../Context"
 import {getToken, localStorageKey} from "../../utils/storage"
-const dataURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/data'
+import ENDPOINTS from "../../endpoints"
+const dataURL = ENDPOINTS.data
 
 class RunDetails extends Component {
   constructor(props) {

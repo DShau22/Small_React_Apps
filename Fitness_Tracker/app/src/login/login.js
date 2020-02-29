@@ -18,9 +18,11 @@ import Success from "../messages/Success"
 
 import 'react-inputs-validation/lib/react-inputs-validation.min.css';
 
-const verifyURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/api/account/verify"
-const signUpURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/api/account/signup"
-const signInURL = 'https://us-central1-athlos-live.cloudfunctions.net/athlos-server/api/account/signin'
+import ENDPOINTS from '../endpoints'
+
+const verifyURL = ENDPOINTS.emailVerify
+const signUpURL = ENDPOINTS.signUp
+const signInURL = ENDPOINTS.signIn
 
 // stores token in localstorage if user clicked remember me
 // else stores it in session storage

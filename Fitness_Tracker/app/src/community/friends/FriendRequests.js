@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// const friendReqURL = "https://us-central1-athlos-live.cloudfunctions.net/athlos-server/getFriendReqs"
+// const friendReqURL = "https://us-central1-.cloudfunctions.net/athlos-server/getFriendReqs"
 import {
   getBests,
   getProfile,
