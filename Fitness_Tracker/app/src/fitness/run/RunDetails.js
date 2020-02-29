@@ -5,7 +5,7 @@ import Past from "../charts/Past"
 import SpaContext from "../../Context"
 import {getToken, localStorageKey} from "../../utils/storage"
 import ENDPOINTS from "../../endpoints"
-const dataURL = ENDPOINTS.data
+const dataURL = ENDPOINTS.getData
 
 class RunDetails extends Component {
   constructor(props) {

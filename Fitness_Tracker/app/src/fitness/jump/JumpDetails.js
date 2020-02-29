@@ -10,7 +10,7 @@ import {
   localStorageKey
 } from '../../utils/storage'
 import ENDPOINTS from "../../endpoints"
-const dataURL = ENDPOINTS.data
+const dataURL = ENDPOINTS.getData
 
 class JumpDetails extends Component {
   constructor(props) {

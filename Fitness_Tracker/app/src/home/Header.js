@@ -42,19 +42,16 @@ import {
   storageKey,
 } from '../utils/storage';
 import EditProfileFunc from "../profile/EditProfileFunc";
-
+import ENDPOINTS from "../endpoints"
 // server url
-const serverURL = "https://us-central1-.cloudfunctions.net/athlos-server"
-const getUserInfoURL = serverURL + "/getUserInfo"
-const getID = "/tokenToID"
+const getUserInfoURL = ENDPOINTS.getUserInfo
 const defaultProfile = "./profile/default_profile.png"
 const root = "/app"
 
 const imgAlt = "../profile/default_profile.png"
 
 const sidebarMediaQuery = '600px'
-import ENDPOINTS from "../endpoints"
-const dataURL = ENDPOINTS.data
+const dataURL = ENDPOINTS.getData
 class Header extends Component {
   constructor(props) {
     super(props)
@@ -110,7 +107,7 @@ class Header extends Component {
   //     var userToken = getToken()
   //     var headers = new Headers()
   //     headers.append("authorization", `Bearer ${userToken}`)
-  //     var response = await fetch(serverURL + getID, { method: "GET", headers })
+  //     var response = await fetch(ENDPOINTS.tokenToID, { method: "GET", headers })
   //     var json = await response.json()
   //     var { userID } = json
 
@@ -193,7 +190,6 @@ class Header extends Component {
       if (i === numFriendsDisplay - 1) { break }
       let { id, firstName, lastName } = friends[i]
       let [bests, profileUrl, username] = await Promise.all([getBests(id), getProfile(id), getUsername(id)])
-      console.log(username)
       tableRows.push(
         <FriendDisplay 
           key={id}
@@ -210,7 +206,6 @@ class Header extends Component {
         />
       )
     }
-    console.log(tableRows)
     return tableRows
   }
 
@@ -236,19 +231,30 @@ class Header extends Component {
     // make request to server to user information and set state
     var headers = new Headers()
     headers.append("authorization", `Bearer ${userToken}`)
-
-    var res = await fetch(getUserInfoURL, { method: "GET", headers })
-    var userJson = await res.json()
+    try {
+      var res = await fetch(getUserInfoURL, { method: "GET", headers })
+      var userJson = await res.json()
+    } catch(e) {
+      console.error(e)
+    }
     console.log(userJson)
 
     var { numFriendsDisplay } = this.state
-    var friendTableRows = await this.addFriendRows(userJson.friends, numFriendsDisplay)
+    try {
+      var friendTableRows = await this.addFriendRows(userJson.friends, numFriendsDisplay)
+    } catch(e) {
+      console.error(e)
+    }
 
     // get user's fitness data for jumps, runs, swims
     // MAKE AWAIT PROMISES.ALL LATER
-    var jumpsTracked = await this.getActivityJson("jump")
-    var swimsTracked = await this.getActivityJson("swim")
-    var runsTracked = await this.getActivityJson("run")
+    try {
+      var jumpsTracked = await this.getActivityJson("jump")
+      var swimsTracked = await this.getActivityJson("swim")
+      var runsTracked = await this.getActivityJson("run")
+    } catch(e) {
+      console.error(e)
+    }
     var gotAllInfo = userJson.success && jumpsTracked.success && swimsTracked.success && runsTracked.success
     if (gotAllInfo && this._isMounted) {
       // one bug that could come up is if another setState occurred outside this function before
@@ -303,7 +309,6 @@ class Header extends Component {
 
   renderHeader() {
     const { match } = this.props
-    console.log(this.props)
     // if there is a token in session or local storage...
     if (getToken()) {
       return (

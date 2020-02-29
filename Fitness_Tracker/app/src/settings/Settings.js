@@ -19,21 +19,19 @@ import PoolLengthPopup from "./PoolLengthPopup"
 
 import Success from "../messages/Success"
 import ErrorAlert from "../messages/Error"
+import ENDPOINTS from '../endpoints'
 
 const friendsListHelpMsg = 'Set who can see your friends list on you profile'
 const fitnessHelpMsg = 'Set who can see your fitness stats such as average number of steps taken per day, calories burned, etc.'
 const basicInfoHelpMsg = 'Set who can see descriptions about you such as your bio, height, weight, etc.'
 const unitSystemHelpMsg = 'Set what unit system you would prefer to view measurements in'
 const lapSwimHelpMsg = 'Set the default length of your lap swim pool. You can change this individually for each workout'
-
 // vars for checking which dropdown menu to display
 const friendsListID = 'friends list'
 const fitnessID = 'fitness'
 const basicInfoID = 'info'
 const swimLapID = 'swim lap'
 const unitSystemID = 'unit system'
-
-import ENDPOINTS from '../endpoints'
 const settingsURL = ENDPOINTS.updateSettings
 
 class Settings extends Component {
