@@ -1,16 +1,13 @@
-
-  // MAKE NOTE TO MAYBE SCRAP ASYNC JS LIBRARY CODE LATER
-  // LOOKS UGLY AF TO MAINTAIN
 const mongoConfig = require('../database/MongoConfig');
 const { User } = mongoConfig
 const express = require('express')
 const router = express.Router()
-const date = new Date()
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 const expiresIn = "12h"
-
+const { ENDPOINTS } = require('../endpoints')
+const confirmationPage = 'https://athloslive.com/confirmation'
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -141,13 +138,13 @@ router.post('/api/account/signup', function(req, res, next) {
             privateKey: process.env.PRIVATE_KEY
           }
         })
-        const confRedirect = `http://localhost:3000/confirmation?token=${emailToken}`
+        const confRedirect = `${confirmationPage}?token=${emailToken}`
         var mailOptions = {
-          from: "Test",
-          to: "davidshau22@berkeley.edu",
-          subject: "nodemailer sending",
-          html: `Please click this link to finish your registration:
-          <a href=${confRedirect}>clickMe</a>`
+          from: "The Athlos Team",
+          to: `${email}`,
+          subject: "Your Athlos Account",
+          html: `Hello! \n Please click this link to finish your account registration:
+          <a href=${confRedirect}>finish</a>`
         }
         //callback should contain err, result
         console.log("sending email...")
@@ -271,6 +268,11 @@ router.post('/api/account/signin', (req, res, next) => {
   User.findOne({email: email})
     .then(function(user) {
       if (user) {
+        // first check if they're even registered
+        if (!user.registered) {
+          failResBody.messages.push("You haven't finished registering yet! Check your inbox or spam for a confirmation email from the Athlos team!");
+          return res.send(failResBody);
+        }
         // wrong password entered
         if (!user.validPassword(password)) {
           failResBody.messages.push('Error: Incorrect Password')
@@ -298,7 +300,7 @@ router.post('/api/account/signin', (req, res, next) => {
         return res.send(failResBody)
       }
     })
-    .catch(function(err){
+    .catch(function(err) {
       if (err) throw err
     })
 })
