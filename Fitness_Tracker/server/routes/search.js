@@ -43,7 +43,7 @@ router.post("/searchUser", (req, res) => {
         //     user.isFriend = false
         //   })
         // })
-        return res.send({ users })
+        return res.send({ success: true, users })
       })
   })
 })

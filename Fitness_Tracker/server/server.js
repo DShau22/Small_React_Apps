@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
-
+const fs = require('fs')
 // for env vars
 const dotenv = require('dotenv')
 dotenv.config()
@@ -79,6 +79,11 @@ app.post('/upload', asyncMiddleware(upload))
 //   })
 // }
 
+const httpsOptions = {
+  key: fs.readFileSync('./security/localhost+2-key.pem'),
+  cert: fs.readFileSync('./security/localhost+2.pem')
+}
+
 // set up a connection to database
 console.log("connecting to mongo...")
 mongoose.connect(mongoServerURL, { useNewUrlParser: true, useFindAndModify: false })
@@ -88,7 +93,8 @@ mongoose.connection.once("open", function() {
   console.log("successfully connected to mongo")
 
   // get server instance for socket.io
-  const server = require('http').createServer(app);
+  // const server = require('http').createServer(app);
+  const server = require('https').createServer(httpsOptions, app);
   // const server = app.listen(8080, () => {
   //   console.log('app started!')
   // })

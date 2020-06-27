@@ -2,6 +2,11 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer");
+const fs = require('fs');
+const util = require('util');
+var EmailTemplate = require('email-templates').EmailTemplate;
+// Convert fs.readFile into Promise version of same    
+const readFile = util.promisify(fs.readFile);
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -12,6 +17,9 @@ const jwt = require("jsonwebtoken")
 const secret = 'secretkey'
 const async = require("async")
 const date = new Date()
+
+// the email texts
+// const confirmationEmail = await readFile('./written_emails/confirmation.txt')
 
 // returns the hashed output given a password input with bcrypt
 function hashPass(password) {
@@ -89,6 +97,8 @@ router.post("/forgotPassword", (req, res) => {
   // if it is, send a pw reset email
   var { email } = req.body
   console.log("email: ", email)
+  email = email.toLowerCase();
+  email = email.trim();
   async.waterfall([
     // check if email exists
     function(callback) {
@@ -119,18 +129,22 @@ router.post("/forgotPassword", (req, res) => {
     // send the email
     function(token, callback) {
       var transporter = nodemailer.createTransport({
-        host: 'Gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
-          user: "blueshushi.shau@gmail.com",
-          pass: process.env.EMAIL_PASSWORD
+          type: 'OAuth2',
+          user: process.env.EMAIL,
+          serviceClient: process.env.CLIENT_ID,
+          privateKey: process.env.PRIVATE_KEY
         }
       })
-      const confRedirect = `http://localhost:3000/pwResetPage?token=${token}`
+      const confRedirect = `http://www.athloslive.com/pwResetPage?token=${token}`
       var mailOptions = {
-        from: "Test",
-        to: "davidshau22@berkeley.edu",
-        subject: "nodemailer sending pwReset",
-        html: `Please click this link to reset your password:
+        from: "The Athlos Team",
+        to: `${email}`,
+        subject: "Your Athlos Account Password Reset",
+        html: `Hello, \n Please click this link to reset your password:
         <a href=${confRedirect}>Reset Password</a>`
       }
       console.log("sending mail...")
