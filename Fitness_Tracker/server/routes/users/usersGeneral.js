@@ -97,7 +97,7 @@ router.post("/getUsername", (req, res) => {
 })
 
 router.post("/updateProfile", (req, res) => {
-  var { userToken, firstName, lastName, bio, gender, height, weight, location } = req.body
+  var { userToken, firstName, lastName, bio, gender, height, weight, location, age } = req.body
 
   // decode user token
   var userID;
@@ -119,6 +119,7 @@ router.post("/updateProfile", (req, res) => {
       height,
       weight,
       location,
+      age,
     }
   ).exec((err, results) => {
     if (err) {
