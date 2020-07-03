@@ -98,6 +98,14 @@ router.post("/getUsername", (req, res) => {
 
 router.post("/updateProfile", (req, res) => {
   var { userToken, firstName, lastName, bio, gender, height, weight, location, age } = req.body
+  // remove any undefined fields
+  // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
+
+  // TO DO AFTER DINNER:
+  // FIGURE OUT HOW TO HANDLE UNIT SYSTEM CHANGES FUCK
+  // CHANGE MONGO SCHEMA FOR HEIGHT
+  // MAKE SURE REMOVING UNDEFINED AND NULL WORKS
+  // ADD HEIGHT CONDITIONS TO FRONTEND BASED ON UNITSYSTEM
 
   // decode user token
   var userID;

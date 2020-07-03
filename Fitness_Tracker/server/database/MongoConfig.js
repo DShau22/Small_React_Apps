@@ -171,9 +171,9 @@ const UserSchema = new Schema({
     default: ""
   },
   height: {
-    type: String,
+    type: Number,
     required: false,
-    default: ""
+    default: 0
   },
   weight: {
     type: String,
