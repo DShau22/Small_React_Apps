@@ -1,4 +1,6 @@
-const serverURL = "https://us-central1-athlos-live-beta.cloudfunctions.net/athlos-server"
+// const serverURL = "https://us-central1-athlos-live-beta.cloudfunctions.net/athlos-server"
+const serverURL = "http://localhost:8080"
+
 const ENDPOINTS = {
     server: `${serverURL}`,
     // login, signup, and emails
