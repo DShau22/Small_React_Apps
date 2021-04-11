@@ -100,27 +100,27 @@ class PwResetPage extends Component {
   render() {
     console.log("email: ", this.state.email);
     // render a loading page if the state token is not set
-    // if (this.state.error) {
-    //   return (
-    //     <div className='pwReset-page'>
-    //       <div className='card m-5'>
-    //         <h5 className="card-header conf-header-error">Oh no :(</h5>
-    //         <div className="card-body text-center errors-container">
-    //           <span>
-    //             Something went wrong with the password reset process. Please refresh
-    //             and try again: {this.state.error}.
-    //           </span>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   )
-    // } else if (this.state.email.length === 0) {
-    //   return (
-    //     <div className='loading-container'>
-    //       <ClipLoader color={'#404E7C'} loading={this.state.isLoading} size={90}/>
-    //     </div>
-    //   )
-    // }
+    if (this.state.error) {
+      return (
+        <div className='pwReset-page'>
+          <div className='card m-5'>
+            <h5 className="card-header conf-header-error">Oh no :(</h5>
+            <div className="card-body text-center errors-container">
+              <span>
+                Something went wrong with the password reset process. Please refresh
+                and try again: {this.state.error}.
+              </span>
+            </div>
+          </div>
+        </div>
+      )
+    } else if (this.state.email.length === 0) {
+      return (
+        <div className='loading-container'>
+          <ClipLoader color={'#404E7C'} loading={this.state.isLoading} size={90}/>
+        </div>
+      )
+    }
     return (
       <div className="pwReset-page">
         <div className='card'>
