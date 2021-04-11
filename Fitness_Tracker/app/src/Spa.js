@@ -5,7 +5,7 @@ import {
   withRouter,
 } from "react-router-dom";
 
-import Login from "./login/Login"
+import Login from "./login/login"
 import Confirmation from "./login/Confirmation"
 import PwResetPage from "./login/PwResetPage"
 

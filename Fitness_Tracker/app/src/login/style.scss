@@ -10,6 +10,25 @@
 .clearfix:after{clear:both;display:block}
 a{color:inherit;text-decoration:none}
 
+.loading-container {
+  height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pwReset-page {
+  padding: 20px;
+  .card-header {
+    background-color: #0C1947;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  .card {
+    border-radius: 8px;
+  }
+}
+$enable-gradients: true;
 // CONFIRMATION EMAIL PAGE
 .conf-page {
 	height: 60%;

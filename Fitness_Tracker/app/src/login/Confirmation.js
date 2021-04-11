@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LoadingScreen from "../generic/LoadingScreen"
+import ClipLoader from "react-spinners/ClipLoader";
 import queryString from "query-string"
 import {
   withRouter
@@ -26,17 +26,17 @@ class Confirmation extends Component {
 
   componentDidMount() {
     // get the token parameter in the URI
-    var queryValues = queryString.parse(this.props.location.search)
-    var emailToken = queryValues.token
-    console.log(queryValues)
+    var queryValues = queryString.parse(this.props.location.search);
+    var emailToken = queryValues.token;
+    console.log(queryValues);
 
-    const confirmUrl = `${ENDPOINTS.confirm}?token=${emailToken}`
+    const confirmUrl = `${ENDPOINTS.confirm}?token=${emailToken}`;
     // send request to server to verify confirmation, and add registration to database
     fetch(confirmUrl, {
       method: "GET"
     })
       .then(res => res.json())
-      .then((json) => {
+      .then(json => {
         console.log(json)
         if (json.success) {
           this.setState({
@@ -53,7 +53,7 @@ class Confirmation extends Component {
       })
     .catch((err) => {
       if (err) throw err
-    })
+    });
   }
 
   // takes in an object of error messages and returns html elements to display them
@@ -76,11 +76,7 @@ class Confirmation extends Component {
 
   renderDisplay() {
     if (this.state.isLoading) {
-      return (
-        <div>
-          <LoadingScreen />
-        </div>
-      )
+      return <div></div>
     } else if (!this.state.errors) {
       // no errors
       return (
@@ -90,22 +86,15 @@ class Confirmation extends Component {
           <h5 className="card-header conf-header">You're All Set!</h5>
           <div className='card-body text-center'>
             <p>
-              Your registration was successful! Click below to return to the login page.
+              Your registration was successful! You can now log in with the Athlos Live app :)
             </p>
-            <div
-              className="navLink"
-              onClick={() => {this.props.history.push("/")}}
-            >
-              Back to login
-            </div>
-            {/* <NavLink activeClassName="navLink" to="/">Back to login</NavLink> */}
           </div>
         </React.Fragment>
       )
     } else {
       return (
         <React.Fragment>
-          <h5 className="card-header conf-header-error">Oh No :(</h5>
+          <h5 className="card-header conf-header-error">Oh no :(</h5>
           <div className="card-body text-center errors-container">
             {this.displayErrors()}
           </div>
@@ -115,13 +104,21 @@ class Confirmation extends Component {
   }
 
   render() {
-    return (
-      <div className='conf-page'>
-        <div className='card m-5'>
-          {this.renderDisplay()}              
+    if (this.state.isLoading) {
+      return (
+        <div className='loading-container'>
+          <ClipLoader color={'#404E7C'} loading={this.state.isLoading} size={90}/>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div className='conf-page'>
+          <div className='card m-5'>
+            {this.renderDisplay()}              
+          </div>
+        </div>
+      )
+    }
   }
 }
 

@@ -25,6 +25,26 @@ a {
   text-decoration: none;
 }
 
+.loading-container {
+  height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pwReset-page {
+  padding: 20px;
+}
+.pwReset-page .card-header {
+  background-color: #0C1947;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.pwReset-page .card {
+  border-radius: 8px;
+}
+
 .conf-page {
   height: 60%;
   width: 100%;

@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import queryString from "query-string"
-import {
-  getFromLocalStorage,
-  setInStorage,
-} from '../utils/storage';
-
-import { makeID } from "../utils/keyGenerator"
-import ENDPOINTS from "../endpoints"
-const confirmPwRestUrl = ENDPOINTS.passwordReset
-const verifyUrl = ENDPOINTS.emailVerify
-
-const storageKey = makeID(8)
+import queryString from "query-string";
+import ClipLoader from "react-spinners/ClipLoader";
+import ENDPOINTS from "../endpoints";
+const confirmPwRestUrl = ENDPOINTS.passwordReset;
+const verifyUrl = ENDPOINTS.emailVerify;
 
 class PwResetPage extends Component {
   constructor(props) {
@@ -19,6 +12,7 @@ class PwResetPage extends Component {
       email: '',
       newPwText: '',
       newPwTextConf: '',
+      error: null,
     }
 
     this.onNewPassChange = this.onNewPassChange.bind(this)
@@ -40,10 +34,11 @@ class PwResetPage extends Component {
     })
       .then(body => body.json())
       .then((json) => {
+        console.log(json);
         // the token from the link is invalid
         if (!json.success) {
           // var errorMsg = "Either the link has expired (12 hours) or something went wrong with the server. Please try again."
-          alert("verification from the mail link went wrong")
+          this.setState({ error: json.messages[0] });
           console.log(json);
           // SHOW THAT THERE WAS AN ERROR AND EXPLAIN WHY IN HTML
         } else {
@@ -71,9 +66,11 @@ class PwResetPage extends Component {
     console.log("submitted!")
     var { newPwText, newPwTextConf } = this.state
     if (newPwText !== newPwTextConf) {
-      return alert("passwords must match!")
+      return alert("passwords must match!");
     }
-
+    if (newPwText.length < 8) {
+      return alert("passwords must have more than 8 characters!");
+    }
     var reqBody = {
       newPassword: newPwText,
       email: this.state.email
@@ -93,53 +90,77 @@ class PwResetPage extends Component {
           // display message saying password successfully reset
         } else {
           console.log(json)
-          alert("something went wrong: ", json.message)
+          alert("something went wrong: ", json.messages[0])
           // something went wrong
         }
       })
-    .catch((err) => {throw err})
+    .catch((err) => {throw err});
   }
 
   render() {
-    console.log("email: ", this.state.email)
+    console.log("email: ", this.state.email);
     // render a loading page if the state token is not set
-    if (this.state.email.length === 0) {
-      return (
-        <div>Loading...</div>
-      )
-    }
+    // if (this.state.error) {
+    //   return (
+    //     <div className='pwReset-page'>
+    //       <div className='card m-5'>
+    //         <h5 className="card-header conf-header-error">Oh no :(</h5>
+    //         <div className="card-body text-center errors-container">
+    //           <span>
+    //             Something went wrong with the password reset process. Please refresh
+    //             and try again: {this.state.error}.
+    //           </span>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   )
+    // } else if (this.state.email.length === 0) {
+    //   return (
+    //     <div className='loading-container'>
+    //       <ClipLoader color={'#404E7C'} loading={this.state.isLoading} size={90}/>
+    //     </div>
+    //   )
+    // }
     return (
-      <div>
-        <form onSubmit={this.onSubmit}>
-          <div className="group">
-            <label htmlFor="new-pass">enter new password</label>
-            <input
-              id="new-pass"
-              type="password"
-              className="input"
-              data-type="password"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-              onChange={this.onNewPassChange}
-            />
+      <div className="pwReset-page">
+        <div className='card'>
+          <div class="card-header text-white">
+            Reset Your Athlos Live Password
           </div>
-          <div className="group">
-            <label htmlFor="new-pass-reap">confirm enter new password</label>
-            <input
-              id="new-pass-reap"
-              type="password"
-              className="input"
-              data-type="password"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-              onChange={this.onNewPassConfChange}
-            />
+          <div className='card-body'>
+            <form onSubmit={this.onSubmit}>
+              <div className="form-group">
+                <label htmlFor="new-pass">Enter new password</label>
+                <input
+                  id="new-pass"
+                  type="password"
+                  className="form-control"
+                  data-type="password"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[!@#$%^&*-=.A-Za-z\d]{8,}$"
+                  title="Must contain 8 characters, one uppercase, one lowercase, one number. Only !@#$%^&*-=. special characters allowed."
+                  onChange={this.onNewPassChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="new-pass-reap">Confirm new password</label>
+                <input
+                  id="new-pass-reap"
+                  type="password"
+                  className="form-control"
+                  data-type="password"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[!@#$%^&*-=.A-Za-z\d]{8,}$"
+                  title="Must contain 8 characters, one uppercase, one lowercase, one number. Only !@#$%^&*-=. special characters allowed."
+                  onChange={this.onNewPassConfChange}
+                />
+              </div>
+              <div className="form-group">
+                <input type="submit" className="btn btn-outline-info" value="Submit" id="submitNewPassButton" />
+              </div>
+            </form>
           </div>
-          <div className="group">
-            <input type="submit" className="button" value="Submit" id="submitNewPassButton" />
-          </div>
-        </form>
+        </div>
       </div>
+
     )
   }
 }
